@@ -1,0 +1,72 @@
+/* Menu items */
+.p-menuitem-text {
+    color: inherit !important;
+    line-height: 1.5 !important;
+}
+
+/* Buttons */
+.p-button {
+    font-family: 'Cairo', sans-serif !important;
+}
+
+.p-component {
+    font-family: 'Cairo', sans-serif !important;
+}
+
+/* Dialog */
+.p-dialog .p-dialog-header {
+    direction: rtl !important;
+}
+
+.p-dialog .p-dialog-content {
+    direction: rtl !important;
+}
+
+.p-dialog .p-dialog-footer {
+    direction: rtl !important;
+}
+
+/* Float Label */
+.p-float-label input:focus~label,
+.p-float-label input.p-filled~label,
+.p-float-label textarea:focus~label,
+.p-float-label textarea.p-filled~label,
+.p-float-label .p-inputwrapper-focus~label,
+.p-float-label .p-inputwrapper-filled~label {
+    top: 0.25rem !important;
+    font-size: 12px !important;
+    background-color: white !important;
+    padding: 0 4px !important;
+}
+
+/* Carousel */
+.p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
+    background-color: var(--primary-color) !important;
+}
+
+/* Cards */
+.p-card .p-card-title {
+    font-weight: 600 !important;
+}
+
+.p-card .p-card-content {
+    padding-top: 0.5rem !important;
+}
+
+/* Ensure all inputs have proper RTL support */
+.p-inputtext,
+.p-password-input,
+.p-inputnumber-input {
+    text-align: right !important;
+}
+
+/* Fix button icon alignment in RTL */
+[dir="rtl"] .p-button-icon-right {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .p-button-icon-left {
+    margin-left: 0.5rem !important;
+    margin-right: 0 !important;
+}
