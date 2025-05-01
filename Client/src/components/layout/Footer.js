@@ -31,8 +31,8 @@ const Footer = () => {
                     <div>
                         <h3 className="text-white text-lg font-semibold mb-4">روابط سريعة</h3>
                         <ul className="space-y-2">
-                            <li><a href="#" className="no-underline hover:text-white">الرئيسية</a></li>
-                            <li><a href="#" className="no-underline hover:text-white">من نحن</a></li>
+                            <li><a href="/" className="no-underline hover:text-white">الرئيسية</a></li>
+                            <li><a href="/about" className="no-underline hover:text-white">من نحن</a></li>
                             <li><a href="#" className="no-underline hover:text-white">العضوية</a></li>
                             <li><a href="#" className="no-underline hover:text-white">الفعاليات</a></li>
                             <li><a href="#" className="no-underline hover:text-white">الموارد</a></li>

@@ -1,0 +1,143 @@
+/* src/styles/about-page.css */
+
+/* Timeline specific styles */
+.customized-timeline .p-timeline-event-opposite {
+    flex: 0;
+    padding: 0 1rem;
+}
+
+.customized-timeline .p-timeline-event-content {
+    padding: 0 1rem;
+}
+
+.customized-timeline .p-card {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Ensure proper RTL support for the timeline */
+[dir="rtl"] .p-timeline-event {
+    flex-direction: row-reverse;
+}
+
+/* Adjust for RTL text alignment */
+[dir="rtl"] .p-timeline-event-opposite {
+    text-align: left;
+}
+
+[dir="rtl"] .p-timeline-event-content {
+    text-align: right;
+}
+
+/* Alternate timeline item styles */
+.p-timeline.p-timeline-alternate .p-timeline-event:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .p-timeline.p-timeline-alternate .p-timeline-event:nth-child(even) {
+    flex-direction: row;
+}
+
+/* Style the timeline line */
+[dir="rtl"] .p-timeline-event-separator .p-timeline-event-marker {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Card hover effects */
+.shadow-md:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Values section - icon container */
+.bg-blue-100.rounded-full {
+    transition: all 0.3s ease;
+}
+
+.bg-blue-100.rounded-full:hover {
+    transform: scale(1.1);
+    background-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Board members styles */
+.board-member-card:hover .member-image {
+    border-color: #3B82F6;
+}
+
+/* Organization chart placeholder */
+.org-chart-placeholder {
+    background-image: linear-gradient(45deg, #f0f9ff 25%, #e0f2fe 25%, #e0f2fe 50%, #f0f9ff 50%, #f0f9ff 75%, #e0f2fe 75%, #e0f2fe 100%);
+    background-size: 56.57px 56.57px;
+}
+
+/* Partners section */
+.partner-logo {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.partner-card:hover .partner-logo {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+/* Achievements stats counter animation */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-counter {
+    animation: countUp 1s ease-out forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .customized-timeline .p-timeline-event {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    [dir="rtl"] .customized-timeline .p-timeline-event {
+        align-items: flex-end !important;
+    }
+
+    .customized-timeline .p-timeline-event-opposite {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Hero section gradient overlay for better text readability */
+.hero-section {
+    position: relative;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(37, 99, 235, 0.1), rgba(30, 58, 138, 0.3));
+    z-index: 1;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Add smooth scrolling for the page */
+html {
+    scroll-behavior: smooth;
+}
