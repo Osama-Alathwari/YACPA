@@ -1,0 +1,119 @@
+/* src/styles/contact-page.css */
+
+/* Contact form specific styles */
+.p-float-label {
+    display: block;
+    position: relative;
+}
+
+.p-float-label input.p-filled~label,
+.p-float-label textarea.p-filled~label,
+.p-float-label .p-inputwrapper-filled~label {
+    font-size: 12px;
+    top: -0.75rem !important;
+    background-color: white;
+    padding: 0 4px;
+}
+
+/* RTL specific styles for contact form */
+[dir="rtl"] .p-float-label label {
+    right: 0.75rem;
+    left: auto;
+}
+
+[dir="rtl"] .p-inputtext {
+    text-align: right;
+}
+
+[dir="rtl"] .p-dropdown-label {
+    text-align: right;
+}
+
+/* Make sure the PrimeReact dropdown arrow is on the left in RTL mode */
+[dir="rtl"] .p-dropdown .p-dropdown-trigger {
+    right: auto;
+    left: 0;
+}
+
+/* Proper spacing for icons in RTL mode */
+[dir="rtl"] .space-x-reverse>*+* {
+    margin-right: 1rem;
+    margin-left: 0;
+}
+
+/* Accordion RTL fixes */
+[dir="rtl"] .p-accordion .p-accordion-header-link {
+    padding: 1rem 1rem 1rem 2rem;
+    text-align: right;
+}
+
+[dir="rtl"] .p-accordion .p-accordion-toggle-icon {
+    margin-left: 0.5rem;
+    margin-right: auto;
+}
+
+/* Ensure form validation messages are properly aligned in RTL */
+[dir="rtl"] .p-error {
+    display: block;
+    text-align: right;
+}
+
+/* Map container responsive adjustments */
+@media (max-width: 768px) {
+    .h-96 {
+        height: 16rem;
+        /* Slightly smaller on mobile */
+    }
+}
+
+/* Card hover effects */
+.contact-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+
+/* Improved focus states for accessibility */
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-inputtextarea:focus {
+    box-shadow: 0 0 0 1px var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Social media icons hover effects */
+.social-icon {
+    transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Toast customization */
+.p-toast-message-success {
+    background-color: #E3F2FD !important;
+    border-left: 6px solid #2196F3 !important;
+}
+
+.p-toast-message-error {
+    background-color: #FFEBEE !important;
+    border-left: 6px solid #F44336 !important;
+}
+
+/* Custom scrollbar for the page */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1565C0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0D47A1;
+}

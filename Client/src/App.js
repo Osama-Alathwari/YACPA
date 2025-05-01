@@ -1,15 +1,17 @@
 // App.js - Main application file
 import React from 'react';
-import HomePage from './pages/HomePage';
 import { PrimeReactProvider } from 'primereact/api';
+import AppRoutes from './routes/AppRoutes';
 
-// Import styles (we've moved PrimeReact imports to index.css to control ordering)
+// Import styles
 import './App.css';
+// Import contact page specific styles (include once the file is created)
+import './styles/contact-page.css';
 
 function App() {
   return (
     <PrimeReactProvider>
-      <HomePage />
+      <AppRoutes />
     </PrimeReactProvider>
   );
 }
