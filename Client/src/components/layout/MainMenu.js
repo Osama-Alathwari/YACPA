@@ -1,44 +1,46 @@
 // src/components/layout/MainMenu.js
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Menubar } from 'primereact/menubar';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const MainMenu = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     // Menubar items with navigation commands
-    const menuItems = [
+    const menuItems = useMemo(() => [
         {
-            label: 'الرئيسية',
+            label: t('navigation.home'),
             icon: 'pi pi-fw pi-home',
             command: () => navigate('/')
         },
         {
-            label: 'من نحن',
+            label: t('navigation.about'),
             icon: 'pi pi-fw pi-users',
-            command: () => navigate('/about') // This will need to be created
+            command: () => navigate('/about')
         },
         {
-            label: 'العضوية',
+            label: t('navigation.membership'),
             icon: 'pi pi-fw pi-id-card',
-            command: () => navigate('/membership') // This will need to be created
+            command: () => navigate('/membership')
         },
         {
-            label: 'الفعاليات',
+            label: t('navigation.events'),
             icon: 'pi pi-fw pi-calendar',
-            command: () => navigate('/events') // This will need to be created
+            command: () => navigate('/events')
         },
         {
-            label: 'الموارد',
+            label: t('navigation.resources'),
             icon: 'pi pi-fw pi-book',
-            command: () => navigate('/resources') // This will need to be created
+            command: () => navigate('/resources')
         },
         {
-            label: 'اتصل بنا',
+            label: t('navigation.contact'),
             icon: 'pi pi-fw pi-envelope',
             command: () => navigate('/contact')
         },
-    ];
+    ], [t, navigate]);
 
     return <Menubar model={menuItems} className="border-none" />;
 };

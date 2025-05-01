@@ -1,13 +1,16 @@
 // src/components/homepage/StatisticsSection.js
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const StatisticsSection = () => {
+    const { t } = useTranslation();
+
     // Statistics data
     const statistics = [
-        { value: '+5000', label: 'عضو نشط' },
-        { value: '25', label: 'سنة خبرة' },
-        { value: '120', label: 'فعالية سنوية' },
-        { value: '15', label: 'فرع حول المملكة' },
+        { value: '+5000', label: t('home.statistics.members') },
+        { value: '25', label: t('home.statistics.experience') },
+        { value: '120', label: t('home.statistics.events') },
+        { value: '15', label: t('home.statistics.branches') },
     ];
 
     return (

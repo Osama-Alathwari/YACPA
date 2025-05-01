@@ -1,0 +1,278 @@
+{
+    "app": {
+        "name": "Association of Certified Accountants",
+        "shortName": "Accountants Association"
+    },
+    "navigation": {
+        "home": "Home",
+        "about": "About Us",
+        "membership": "Membership",
+        "events": "Events",
+        "resources": "Resources",
+        "contact": "Contact Us",
+        "login": "Login",
+        "dashboard": "Dashboard",
+        "profile": "Profile",
+        "logout": "Logout"
+    },
+    "home": {
+        "hero": {
+            "title": "Welcome to the Association of Certified Accountants",
+            "subtitle": "A platform bringing together professional accountants and supporting continuous professional development",
+            "joinButton": "Join Us Now",
+            "learnMoreButton": "Learn More"
+        },
+        "benefits": {
+            "title": "Membership Benefits",
+            "subtitle": "Take advantage of a variety of exclusive benefits that support your professional career",
+            "professionalGrowth": {
+                "title": "Professional Growth Opportunities",
+                "description": "Training courses and workshops to help you develop your professional skills"
+            },
+            "networking": {
+                "title": "Professional Networking",
+                "description": "Connect with professional accountants and exchange experiences and knowledge"
+            },
+            "resources": {
+                "title": "Access to Resources",
+                "description": "Specialized resource library and exclusive content for members"
+            },
+            "certification": {
+                "title": "Professional Certification",
+                "description": "Obtain professionally recognized certifications in the field of accounting"
+            }
+        },
+        "statistics": {
+            "members": "Active Members",
+            "experience": "Years of Experience",
+            "events": "Annual Events",
+            "branches": "Branches across the country"
+        },
+        "news": {
+            "title": "Latest News",
+            "viewAll": "View All News",
+            "readMore": "Read More"
+        },
+        "cta": {
+            "title": "Join Us Today",
+            "subtitle": "Be part of the professional accountants community and benefit from your membership in developing your professional career",
+            "button": "Request Membership"
+        }
+    },
+    "about": {
+        "hero": {
+            "title": "About Us",
+            "description": "The Association of Certified Accountants is a leading professional institution established in 2000 with the aim of developing the accounting profession"
+        },
+        "mission": {
+            "title": "Our Mission",
+            "description": "Developing the accounting profession in Yemen through providing high-quality training programs and spreading professional awareness"
+        },
+        "vision": {
+            "title": "Our Vision",
+            "description": "For the Association of Certified Accountants to be the first reference for the accounting profession in Yemen"
+        },
+        "values": {
+            "title": "Our Values",
+            "professionalism": {
+                "title": "Professionalism",
+                "description": "Commitment to the highest standards of professional performance and excellence in service delivery"
+            },
+            "integrity": {
+                "title": "Integrity",
+                "description": "Working with transparency and honesty in all dealings, and promoting mutual trust"
+            },
+            "innovation": {
+                "title": "Innovation",
+                "description": "Adopting new ideas and developing creative solutions to meet professional challenges"
+            },
+            "collaboration": {
+                "title": "Collaboration",
+                "description": "Building effective partnerships and promoting joint work to achieve common goals"
+            }
+        }
+    },
+    "membership": {
+        "types": {
+            "title": "Membership Types",
+            "active": "Full Membership",
+            "associate": "Associate Membership",
+            "student": "Student Membership"
+        },
+        "requirements": {
+            "title": "Membership Requirements",
+            "education": "Academic degree in accounting or equivalent",
+            "experience": "Practical experience in accounting",
+            "documents": "Required documents"
+        },
+        "fees": {
+            "title": "Membership Fees",
+            "registration": "Registration Fee",
+            "annual": "Annual Subscription"
+        },
+        "application": {
+            "title": "Apply for Membership",
+            "steps": "Application Steps",
+            "form": "Application Form",
+            "submit": "Submit Application"
+        }
+    },
+    "contact": {
+        "title": "Contact Us",
+        "subtitle": "We are here to answer all your inquiries and help you with everything you need",
+        "form": {
+            "title": "Send Us a Message",
+            "name": "Full Name",
+            "email": "Email",
+            "phone": "Phone Number",
+            "subject": "Subject",
+            "message": "Message",
+            "submit": "Send Message",
+            "required": "Required"
+        },
+        "info": {
+            "title": "Contact Information",
+            "address": {
+                "title": "Address",
+                "value": "Aden, Republic of Yemen, Crater opposite Four Youth"
+            },
+            "phone": {
+                "title": "Phone",
+                "value": "+967 777 777 777"
+            },
+            "email": {
+                "title": "Email",
+                "value": "info@accountants-association.org"
+            },
+            "hours": {
+                "title": "Working Hours",
+                "weekdays": "Sunday - Thursday: 8:00 AM - 2:00 PM",
+                "weekend": "Friday - Saturday: Closed"
+            }
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Login",
+            "username": "Username",
+            "password": "Password",
+            "submit": "Login",
+            "forgotPassword": "Forgot Password?",
+            "noAccount": "Don't have an account?",
+            "register": "Register Now"
+        }
+    },
+    "dashboard": {
+        "welcome": "Welcome to the Dashboard",
+        "members": {
+            "title": "Member Management",
+            "add": "Add New Member",
+            "view": "View Members",
+            "search": "Search for a Member"
+        },
+        "subscriptions": {
+            "title": "Subscription Management",
+            "renew": "Renew Subscription",
+            "expiring": "Expiring Subscriptions",
+            "expired": "Expired Subscriptions"
+        },
+        "reports": {
+            "title": "Reports",
+            "members": "Members Report",
+            "payments": "Payments Report",
+            "activities": "Activities Report"
+        }
+    },
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "search": "Search",
+        "filter": "Filter",
+        "noResults": "No Results",
+        "loading": "Loading...",
+        "success": "Operation Successful",
+        "error": "An Error Occurred",
+        "required": "Required",
+        "submit": "Submit",
+        "confirm": "Confirm",
+        "selectOption": "Select",
+        "yes": "Yes",
+        "no": "No",
+        "next": "Next",
+        "previous": "Previous",
+        "details": "Details",
+        "moreInfo": "More Information",
+        "goBack": "Go Back",
+        "print": "Print"
+    },
+    "footer": {
+        "quickLinks": "Quick Links",
+        "contactUs": "Contact Us",
+        "newsletter": {
+            "title": "Newsletter",
+            "description": "Subscribe to our newsletter to receive the latest news and events",
+            "placeholder": "Your Email",
+            "subscribe": "Subscribe"
+        },
+        "copyright": "© 2025 Association of Certified Accountants. All rights reserved.",
+        "privacyPolicy": "Privacy Policy",
+        "termsConditions": "Terms & Conditions"
+    },
+    "member": {
+        "personalInfo": {
+            "title": "Personal Information",
+            "fullName": "Full Name and Surname",
+            "idType": "ID Type",
+            "idNumber": "ID Number",
+            "idImage": "ID Image",
+            "profileImage": "Profile Image",
+            "qualification": "Academic Qualification"
+        },
+        "businessInfo": {
+            "title": "Business Information",
+            "businessName": "Business Name",
+            "businessType": "Business Type",
+            "headOfficeAddress": "Head Office Address",
+            "localBranchAddress": "Local Branch Address",
+            "licenseNumber": "License Number",
+            "licenseIssueDate": "License Issue Date"
+        },
+        "contactInfo": {
+            "title": "Contact Information",
+            "phone1": "Phone Number 1",
+            "phone2": "Phone Number 2",
+            "mobile": "Mobile Number",
+            "whatsapp": "WhatsApp Number",
+            "email": "Email"
+        },
+        "attachments": {
+            "title": "Attachments",
+            "licenseImage": "License Image",
+            "degreeImage": "Certified Copy of Degree Certificate",
+            "signatureImage": "Signature and Authorized Stamp Image"
+        },
+        "subscription": {
+            "title": "Subscription Information",
+            "startDate": "Subscription Start Date",
+            "endDate": "Subscription End Date",
+            "status": "Subscription Status",
+            "renew": "Renew Subscription"
+        },
+        "payment": {
+            "title": "Payment Information",
+            "paymentType": "Payment Method",
+            "receiptNumber": "Receipt/Notification Number",
+            "receiptDate": "Receipt/Notification Date",
+            "amount": "Amount",
+            "purpose": "Payment Purpose",
+            "attachment": "Payment Attachment"
+        },
+        "card": {
+            "title": "Membership Card",
+            "print": "Print Card"
+        }
+    }
+}
