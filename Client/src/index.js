@@ -1,6 +1,11 @@
+// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+
+// Import CSS in the correct order
+import './index.css'; 
+// import './primereact-fixes.css'; // Import the fixes after main styles
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 

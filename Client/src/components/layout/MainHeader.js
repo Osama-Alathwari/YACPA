@@ -7,7 +7,7 @@ import logoPlaceholder from '../../assets/logo-placeholder.png';
 
 const MainHeader = () => {
     return (
-        <header className="bg-white shadow-md">
+        <header className="bg-white shadow-md sticky top-0 left-0 right-0 z-50">
             <div className="container mx-auto flex justify-between items-center py-3 px-4">
                 <div className="flex items-center">
                     <img src={logoPlaceholder} alt="شعار الجمعية" className="h-14 ml-2" />
@@ -28,7 +28,7 @@ const MainHeader = () => {
                 </div>
             </div>
             <div className="border-b border-gray-200">
-                <div className="container mx-auto">
+                <div className="container mx-auto ">
                     <MainMenu />
                 </div>
             </div>

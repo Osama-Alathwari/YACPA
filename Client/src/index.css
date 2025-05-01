@@ -1,13 +1,54 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap');
+
+/* Import PrimeReact styles BEFORE Tailwind to ensure proper precedence */
+@import 'primereact/resources/themes/lara-light-indigo/theme.css';
+@import 'primereact/resources/primereact.min.css';
+@import 'primeicons/primeicons.css';
+
+/* Use preflight-less version of Tailwind to avoid resets that break PrimeReact */
+@tailwind components;
+@tailwind utilities;
+
+/* RTL Support for PrimeReact components */
+body[dir="rtl"] .p-float-label label {
+  right: 0.5rem;
+  left: auto;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body[dir="rtl"] .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-link .p-submenu-icon {
+  margin-right: 0.5rem;
+  margin-left: 0;
+}
+
+body[dir="rtl"] .p-inputtext {
+  direction: rtl;
+}
+
+body[dir="rtl"] .p-password-input {
+  direction: rtl;
+}
+
+body[dir="rtl"] .p-button-icon-left {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
 }

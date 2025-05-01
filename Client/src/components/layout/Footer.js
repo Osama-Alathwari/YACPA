@@ -31,11 +31,11 @@ const Footer = () => {
                     <div>
                         <h3 className="text-white text-lg font-semibold mb-4">روابط سريعة</h3>
                         <ul className="space-y-2">
-                            <li><a href="#" className="hover:text-white">الرئيسية</a></li>
-                            <li><a href="#" className="hover:text-white">من نحن</a></li>
-                            <li><a href="#" className="hover:text-white">العضوية</a></li>
-                            <li><a href="#" className="hover:text-white">الفعاليات</a></li>
-                            <li><a href="#" className="hover:text-white">الموارد</a></li>
+                            <li><a href="#" className="no-underline hover:text-white">الرئيسية</a></li>
+                            <li><a href="#" className="no-underline hover:text-white">من نحن</a></li>
+                            <li><a href="#" className="no-underline hover:text-white">العضوية</a></li>
+                            <li><a href="#" className="no-underline hover:text-white">الفعاليات</a></li>
+                            <li><a href="#" className="no-underline hover:text-white">الموارد</a></li>
                         </ul>
                     </div>
 
@@ -44,11 +44,11 @@ const Footer = () => {
                         <ul className="space-y-3">
                             <li className="flex items-start gap-3">
                                 <i className="pi pi-map-marker mt-1"></i>
-                                <span>الرياض، المملكة العربية السعودية، طريق الملك فهد، برج الأعمال</span>
+                                <span>عدن، الجمهورية اليمنية، كريتر مقابل فور شباب</span>
                             </li>
                             <li className="flex items-center gap-3">
-                                <i className="pi pi-phone"></i>
-                                <span>+966 11 234 5678</span>
+                                <i className="pi pi-phone "></i>
+                                <span>777 777 777 967+</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <i className="pi pi-envelope"></i>
@@ -74,9 +74,9 @@ const Footer = () => {
                         © 2025 جمعية المحاسبين القانونيين. جميع الحقوق محفوظة.
                     </div>
                     <div className="flex gap-4 text-sm">
-                        <a href="#" className="hover:text-white">سياسة الخصوصية</a>
+                        <a href="#" className="no-underline hover:text-white">سياسة الخصوصية</a>
                         <span>|</span>
-                        <a href="#" className="hover:text-white">الشروط والأحكام</a>
+                        <a href="#" className="no-underline hover:text-white">الشروط والأحكام</a>
                     </div>
                 </div>
             </div>

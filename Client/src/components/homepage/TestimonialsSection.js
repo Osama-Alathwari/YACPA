@@ -24,17 +24,37 @@ const TestimonialsSection = () => {
             content: 'أفضل استثمار قمت به في حياتي المهنية هو الانضمام إلى هذه الجمعية.',
             image: null,
         },
+        {
+            name: 'محمد علي',
+            role: 'مراجع حسابات',
+            content: 'أفضل استثمار قمت به في حياتي المهنية هو الانضمام إلى هذه الجمعية.',
+            image: null,
+        },
+        {
+            name: 'محمد علي',
+            role: 'مراجع حسابات',
+            content: 'أفضل استثمار قمت به في حياتي المهنية هو الانضمام إلى هذه الجمعية.',
+            image: null,
+        },
+        {
+            name: 'محمد علي',
+            role: 'مراجع حسابات',
+            content: 'أفضل استثمار قمت به في حياتي المهنية هو الانضمام إلى هذه الجمعية.',
+            image: null,
+        },
     ];
 
-    // Render testimonial template
+    // Render testimonial template - this needs to be a function that returns JSX
     const testimonialTemplate = (item) => {
         return (
-            <TestimonialCard
-                name={item.name}
-                role={item.role}
-                content={item.content}
-                image={item.image}
-            />
+            <div className="p-2">
+                <TestimonialCard
+                    name={item.name}
+                    role={item.role}
+                    content={item.content}
+                    image={item.image}
+                />
+            </div>
         );
     };
 
@@ -53,7 +73,7 @@ const TestimonialsSection = () => {
                         numScroll={1}
                         responsiveOptions={[
                             {
-                                breakpoint: '1024px',
+                                breakpoint: '1020px',
                                 numVisible: 3,
                                 numScroll: 1
                             },
@@ -68,16 +88,11 @@ const TestimonialsSection = () => {
                                 numScroll: 1
                             }
                         ]}
-                        circular
-                        autoplayInterval={3000}
+
+                        autoplayInterval={500}
+                        itemTemplate={testimonialTemplate}
                         className="testimonial-carousel"
-                    >
-                        {testimonials.map((testimonial, index) => (
-                            <div key={index} className="testimonial-item">
-                                {testimonialTemplate(testimonial)}
-                            </div>
-                        ))}
-                    </Carousel>
+                    />
                 </div>
             </div>
         </section>

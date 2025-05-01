@@ -1,27 +1,29 @@
 // src/pages/HomePage.js
+import React, { useState } from 'react';
 
-// Layout Components
-import MainHeader from '../components/layout/MainHeader';
-import Footer from '../components/layout/Footer';
-
-// Homepage Section Components
-import HeroSection from '../components/homepage/HeroSection';
-import BenefitsSection from '../components/homepage/BenefitsSection';
-import StatisticsSection from '../components/homepage/StatisticsSection';
-import NewsSection from '../components/homepage/NewsSection';
-import TestimonialsSection from '../components/homepage/TestimonialsSection';
-import CTASection from '../components/homepage/CTASection';
-
-// Common Components
+// Import all components from barrel export
+import {
+    MainHeader,
+    Footer,
+    HeroSection,
+    BenefitsSection,
+    StatisticsSection,
+    NewsSection,
+    // TestimonialsSection,
+    CTASection
+    // LoginDialog
+} from '../components';
 
 const HomePage = () => {
     // const [loginVisible, setLoginVisible] = useState(false);
 
+
     return (
         <div className="font-sans bg-gray-50 min-h-screen" dir="rtl">
-
             {/* Header */}
             <MainHeader />
+
+            {/* Main Content */}
 
             {/* Hero Section */}
             <HeroSection />
@@ -35,8 +37,7 @@ const HomePage = () => {
             {/* News Section */}
             <NewsSection />
 
-            {/* Testimonials Section */}
-            <TestimonialsSection />
+
 
             {/* CTA Section */}
             <CTASection />
@@ -44,7 +45,7 @@ const HomePage = () => {
             {/* Footer */}
             <Footer />
 
-
+            {/* Login Dialog */}
         </div>
     );
 };

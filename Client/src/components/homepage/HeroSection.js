@@ -1,26 +1,32 @@
-// src/components/common/TestimonialCard.js
+// src/components/homepage/HeroSection.js
 import React from 'react';
-import { Card } from 'primereact/card';
-import { Avatar } from 'primereact/avatar';
+import { Button } from 'primereact/button';
+import logoPlaceholder from '../../assets/logo-placeholder.png';
 
-const TestimonialCard = ({ name, role, content, image }) => {
+const HeroSection = () => {
     return (
-        <Card className="border border-gray-200 shadow-sm h-full mx-2 my-3 bg-white">
-            <div className="flex flex-col items-center text-center">
-                <Avatar
-                    icon="pi pi-user"
-                    size="large"
-                    className="mb-3 bg-blue-100 text-blue-600"
-                    style={{ width: '4rem', height: '4rem' }}
-                    image={image}
-                />
-                <h3 className="text-lg font-semibold mb-1">{name}</h3>
-                <p className="text-sm text-gray-600 mb-4">{role}</p>
-                <i className="pi pi-quote-right text-2xl text-blue-300 mb-2"></i>
-                <p className="italic text-gray-700">{content}</p>
+        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+            <div className="container mx-auto px-4">
+                <div className="flex flex-col md:flex-row items-center justify-between">
+                    <div className="md:w-1/2 mb-8 md:mb-0">
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">مرحباً بكم في جمعية المحاسبين القانونيين</h1>
+                        <p className="text-lg mb-6 text-blue-100">منصة تجمع المحاسبين المحترفين وتدعم التطوير المهني المستمر</p>
+                        <div className="flex flex-wrap gap-3">
+                            <Button label="انضم إلينا الآن" className="p-button-lg" />
+                            <Button label="تعرف علينا أكثر" className="p-button-outlined p-button-lg p-button-secondary" />
+                        </div>
+                    </div>
+                    <div className="md:w-1/2 flex justify-center">
+                        <img
+                            src={logoPlaceholder}
+                            alt="صورة توضيحية"
+                            className="rounded-lg shadow-lg max-w-full h-auto"
+                        />
+                    </div>
+                </div>
             </div>
-        </Card>
+        </section>
     );
 };
 
-export default TestimonialCard;
+export default HeroSection;

@@ -4,7 +4,7 @@ import { Card } from 'primereact/card';
 
 const NewsCard = ({ title, date, content }) => {
     return (
-        <Card className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+        <Card className="bg-[#dbeafe] shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
             <div>
                 <div className="text-sm text-gray-500 mb-2">{date}</div>
                 <h3 className="text-xl font-semibold mb-3">{title}</h3>
