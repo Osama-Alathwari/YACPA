@@ -15,8 +15,7 @@
     padding: 0 4px;
 }
 
-/* RTL specific styles for contact form */
-[dir="rtl"] .p-float-label label {
+RTL specific styles for contact form [dir="rtl"] .p-float-label label {
     right: 0.75rem;
     left: auto;
 }
@@ -116,4 +115,98 @@
 
 ::-webkit-scrollbar-thumb:hover {
     background: #0D47A1;
+}
+
+/* src/styles/contact-page.css - Additional RTL-specific styles */
+
+/* Enhanced RTL support for contact page */
+
+/* Form field layout in RTL mode */
+[dir="rtl"] .p-field {
+    text-align: right;
+}
+
+/* Adjust icon positioning for RTL in contact cards */
+[dir="rtl"] .flex-shrink-0 {
+    margin-left: 0.75rem;
+    margin-right: 0;
+}
+
+/* Fix alignment of Dropdown components in RTL */
+[dir="rtl"] .p-dropdown .p-dropdown-label {
+    text-align: right;
+    padding-right: 0.75rem;
+}
+
+[dir="rtl"] .p-dropdown .p-dropdown-trigger {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Adjust textarea in RTL mode */
+[dir="rtl"] .p-inputtextarea {
+    text-align: right;
+}
+
+/* Fix error message alignment in RTL */
+[dir="rtl"] .p-error {
+    text-align: right;
+}
+
+/* Toast message alignment in RTL */
+[dir="rtl"] .p-toast-message-content {
+    text-align: right;
+}
+
+[dir="rtl"] .p-toast-message-icon {
+    margin-left: 0.5rem;
+    margin-right: 0;
+}
+
+/* Branch cards RTL adjustments */
+[dir="rtl"] .branch-card .pi {
+    margin-left: 0.5rem;
+    margin-right: 0;
+}
+
+/* Accordion RTL adjustments */
+[dir="rtl"] .p-accordion .p-accordion-header-link {
+    padding: 1rem 1rem 1rem 2rem;
+    text-align: right;
+}
+
+[dir="rtl"] .p-accordion .p-accordion-toggle-icon {
+    margin-left: 0.5rem;
+    margin-right: auto;
+}
+
+/* Social icons in RTL mode */
+[dir="rtl"] .social-icons-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+/* Map info window RTL adjustments */
+[dir="rtl"] .map-info-content {
+    text-align: right;
+}
+
+/* Button specific RTL fixes */
+[dir="rtl"] .p-button.p-button-icon-only .p-button-icon {
+    margin-left: 0;
+}
+
+/* Fix spacing when icon is on right in RTL mode */
+[dir="rtl"] .p-button-label+.p-button-icon-right {
+    margin-right: 0.5rem;
+    margin-left: 0;
+}
+
+/* Responsive adjustments for RTL */
+@media (max-width: 768px) {
+    [dir="rtl"] .contact-columns {
+        flex-direction: column-reverse;
+    }
 }

@@ -21,6 +21,8 @@ const MainHeader = () => {
                         label={t('navigation.login')}
                         icon="pi pi-sign-in"
                         className="p-button-outlined p-button-sm"
+                        onClick={() => window.location.href = '/login'}
+                        aria-label={t('navigation.login')}
                     />
                     <LanguageSwitcher />
                 </div>

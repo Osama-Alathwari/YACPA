@@ -128,13 +128,27 @@
             "subject": "Subject",
             "message": "Message",
             "submit": "Send Message",
-            "required": "Required"
+            "subjects": {
+                "general": "General Inquiry",
+                "membership": "Membership & Subscriptions",
+                "events": "Events & Courses",
+                "complaints": "Complaints & Suggestions",
+                "other": "Other"
+            },
+            "success": {
+                "summary": "Message Sent Successfully",
+                "detail": "We will respond to your inquiry as soon as possible"
+            },
+            "error": {
+                "summary": "Form Error",
+                "detail": "Please fill in all required fields"
+            }
         },
         "info": {
             "title": "Contact Information",
             "address": {
                 "title": "Address",
-                "value": "Aden, Republic of Yemen, Crater opposite Four Youth"
+                "value": "Aden, Yemen, Crater opposite Four Youth"
             },
             "phone": {
                 "title": "Phone",
@@ -148,18 +162,82 @@
                 "title": "Working Hours",
                 "weekdays": "Sunday - Thursday: 8:00 AM - 2:00 PM",
                 "weekend": "Friday - Saturday: Closed"
+            },
+            "social": {
+                "title": "Follow Us On"
+            }
+        },
+        "map": {
+            "title": "Our Location",
+            "subtitle": "You can visit us at our headquarters or any of our branches",
+            "placeholder": "Map will be displayed here",
+            "integration": "This requires integration with a map service like Google Maps"
+        },
+        "branches": {
+            "title": "Our Branches",
+            "subtitle": "Visit the nearest branch to get our services",
+            "main": {
+                "name": "Headquarters - Aden",
+                "address": "Aden, Yemen, Crater opposite Four Youth",
+                "phone": "+967 777 777 777",
+                "hours": "Sunday - Thursday: 8:00 AM - 2:00 PM"
+            },
+            "sanaa": {
+                "name": "Sanaa Branch",
+                "address": "Sanaa, Zubairi Street, near Ministry of Finance",
+                "phone": "+967 777 888 777",
+                "hours": "Sunday - Thursday: 8:00 AM - 2:00 PM"
+            },
+            "mukalla": {
+                "name": "Mukalla Branch",
+                "address": "Mukalla, Hadramout, Riyadh Street, Al-Saeed Building",
+                "phone": "+967 777 999 777",
+                "hours": "Sunday - Thursday: 8:00 AM - 2:00 PM"
+            }
+        },
+        "faq": {
+            "title": "Frequently Asked Questions",
+            "subtitle": "Answers to common inquiries about membership and services",
+            "join": {
+                "question": "How can I join the association?",
+                "answer": "You can join the association by filling out the membership form on the 'Membership' page and submitting the required documents along with the registration and subscription fees."
+            },
+            "fees": {
+                "question": "What are the membership fees?",
+                "answer": "Membership fees consist of a one-time registration fee of XXX Riyals, in addition to an annual subscription of XXX Riyals. When joining for the first time, you pay the registration fee plus a two-year subscription."
+            },
+            "renewal": {
+                "question": "How can I renew my membership?",
+                "answer": "You can renew your membership by logging into your account on the website and going to the 'Renew Membership' page or by visiting the association's headquarters."
+            },
+            "documents": {
+                "question": "What documents are required for membership?",
+                "answer": "Required documents include: a personal photo, a copy of ID, a certified copy of academic qualification, a copy of professional license if available, and a copy of the approved signature and stamp."
+            },
+            "events": {
+                "question": "Can I attend association events without being a member?",
+                "answer": "Yes, some events are open to the public, while some training courses and events are exclusive to members or offered at discounted rates for them."
             }
         }
     },
     "auth": {
         "login": {
+            "welcome": "Welcome to the Accountants Association Subscription System",
             "title": "Login",
             "username": "Username",
+            "usernamePlaceholder": "Enter your username",
+            "usernameRequired": "Username is required",
             "password": "Password",
+            "passwordPlaceholder": "Enter your password",
+            "passwordRequired": "Password is required",
             "submit": "Login",
-            "forgotPassword": "Forgot Password?",
+            "rememberMe": "Remember me",
+            "forgotPassword": "Forgot password?",
             "noAccount": "Don't have an account?",
-            "register": "Register Now"
+            "register": "Register now",
+            "validation": "Please enter username and password",
+            "successMessage": "Login successful",
+            "genericError": "An error occurred during login. Please try again"
         }
     },
     "dashboard": {
