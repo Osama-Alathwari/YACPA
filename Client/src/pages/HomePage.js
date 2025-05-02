@@ -1,6 +1,5 @@
 // src/pages/HomePage.js
 import React from 'react';
-import { useLanguage } from '../contexts/LanguageContext';
 
 // Import all components from barrel export
 import {
@@ -14,10 +13,9 @@ import {
 } from '../components';
 
 const HomePage = () => {
-    const { dir } = useLanguage();
 
     return (
-        <div className="font-sans bg-gray-50 min-h-screen" dir={dir}>
+        <div className="font-sans bg-gray-50 min-h-screen" >
             {/* Header */}
             <MainHeader />
 
