@@ -242,6 +242,7 @@
     },
     "dashboard": {
         "welcome": "مرحباً بك في لوحة التحكم",
+        "overview": "لوحة التحكم",
         "members": {
             "title": "إدارة الأعضاء",
             "add": "إضافة عضو جديد",
@@ -258,7 +259,25 @@
             "title": "التقارير",
             "members": "تقرير الأعضاء",
             "payments": "تقرير المدفوعات",
-            "activities": "تقرير الأنشطة"
+            "activities": "تقرير الأنشطة",
+            "subscriptions": "تقرير الاشتراكات"
+        },
+        "payments": {
+            "title": "الدفعات",
+            "new": "جديد",
+            "history": "سجل الدفعات"
+        },
+        "settings": {
+            "title": "الاعدادات",
+            "system": "اعدادات النظام",
+            "users": "اعدادات المستخدمين",
+            "permissions": "اعدادات الصلاحيات"
+        },
+        "notifications": {
+            "viewAll": "عرض الكل",
+            "subscription": "",
+            "newMember": "",
+            "payment": ""
         }
     },
     "common": {

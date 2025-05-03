@@ -5,16 +5,20 @@ import ReactDOM from 'react-dom/client';
 // Import CSS in the correct order
 import './index.css';
 
+// PrimeReact styles
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
+
+// App component
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { LanguageProvider } from './contexts/LanguageContext';
 
+// Create root and render app
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <LanguageProvider>
-      <App />
-    </LanguageProvider>
+    <App />
   </React.StrictMode>
 );
 

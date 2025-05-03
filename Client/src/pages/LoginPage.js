@@ -12,6 +12,7 @@ const LoginPage = () => {
     const { t, i18n } = useTranslation();
     const isRtl = i18n.language === 'ar';
 
+
     useEffect(() => {
         // Set document direction based on language
         document.body.dir = isRtl ? 'rtl' : 'ltr';
@@ -23,7 +24,6 @@ const LoginPage = () => {
             document.body.classList.remove('overflow-hidden');
         };
     }, [isRtl]);
-
     return (
         <div className="min-h-screen flex items-center justify-center p-4 relative">
             {/* Animated Background */}

@@ -5,13 +5,14 @@ import HomePage from '../pages/HomePage';
 import ContactUsPage from '../pages/ContactusPage';
 import AboutUsPage from '../pages/AboutUsPage';
 import LoginPage from '../pages/LoginPage';
+import DashboardLayout from '../components/dashboard/DashboardLayout';
 
 
 const AppRoutes = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<DashboardLayout />} />
                 <Route path="/contact" element={<ContactUsPage />} />
                 <Route path="/about" element={<AboutUsPage />} />
                 <Route path="/login" element={<LoginPage />} />

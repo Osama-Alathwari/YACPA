@@ -1,0 +1,300 @@
+/* src/styles/dashboard.css */
+
+/* Sidebar styling */
+.sidebar-menu .p-panelmenu .p-panelmenu-header>a {
+    border: none;
+    background-color: transparent;
+    color: #4b5563;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s;
+}
+
+.sidebar-menu .p-panelmenu .p-panelmenu-header:not(.p-disabled)>a:hover {
+    background-color: #f3f4f6;
+    color: #1d4ed8;
+}
+
+.sidebar-menu .p-panelmenu .p-panelmenu-header.p-highlight>a {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-left: 3px solid #1d4ed8;
+}
+
+.sidebar-menu .p-panelmenu .p-panelmenu-content {
+    border: none;
+    background-color: transparent;
+}
+
+.sidebar-menu .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
+    padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+    color: #6b7280;
+}
+
+.sidebar-menu .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:hover {
+    background-color: #f3f4f6;
+    color: #1d4ed8;
+}
+
+.sidebar-menu .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link.p-menuitem-link-active {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+}
+
+.sidebar-menu .active-menu-item {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+}
+
+.sidebar-menu .active-menu-parent>a {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border-left: 3px solid #1d4ed8 !important;
+}
+
+/* RTL fixes for sidebar */
+[dir="rtl"] .sidebar-menu .p-panelmenu .p-panelmenu-header.p-highlight>a {
+    border-left: none;
+    border-right: 3px solid #1d4ed8;
+}
+
+[dir="rtl"] .sidebar-menu .p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
+    padding: 0.5rem 2.5rem 0.5rem 0.5rem;
+}
+
+[dir="rtl"] .sidebar-menu .active-menu-parent>a {
+    border-left: none !important;
+    border-right: 3px solid #1d4ed8 !important;
+}
+
+/* Dashboard cards */
+.dashboard-stat-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom card headers */
+.card-header-custom {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* DataTable styling */
+.p-datatable .p-datatable-thead>tr>th {
+    background-color: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+}
+
+.p-datatable .p-datatable-tbody>tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.p-datatable .p-datatable-tbody>tr:hover {
+    background-color: #eff6ff;
+}
+
+.p-datatable .p-column-filter {
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar-visible {
+        width: 100%;
+        position: fixed;
+        z-index: 1000;
+    }
+
+    .main-content-shifted {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* Form styling */
+.p-field label {
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 500;
+    color: #374151;
+}
+
+.p-field small {
+    margin-top: 0.25rem;
+    display: block;
+    font-size: 0.75rem;
+}
+
+/* Custom vertical tabs */
+.vertical-tabs .p-tabview-nav {
+    flex-direction: column;
+    width: 200px;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: none;
+}
+
+.vertical-tabs .p-tabview-panels {
+    flex: 1;
+    padding-left: 1.5rem;
+}
+
+.vertical-tabs .p-tabview-nav li {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+    width: 100%;
+}
+
+.vertical-tabs .p-tabview-nav li a {
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.25rem;
+    transition: all 0.3s;
+}
+
+.vertical-tabs .p-tabview-nav li a:hover {
+    background-color: #f3f4f6;
+}
+
+.vertical-tabs .p-tabview-nav li.p-highlight a {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-right: 3px solid #1d4ed8;
+    border-bottom: none;
+}
+
+/* RTL fixes for vertical tabs */
+[dir="rtl"] .vertical-tabs .p-tabview-nav {
+    border-right: none;
+    border-left: 1px solid #e5e7eb;
+}
+
+[dir="rtl"] .vertical-tabs .p-tabview-panels {
+    padding-left: 0;
+    padding-right: 1.5rem;
+}
+
+[dir="rtl"] .vertical-tabs .p-tabview-nav li.p-highlight a {
+    border-right: none;
+    border-left: 3px solid #1d4ed8;
+}
+
+/* Stats cards */
+.stat-card {
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 5rem;
+    opacity: 0.1;
+    transform: translate(20%, -20%);
+}
+
+[dir="rtl"] .stat-card-icon {
+    right: auto;
+    left: 0;
+    transform: translate(-20%, -20%);
+}
+
+/* Membership card */
+.membership-card {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+/* Custom notifications menu */
+.notifications-menu .p-menu {
+    width: 350px;
+    padding: 0;
+}
+
+.notifications-menu .p-menu .p-menuitem {
+    padding: 0;
+}
+
+.notifications-menu .p-menu .p-menuitem-link {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+}
+
+[dir="rtl"] .notification-icon {
+    margin-right: 0;
+    margin-left: 0.75rem;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* File upload button style */
+.p-fileupload-choose {
+    width: 100%;
+}
