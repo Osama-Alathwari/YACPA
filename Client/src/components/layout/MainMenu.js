@@ -13,12 +13,12 @@ const MainMenu = () => {
         {
             label: t('navigation.home'),
             icon: 'pi pi-fw pi-home',
-            command: () => navigate('/')
+            command: () => navigate('/') // Use navigate function from useNavigate
         },
         {
             label: t('navigation.about'),
             icon: 'pi pi-fw pi-users',
-            command: () => navigate('/about')
+            command: () => navigate('/about') // Use navigate function from useNavigate
         },
         {
             label: t('navigation.membership'),

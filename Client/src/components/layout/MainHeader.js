@@ -1,13 +1,15 @@
-// src/components/layout/Header.js
+// src/components/layout/MainHeader.js
 import React from 'react';
 import { Button } from 'primereact/button';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import MainMenu from './MainMenu';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 import logoPlaceholder from '../../assets/logo-placeholder.png';
 
 const MainHeader = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     return (
         <header className="bg-white shadow-md sticky top-0 left-0 right-0 z-50">
@@ -21,7 +23,7 @@ const MainHeader = () => {
                         label={t('navigation.login')}
                         icon="pi pi-sign-in"
                         className="p-button-outlined p-button-sm"
-                        onClick={() => window.location.href = '/login'}
+                        onClick={() => navigate('/login')}
                         aria-label={t('navigation.login')}
                     />
                     <LanguageSwitcher />
@@ -36,4 +38,4 @@ const MainHeader = () => {
     );
 };
 
-export default MainHeader;  
+export default MainHeader;

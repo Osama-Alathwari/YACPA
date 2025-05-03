@@ -11,13 +11,15 @@ import './i18n';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 
-// Import routes
-import DashboardRoutes from './routes/DashboardRoutes';
-import PublicRoutes from './routes/PublicRoutes';
-
-// Import auth components
+// Import pages
+import HomePage from './pages/HomePage';
+import AboutUsPage from './pages/AboutUsPage';
+import ContactUsPage from './pages/ContactusPage';
 import LoginPage from './pages/LoginPage';
 import LogoutPage from './pages/LogoutPage';
+
+// Import dashboard routes
+import DashboardRoutes from './routes/DashboardRoutes';
 
 // Import styles
 import './App.css';
@@ -77,7 +79,12 @@ function App() {
               <Toast ref={toast} position="top-right" />
               <Routes>
                 {/* Public routes */}
-                <Route path="/" element={<PublicRoutes />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutUsPage />} />
+                <Route path="/contact" element={<ContactUsPage />} />
+                <Route path="/membership" element={<HomePage />} /> {/* Replace with actual MembershipPage when available */}
+                <Route path="/events" element={<HomePage />} /> {/* Replace with actual EventsPage when available */}
+                <Route path="/resources" element={<HomePage />} /> {/* Replace with actual ResourcesPage when available */}
 
                 {/* Auth routes */}
                 <Route path="/login" element={<LoginPage />} />
