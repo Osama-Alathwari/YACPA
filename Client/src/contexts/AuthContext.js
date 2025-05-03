@@ -46,8 +46,8 @@ export const AuthProvider = ({ children }) => {
             // Simulating API call with timeout
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // Validate credentials (mock)
-            if (username === 'admin' && password === '123456') {
+            // Mock credentials for testing until backend is ready
+            if (username === 'admin' && password === '1') {
                 // Mock successful login
                 const mockToken = 'mock-jwt-token-' + Math.random().toString(36).substr(2);
 

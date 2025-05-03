@@ -1,4 +1,4 @@
-// src/components/auth/LoginForm.js
+// src/components/auth/LoginForm.js - update login functionality
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InputText } from 'primereact/inputtext';
@@ -8,10 +8,14 @@ import { Checkbox } from 'primereact/checkbox';
 import { classNames } from 'primereact/utils';
 import { Toast } from 'primereact/toast';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const { t } = useTranslation();
     const { isRtl } = useLanguage();
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const toast = useRef(null);
 
     const [formData, setFormData] = useState({
@@ -41,7 +45,7 @@ const LoginForm = () => {
         setSubmitted(true);
 
         if (!validateForm()) {
-            toast.current.show({
+            toast.current?.show({
                 severity: 'error',
                 summary: t('common.error'),
                 detail: t('auth.login.validation'),
@@ -50,27 +54,35 @@ const LoginForm = () => {
             return;
         }
 
-        // Simulate API call
         try {
             setLoading(true);
-            // Mock API call delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // For demo, just show success message
-            toast.current.show({
-                severity: 'success',
-                summary: t('common.success'),
-                detail: t('auth.login.successMessage'),
-                life: 3000
-            });
+            // Call the login function from auth context
+            const result = await login(formData.username, formData.password);
 
-            // Here you would typically:
-            // 1. Store auth token in secure storage
-            // 2. Update auth context
-            // 3. Redirect to dashboard
+            if (result.success) {
+                toast.current?.show({
+                    severity: 'success',
+                    summary: t('common.success'),
+                    detail: t('auth.login.successMessage'),
+                    life: 3000
+                });
 
+                // Navigate to dashboard after successful login
+                // Small timeout to allow the success message to be displayed
+                setTimeout(() => {
+                    navigate('/dashboard');
+                }, 1500);
+            } else {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: t('common.error'),
+                    detail: result.error || t('auth.login.genericError'),
+                    life: 3000
+                });
+            }
         } catch (error) {
-            toast.current.show({
+            toast.current?.show({
                 severity: 'error',
                 summary: t('common.error'),
                 detail: error.message || t('auth.login.genericError'),
@@ -81,11 +93,14 @@ const LoginForm = () => {
         }
     };
 
+    // rest of the component remains the same...
+
     return (
         <div>
             <Toast ref={toast} position="top-center" />
 
             <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Form fields remain the same */}
                 <div className="p-field mb-4">
                     <label htmlFor="username" className="block text-right font-medium text-gray-700 mb-2">
                         {t('auth.login.username')}
@@ -127,7 +142,6 @@ const LoginForm = () => {
                             inputClassName="w-full"
                             inputProps={{
                                 className: 'w-full',
-                                // Add an icon template to match the design
                                 prefix: <i className="pi pi-lock custom-password-icon" />
                             }}
                         />

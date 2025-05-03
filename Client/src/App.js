@@ -82,9 +82,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutUsPage />} />
                 <Route path="/contact" element={<ContactUsPage />} />
-                <Route path="/membership" element={<HomePage />} /> {/* Replace with actual MembershipPage when available */}
-                <Route path="/events" element={<HomePage />} /> {/* Replace with actual EventsPage when available */}
-                <Route path="/resources" element={<HomePage />} /> {/* Replace with actual ResourcesPage when available */}
+                {/* ... other public routes ... */}
 
                 {/* Auth routes */}
                 <Route path="/login" element={<LoginPage />} />

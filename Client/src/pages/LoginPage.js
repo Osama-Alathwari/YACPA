@@ -1,8 +1,10 @@
-// src/pages/LoginPage.js
+// src/pages/LoginPage.js - Add redirection if already logged in
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from 'primereact/card';
 import { Ripple } from 'primereact/ripple';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import LoginForm from '../components/auth/LoginForm';
 import LanguageSwitcher from '../components/common/LanguageSwitcher';
 import AnimatedLoginBackground from '../components/auth/AnimatedLoginBackground';
@@ -10,10 +12,16 @@ import logoPlaceholder from '../assets/logo-placeholder.png';
 
 const LoginPage = () => {
     const { t, i18n } = useTranslation();
+    const { isAuthenticated, isLoading } = useAuth();
+    const navigate = useNavigate();
     const isRtl = i18n.language === 'ar';
 
-
     useEffect(() => {
+        // Redirect to dashboard if already logged in
+        if (isAuthenticated && !isLoading) {
+            navigate('/dashboard');
+        }
+
         // Set document direction based on language
         document.body.dir = isRtl ? 'rtl' : 'ltr';
 
@@ -23,14 +31,27 @@ const LoginPage = () => {
         return () => {
             document.body.classList.remove('overflow-hidden');
         };
-    }, [isRtl]);
+    }, [isRtl, isAuthenticated, isLoading, navigate]);
+
+    // Show loading when checking authentication
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <i className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-3"></i>
+                    <p>{t('common.loading')}</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4 relative">
-            {/* Animated Background */}
+            {/* Rest of your login page */}
             <AnimatedLoginBackground />
 
-            {/* Content */}
             <Card className="w-full max-w-md shadow-2xl relative z-10 backdrop-blur-sm bg-white/90">
+                {/* Card content */}
                 <div className="flex flex-col items-center mb-6 relative">
                     {/* Language Switcher */}
                     <div className="absolute top-0 right-0 p-ripple">
