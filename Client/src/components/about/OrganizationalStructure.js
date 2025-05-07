@@ -7,7 +7,7 @@ const OrganizationalStructure = () => {
     // Board members data
     const boardMembers = [
         {
-            name: 'د. أحمد الهاشمي',
+            name: 'د. عبدالله باجرش',
             position: 'رئيس مجلس الإدارة',
             bio: 'دكتوراه في المحاسبة، خبرة 25 عاماً في مجال المحاسبة والمراجعة، وأستاذ جامعي.',
             image: null // In production, replace with actual image path
@@ -19,13 +19,13 @@ const OrganizationalStructure = () => {
             image: null
         },
         {
-            name: 'أ. سمية الحبشي',
+            name: 'أ. أيمن عدنان',
             position: 'أمين الصندوق',
             bio: 'بكالوريوس محاسبة، زمالة المحاسبين البريطانية، خبرة 18 عاماً في المحاسبة والتدقيق.',
             image: null
         },
         {
-            name: 'أ. عبدالله سالم',
+            name: 'أ. أسامة الاثوري',
             position: 'المدير التنفيذي',
             bio: 'ماجستير إدارة أعمال، خبرة 12 عاماً في إدارة المؤسسات المهنية والتطوير المؤسسي.',
             image: null
