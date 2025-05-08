@@ -1,7 +1,7 @@
 {
     "app": {
-        "name": "Association of Certified Accountants",
-        "shortName": "Accountants Association"
+        "name": "Yemeni Association of Certified Public Accountants",
+        "shortName": "Association of Certified Accountants"
     },
     "navigation": {
         "home": "Home",
@@ -148,7 +148,7 @@
             "title": "Contact Information",
             "address": {
                 "title": "Address",
-                "value": "Aden, Yemen, Crater opposite Four Youth"
+                "value": "Republic of Yemen, Aden, Old Inma - Building 290 - Apartment 2 - Near Al-Khulafa Mosque"
             },
             "phone": {
                 "title": "Phone",
@@ -178,7 +178,7 @@
             "subtitle": "Visit the nearest branch to get our services",
             "main": {
                 "name": "Headquarters - Aden",
-                "address": "Aden, Yemen, Crater opposite Four Youth",
+                "address": "Republic of Yemen, Aden, Old Inma - Building 290 - Apartment 2 - Near Al-Khulafa Mosque",
                 "phone": "+967 777 777 777",
                 "hours": "Sunday - Thursday: 8:00 AM - 2:00 PM"
             },
@@ -242,6 +242,7 @@
     },
     "dashboard": {
         "welcome": "Welcome to the Dashboard",
+        "overview": "Dashboard",
         "members": {
             "title": "Member Management",
             "add": "Add New Member",
@@ -258,7 +259,25 @@
             "title": "Reports",
             "members": "Members Report",
             "payments": "Payments Report",
-            "activities": "Activities Report"
+            "activities": "Activities Report",
+            "subscriptions": "Subscriptions Report"
+        },
+        "payments": {
+            "title": "Payments",
+            "new": "New",
+            "history": "Payment History"
+        },
+        "settings": {
+            "title": "Settings",
+            "system": "System Settings",
+            "users": "User Settings",
+            "permissions": "Permission Settings"
+        },
+        "notifications": {
+            "viewAll": "View All",
+            "subscription": "",
+            "newMember": "",
+            "payment": ""
         }
     },
     "common": {
