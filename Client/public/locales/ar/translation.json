@@ -243,17 +243,37 @@
     "dashboard": {
         "welcome": "مرحباً بك في لوحة التحكم",
         "overview": "لوحة التحكم",
+        "toggleSidebar": "تبديل الشريط الجانبي",
         "members": {
             "title": "إدارة الأعضاء",
             "add": "إضافة عضو جديد",
             "view": "عرض الأعضاء",
-            "search": "بحث عن عضو"
+            "search": "بحث عن عضو",
+            "addDescription": "إضافة عضو جديد إلى الجمعية مع بياناته الشخصية والمهنية",
+            "addMember": "إضافة العضو",
+            "addSuccess": "تم بنجاح",
+            "memberAddedSuccessfully": "تم إضافة العضو بنجاح. سيتم إرسال بطاقة العضوية عبر البريد الإلكتروني.",
+            "addError": "حدث خطأ أثناء إضافة العضو. يرجى المحاولة مرة أخرى."
         },
         "subscriptions": {
             "title": "إدارة الاشتراكات",
             "renew": "تجديد اشتراك",
             "expiring": "اشتراكات موشكة على الانتهاء",
-            "expired": "اشتراكات منتهية"
+            "expiringDescription": "الاشتراكات التي سينتهي أجلها في الأيام القادمة",
+            "expired": "اشتراكات منتهية",
+            "selectWindow": "اختر المدة",
+            "expiring30Days": "30 يوم",
+            "expiring60Days": "60 يوم",
+            "expiring90Days": "90 يوم",
+            "expiring120Days": "120 يوم",
+            "expiring150Days": "150 يوم",
+            "expiring180Days": "180 يوم",
+            "expiring365Days": "365 يوم",
+            "renewMemberMessage": "يرجى تجديد الاشتراك للعضوية الخاصة بك قبل ان ينتهي أجلها",
+            "daysRemaining": "أيام متبقية",
+            "lastPayment": "آخر دفعة",
+            "sendReminders": "إرسال إشعارات",
+            "sendReminder": "إرسال إشعار"
         },
         "reports": {
             "title": "التقارير",
@@ -265,7 +285,9 @@
         "payments": {
             "title": "الدفعات",
             "new": "جديد",
-            "history": "سجل الدفعات"
+            "history": "سجل الدفعات",
+            "registration": "تسجيل",
+            "renewal": "تجديد"
         },
         "settings": {
             "title": "الاعدادات",
@@ -290,6 +312,7 @@
             "viewAll": "عرض الكل"
         },
         "notifications": {
+            "title": "الإشعارات",
             "viewAll": "عرض الكل",
             "subscription": "إشعار الاشتراك",
             "newMember": "إشعار عضو جديد",
@@ -299,6 +322,8 @@
     "common": {
         "save": "حفظ",
         "cancel": "إلغاء",
+        "close": "اغلاق",
+        "back": "رجوع",        
         "edit": "تعديل",
         "delete": "حذف",
         "view": "عرض",
@@ -328,7 +353,37 @@
         "status": "الحالة",
         "memberId": "رقم العضو",
         "amount": "المبلغ",
-        "type": "النوع"
+        "type": "النوع",
+        "step": "خطوة",
+        "of": "من",
+        "years": "سنوات",
+        "total": "المجموع",
+        "fillRequiredFields": "يرجى تعبئة جميع الحقول المطلوبة",
+        "changeFile": "تغيير الملف",
+        "chooseFile": "اختيار ملف",
+        "uploadedSuccessfully": "تم رفعه بنجاح",
+        "selectDate": "اختر التاريخ",
+        "importantNote": "ملاحظة مهمة",
+        "cash": "نقدي",
+        "bankTransfer": "تحويل بنكي",
+        "check": "شيك",
+        "notes": "ملاحظات",
+        "selectType": "اختر النوع",
+        "searchMembers": "بحث عن عضو",
+        "clearFilters": "تصفية الفلتر",
+        "totalRecords": "إجمالي السجلات",
+        "entries": "المدخلات",
+        "showing": "إظهار",
+        "to": "إلى",
+        "selectStatus": "اختر الحالة",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "pending": "قيد المعالجة",
+        "actions": "الإجراءات",
+        "noImageAvailable": "لا يوجد صورة",
+        "days": "أيام",
+        "viewMember": "عرض العضو"
+        
     },
     "footer": {
         "quickLinks": "روابط سريعة",
@@ -344,6 +399,7 @@
         "termsConditions": "الشروط والأحكام"
     },
     "member": {
+        "details": "التفاصيل",
         "personalInfo": {
             "title": "البيانات الشخصية",
             "fullName": "الاسم الثلاثي واللقب",
@@ -351,7 +407,21 @@
             "idNumber": "رقم الهوية",
             "idImage": "صورة الهوية",
             "profileImage": "الصورة الشخصية",
-            "qualification": "المؤهل العلمي"
+            "qualification": "المؤهل العلمي",
+            "fullNameArabic": "الاسم الثلاثي باللغة العربية",
+            "fullNameEnglish": "الاسم الثلاثي باللغة الإنجليزية",
+            "surname": "اللقب",
+            "surnamePlaceholder": "أدخل اللقب",
+            "idNumberPlaceholder": "أدخل رقم الهوية",
+            "uploadProfileImage": "رفع الصورة الشخصية",
+            "nationalId": "بطاقة شخصية",
+            "passport": "جواز سفر",
+            "residencyCard": "بطاقة إقامة",
+            "bachelor": "بكالوريوس",
+            "master": "ماجستير",
+            "doctorate": "دكتوراه",
+            "diploma": "دبلوم",
+            "national_id": "بطاقة شخصية"
         },
         "businessInfo": {
             "title": "بيانات العمل",
@@ -360,7 +430,13 @@
             "headOfficeAddress": "عنوان المقر الرئيسي",
             "localBranchAddress": "عنوان الفرع المحلي",
             "licenseNumber": "رقم التصريح",
-            "licenseIssueDate": "تاريخ إصدار التصريح"
+            "licenseIssueDate": "تاريخ إصدار التصريح",
+            "businessNamePlaceholder": "أدخل اسم المنشأة",
+            "licenseNumberPlaceholder": "أدخل رقم الترخيص",
+            "headOfficeAddressPlaceholder": "أدخل عنوان المقر الرئيسي",
+            "localBranchAddressPlaceholder": "أدخل عنوان الفرع المحلي",
+            "company": "شركة",
+            "individual": "أفراد"
         },
         "contactInfo": {
             "title": "بيانات الاتصال",
@@ -374,25 +450,52 @@
             "title": "المرفقات",
             "licenseImage": "صورة من الترخيص",
             "degreeImage": "صورة الشهادة الجامعية معتمدة طبق الأصل",
-            "signatureImage": "صورة من التوقيع والختم المعتمد"
+            "signatureImage": "صورة من التوقيع والختم المعتمد",
+            "uploadedFiles": "الملفات المرفوعة",
+            "license": "ترخيص",
+            "degree": "شهادة",
+            "signature": "توقيع"
         },
         "subscription": {
             "title": "بيانات الاشتراك",
             "startDate": "تاريخ بداية الاشتراك",
             "endDate": "تاريخ نهاية الاشتراك",
             "status": "حالة الاشتراك",
-            "renew": "تجديد الاشتراك"
+            "renew": "تجديد الاشتراك",
+            "history": "سجل الاشتراكات",
+            "currentEndDate": "الاشتراك الحالي ينتهي في",
+            "newEndDate": "الاشتراك الجديد ينتهي في"
         },
         "payment": {
             "title": "بيانات الدفع",
+            "id": "الرقم",
             "paymentType": "طريقة الدفع",
             "receiptNumber": "رقم الإيصال/الإشعار",
             "receiptDate": "تاريخ الإيصال/الإشعار",
             "amount": "المبلغ",
             "purpose": "الغرض من الدفع",
-            "attachment": "مرفق الدفع"
+            "attachment": "مرفق الدفع",
+            "feeBreakdown": "تفاصيل الرسوم",
+            "registrationFee": "رسوم التسجيل",
+            "subscriptionFee": "رسوم الاشتراك",
+            "paymentMethod": "طريقة الدفع",
+            "referenceNumber": "رقم المرجع",
+            "referenceDate": "تاريخ المرجع",
+            "receipt": "إيصال الدفع",
+            "notesPlaceholder": "ملاحظات إضافية حول الدفع",
+            "history": "سجل الدفعات",
+            "method": "الطريقة"
+        },
+        "summary": {
+            "title": "ملخص البيانات"
+        },
+        "notes": {
+            "initialPayment": "الدفع الأولي يشمل رسوم التسجيل واشتراك سنتين",
+            "documentVerification": "سيتم مراجعة المستندات المرفوعة قبل تفعيل العضوية",
+            "membershipCard": "ستصل بطاقة العضوية عبر البريد الإلكتروني خلال 3-5 أيام عمل"
         },
         "card": {
+            "id": "الرقم",
             "title": "بطاقة العضوية",
             "print": "طباعة البطاقة"
         }
