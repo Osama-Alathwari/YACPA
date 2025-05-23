@@ -273,11 +273,27 @@
             "users": "User Settings",
             "permissions": "Permission Settings"
         },
+        "charts": {
+            "membershipTrend": "Membership Trend",
+            "monthlyTarget": "Monthly Target"
+        },
+        "stats": {
+            "newMembers": "New Members",
+            "monthlyTarget": "Monthly Target",
+            "currentRevenue": "Current Revenue",
+            "revenueTarget": "Revenue Target",
+            "revenueBreakdown": "Revenue Breakdown"
+        },
+        "tables": {
+            "recentMembers": "Recent Members",
+            "recentPayments": "Recent Payments",
+            "viewAll": "View All"
+        },
         "notifications": {
             "viewAll": "View All",
-            "subscription": "",
-            "newMember": "",
-            "payment": ""
+            "subscription": "Subscription Notification",
+            "newMember": "New Member Notification",
+            "payment": "Payment Notification"
         }
     },
     "common": {
@@ -303,7 +319,16 @@
         "details": "Details",
         "moreInfo": "More Information",
         "goBack": "Go Back",
-        "print": "Print"
+        "print": "Print",
+        "viewDetails": "View Details",
+        "id": "ID",
+        "name": "Name",
+        "business": "Business",
+        "date": "Date",
+        "status": "Status",
+        "memberId": "Member ID",
+        "amount": "Amount",
+        "type": "Type"
     },
     "footer": {
         "quickLinks": "Quick Links",

@@ -273,11 +273,27 @@
             "users": "اعدادات المستخدمين",
             "permissions": "اعدادات الصلاحيات"
         },
+        "charts": {
+            "membershipTrend": "اتجاه العضوية",
+            "monthlyTarget": "الهدف الشهري"
+        },
+        "stats": {
+            "newMembers": "أعضاء جدد",
+            "monthlyTarget": "الهدف الشهري",
+            "currentRevenue": "الإيرادات الحالية",
+            "revenueTarget": "هدف الإيرادات",
+            "revenueBreakdown": "تفاصيل الإيرادات"
+        },
+        "tables": {
+            "recentMembers": "الأعضاء الجدد",
+            "recentPayments": "آخر المدفوعات",
+            "viewAll": "عرض الكل"
+        },
         "notifications": {
             "viewAll": "عرض الكل",
-            "subscription": "",
-            "newMember": "",
-            "payment": ""
+            "subscription": "إشعار الاشتراك",
+            "newMember": "إشعار عضو جديد",
+            "payment": "إشعار الدفع"
         }
     },
     "common": {
@@ -303,7 +319,16 @@
         "details": "التفاصيل",
         "moreInfo": "المزيد من المعلومات",
         "goBack": "العودة",
-        "print": "طباعة"
+        "print": "طباعة",
+        "viewDetails": "عرض التفاصيل",
+        "id": "الرقم",
+        "name": "الاسم",
+        "business": "المنشأة",
+        "date": "التاريخ",
+        "status": "الحالة",
+        "memberId": "رقم العضو",
+        "amount": "المبلغ",
+        "type": "النوع"
     },
     "footer": {
         "quickLinks": "روابط سريعة",

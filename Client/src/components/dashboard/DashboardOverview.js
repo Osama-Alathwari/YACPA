@@ -17,62 +17,70 @@ const DashboardOverview = () => {
     const stats = [
         {
             key: 'totalMembers',
-            title: t('dashboard.stats.totalMembers'),
+            title: 'إجمالي الأعضاء',
             value: 254,
             icon: 'pi pi-users',
             change: '+12',
-            period: t('dashboard.stats.thisMonth'),
+            period: 'هذا الشهر',
             color: 'blue'
         },
         {
             key: 'activeSubscriptions',
-            title: t('dashboard.stats.activeSubscriptions'),
+            title: 'الاشتراكات النشطة',
             value: 198,
             icon: 'pi pi-check-circle',
             change: '+5',
-            period: t('dashboard.stats.thisMonth'),
+            period: 'هذا الشهر',
             color: 'green'
         },
         {
             key: 'expiringSubscriptions',
-            title: t('dashboard.stats.expiringSubscriptions'),
+            title: 'اشتراكات منتهية قريباً',
             value: 28,
             icon: 'pi pi-calendar-times',
             change: '-3',
-            period: t('dashboard.stats.thisMonth'),
+            period: 'هذا الشهر',
             color: 'yellow'
         },
         {
             key: 'totalRevenue',
-            title: t('dashboard.stats.totalRevenue'),
+            title: 'إجمالي الإيرادات',
             value: '12,540',
             prefix: '$',
             icon: 'pi pi-money-bill',
             change: '+$2,180',
-            period: t('dashboard.stats.thisMonth'),
+            period: 'هذا الشهر',
             color: 'purple'
         }
     ];
 
     // Mock data for membership trend chart
     const membershipTrendData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو'],
         datasets: [
             {
-                label: t('dashboard.charts.newMembers'),
+                label: 'أعضاء جدد',
                 data: [12, 15, 18, 14, 20, 25, 22],
                 fill: false,
-                backgroundColor: '#4361ee',
-                borderColor: '#4361ee',
-                tension: 0.4
+                backgroundColor: '#3b82f6',
+                borderColor: '#3b82f6',
+                tension: 0.4,
+                pointBackgroundColor: '#3b82f6',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5
             },
             {
-                label: t('dashboard.charts.renewals'),
+                label: 'تجديدات',
                 data: [8, 10, 12, 16, 18, 12, 15],
                 fill: false,
-                backgroundColor: '#3a86ff',
-                borderColor: '#3a86ff',
-                tension: 0.4
+                backgroundColor: '#10b981',
+                borderColor: '#10b981',
+                tension: 0.4,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5
             }
         ]
     };
@@ -85,36 +93,98 @@ const DashboardOverview = () => {
             legend: {
                 position: 'bottom',
                 labels: {
-                    usePointStyle: true
+                    usePointStyle: true,
+                    padding: 20,
+                    font: {
+                        family: 'Cairo',
+                        size: 12
+                    }
                 }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                cornerRadius: 8,
+                displayColors: true
             }
         },
         scales: {
             y: {
                 beginAtZero: true,
                 grid: {
-                    display: true,
+                    color: '#f1f5f9',
                     drawBorder: false
+                },
+                ticks: {
+                    font: {
+                        family: 'Cairo',
+                        size: 11
+                    },
+                    color: '#64748b'
                 }
             },
             x: {
                 grid: {
                     display: false
+                },
+                ticks: {
+                    font: {
+                        family: 'Cairo',
+                        size: 11
+                    },
+                    color: '#64748b'
                 }
+            }
+        },
+        elements: {
+            line: {
+                borderWidth: 3
             }
         }
     };
 
     // Mock data for revenue distribution chart
     const revenueData = {
-        labels: [t('dashboard.charts.registrationFees'), t('dashboard.charts.renewalFees'), t('dashboard.charts.otherServices')],
+        labels: ['رسوم التسجيل', 'رسوم التجديد', 'خدمات أخرى'],
         datasets: [
             {
                 data: [40, 55, 5],
                 backgroundColor: ['#f72585', '#4cc9f0', '#4895ef'],
-                hoverBackgroundColor: ['#b5179e', '#3d9db3', '#3a75bb']
+                hoverBackgroundColor: ['#b5179e', '#3d9db3', '#3a75bb'],
+                borderWidth: 0,
+                hoverBorderWidth: 0
             }
         ]
+    };
+
+    const doughnutOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 15,
+                    font: {
+                        family: 'Cairo',
+                        size: 11
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                cornerRadius: 8,
+                callbacks: {
+                    label: function(context) {
+                        return context.label + ': ' + context.parsed + '%';
+                    }
+                }
+            }
+        }
     };
 
     // Mock data for recent members
@@ -138,38 +208,30 @@ const DashboardOverview = () => {
     // Template for status column
     const statusTemplate = (rowData) => {
         const statusMap = {
-            'active': { severity: 'success', label: t('common.active') },
-            'inactive': { severity: 'danger', label: t('common.inactive') },
-            'pending': { severity: 'warning', label: t('common.pending') }
+            'active': { severity: 'success', label: 'نشط' },
+            'inactive': { severity: 'danger', label: 'غير نشط' },
+            'pending': { severity: 'warning', label: 'في الانتظار' }
         };
 
         const status = statusMap[rowData.status];
-
-        return (
-            <Tag severity={status.severity} value={status.label} />
-        );
+        return <Tag severity={status.severity} value={status.label} />;
     };
 
     // Template for payment type column
     const paymentTypeTemplate = (rowData) => {
         const typeMap = {
-            'registration': { severity: 'info', label: t('dashboard.payments.registration') },
-            'renewal': { severity: 'success', label: t('dashboard.payments.renewal') },
-            'other': { severity: 'warning', label: t('dashboard.payments.other') }
+            'registration': { severity: 'info', label: 'تسجيل' },
+            'renewal': { severity: 'success', label: 'تجديد' },
+            'other': { severity: 'warning', label: 'أخرى' }
         };
 
         const type = typeMap[rowData.type];
-
-        return (
-            <Tag severity={type.severity} value={type.label} />
-        );
+        return <Tag severity={type.severity} value={type.label} />;
     };
 
     // Template for amount column
     const amountTemplate = (rowData) => {
-        return (
-            <span className="font-semibold">${rowData.amount}</span>
-        );
+        return <span className="font-semibold">${rowData.amount}</span>;
     };
 
     // Monthly target progress
@@ -233,8 +295,8 @@ const DashboardOverview = () => {
 
                         <div className="mt-6">
                             <h3 className="text-sm font-medium text-gray-700 mb-2">{t('dashboard.stats.revenueBreakdown')}</h3>
-                            <div className="h-40">
-                                <Chart type="doughnut" data={revenueData} options={{ maintainAspectRatio: false }} />
+                            <div className="h-80 relative">
+                                <Chart type="doughnut" data={revenueData} options={doughnutOptions} />
                             </div>
                         </div>
                     </Card>
