@@ -11,10 +11,11 @@ import DashboardOverview from '../components/dashboard/DashboardOverview';
 // Member components
 import MembersList from '../components/members/MembersList';
 import MemberDetails from '../components/members/MemberDetails';
-import AddMember from '../components/members/AddMember'; // ← New import
+import AddMember from '../components/members/AddMember';
 
 // Subscription components
 import ExpiringSubscriptions from '../components/subscriptions/ExpiringSubscriptions';
+import SubscriptionRenewal from '../components/subscriptions/SubscriptionRenewal'; // New import
 
 // Payment components
 
@@ -38,10 +39,10 @@ const DashboardRoutes = () => {
                 {/* Member routes */}
                 <Route path="members">
                     <Route index element={<Navigate to="view" />} />
-                    <Route path="add" element={<AddMember />} />        {/* ← New route */}
+                    <Route path="add" element={<AddMember />} />
                     <Route path="view" element={<MembersList />} />
                     <Route path="view/:id" element={<MemberDetails />} />
-                    <Route path="edit/:id" element={<AddMember />} />    {/* ← Can reuse for editing */}
+                    <Route path="edit/:id" element={<AddMember />} />
                     <Route path="search" element={<MembersList />} />
                 </Route>
 
@@ -49,8 +50,8 @@ const DashboardRoutes = () => {
                 <Route path="subscriptions">
                     <Route index element={<Navigate to="expiring" />} />
                     <Route path="expiring" element={<ExpiringSubscriptions />} />
-                    <Route path="renew" element={<div>Renewal Component</div>} />
-                    <Route path="renew/:id" element={<div>Member Renewal Component</div>} />
+                    <Route path="renew" element={<SubscriptionRenewal />} />           {/* Updated */}
+                    <Route path="renew/:id" element={<SubscriptionRenewal />} />       {/* Updated */}
                     <Route path="expired" element={<div>Expired Subscriptions Component</div>} />
                 </Route>
 

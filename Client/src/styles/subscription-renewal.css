@@ -1,0 +1,432 @@
+/* src/styles/subscription-renewal.css */
+
+/* Subscription Renewal Screen Specific Styles */
+
+.subscription-renewal-screen {
+    min-height: calc(100vh - 120px);
+    padding: 1rem;
+}
+
+/* Member search autocomplete styling */
+.subscription-renewal-screen .p-autocomplete {
+    width: 100%;
+}
+
+.subscription-renewal-screen .p-autocomplete-panel {
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+.subscription-renewal-screen .p-autocomplete-items {
+    padding: 0;
+}
+
+.subscription-renewal-screen .p-autocomplete-item {
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.subscription-renewal-screen .p-autocomplete-item:hover {
+    background: transparent;
+}
+
+/* Member item template styling */
+.member-search-item {
+    padding: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.member-search-item:hover {
+    background-color: #f8fafc;
+}
+
+.member-search-item:last-child {
+    border-bottom: none;
+}
+
+.member-search-item .member-avatar {
+    flex-shrink: 0;
+}
+
+.member-search-item .member-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.member-search-item .member-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+    line-height: 1.25;
+}
+
+.member-search-item .member-details {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.member-search-item .member-subscription {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Selected member panel styling */
+.selected-member-panel {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.selected-member-panel .member-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.selected-member-panel .member-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    font-size: 0.875rem;
+}
+
+.selected-member-panel .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-member-panel .detail-label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.selected-member-panel .detail-value {
+    color: #1f2937;
+}
+
+.selected-member-panel .subscription-end {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+/* Summary panel styling */
+.renewal-summary-panel {
+    position: sticky;
+    top: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+}
+
+.renewal-summary-panel .summary-header {
+    padding: 1.5rem 1.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    margin-bottom: 1rem;
+}
+
+.renewal-summary-panel .summary-content {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.renewal-summary-panel .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.renewal-summary-panel .summary-label {
+    color: #6b7280;
+}
+
+.renewal-summary-panel .summary-value {
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.renewal-summary-panel .summary-total {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #2563eb;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.renewal-summary-panel .payment-info {
+    background: #dbeafe;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-top: 1rem;
+}
+
+.renewal-summary-panel .payment-info .payment-title {
+    font-weight: 600;
+    color: #1e40af;
+    margin-bottom: 0.25rem;
+}
+
+.renewal-summary-panel .payment-info .payment-detail {
+    color: #1d4ed8;
+    font-size: 0.875rem;
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state .empty-message {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Confirmation dialog styling */
+.confirmation-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.confirmation-dialog {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-width: 28rem;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.confirmation-dialog .dialog-header {
+    padding: 1.5rem 1.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.confirmation-dialog .dialog-content {
+    padding: 1rem 1.5rem;
+}
+
+.confirmation-dialog .dialog-footer {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.confirmation-dialog .confirmation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.confirmation-dialog .confirmation-total {
+    font-weight: 700;
+    color: #059669;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* File upload styling */
+.renewal-file-upload {
+    border: 2px dashed #d1d5db;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    transition: border-color 0.2s ease;
+}
+
+.renewal-file-upload:hover {
+    border-color: #3b82f6;
+}
+
+.renewal-file-upload.has-file {
+    border-color: #10b981;
+    background-color: #f0fdf4;
+}
+
+.renewal-file-upload .upload-icon {
+    font-size: 2rem;
+    color: #9ca3af;
+    margin-bottom: 0.5rem;
+}
+
+.renewal-file-upload .upload-text {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.renewal-file-upload .file-info {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* RTL specific adjustments */
+[dir="rtl"] .subscription-renewal-screen .member-search-item .member-avatar {
+    margin-left: 1rem;
+    margin-right: 0;
+}
+
+[dir="rtl"] .subscription-renewal-screen .selected-member-panel .member-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .subscription-renewal-screen .confirmation-dialog .dialog-footer {
+    justify-content: flex-start;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .subscription-renewal-screen {
+        padding: 0.5rem;
+    }
+    
+    .selected-member-panel .member-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .selected-member-panel .member-details-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .renewal-summary-panel {
+        position: static;
+        margin-top: 1rem;
+    }
+    
+    .confirmation-dialog {
+        margin: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+}
+
+@media (max-width: 640px) {
+    .subscription-renewal-screen .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .member-search-item .member-subscription {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+}
+
+/* Loading states */
+.renewal-loading {
+    position: relative;
+}
+
+.renewal-loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+}
+
+/* Success states */
+.renewal-success {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+/* Error states */
+.renewal-error {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+/* Animation for smooth transitions */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Focus improvements for accessibility */
+.subscription-renewal-screen .p-autocomplete:focus-within {
+    box-shadow: 0 0 0 2px #3b82f6;
+    border-radius: 0.375rem;
+}
+
+.subscription-renewal-screen .p-button:focus {
+    box-shadow: 0 0 0 2px #3b82f6;
+}
+
+/* Print styles */
+@media print {
+    .subscription-renewal-screen .confirmation-dialog {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+    
+    .subscription-renewal-screen .dialog-footer {
+        display: none;
+    }
+}

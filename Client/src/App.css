@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import subscription renewal styles */
+@import url('./styles/subscription-renewal.css');
+
 .App {
   text-align: center;
 }

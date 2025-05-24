@@ -273,7 +273,10 @@
             "daysRemaining": "أيام متبقية",
             "lastPayment": "آخر دفعة",
             "sendReminders": "إرسال إشعارات",
-            "sendReminder": "إرسال إشعار"
+            "sendReminder": "إرسال إشعار",
+            "memberSelected": "العضو المختار",
+            "renewalSuccess": "تم تجديد الاشتراك بنجاح",
+            "renewalError": "حدث خطأ أثناء تجديد الاشتراك. يرجى المحاولة مرة أخرى."
         },
         "reports": {
             "title": "التقارير",
@@ -382,7 +385,8 @@
         "actions": "الإجراءات",
         "noImageAvailable": "لا يوجد صورة",
         "days": "أيام",
-        "viewMember": "عرض العضو"
+        "viewMember": "عرض العضو",
+        "year": "سنه"
         
     },
     "footer": {
