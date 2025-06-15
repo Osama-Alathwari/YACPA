@@ -15,7 +15,8 @@ import AddMember from '../components/members/AddMember';
 
 // Subscription components
 import ExpiringSubscriptions from '../components/subscriptions/ExpiringSubscriptions';
-import SubscriptionRenewal from '../components/subscriptions/SubscriptionRenewal'; // New import
+import ExpiredSubscriptions from '../components/subscriptions/ExpiredSubscriptions';
+import SubscriptionRenewal from '../components/subscriptions/SubscriptionRenewal';
 
 // Payment components
 
@@ -50,9 +51,9 @@ const DashboardRoutes = () => {
                 <Route path="subscriptions">
                     <Route index element={<Navigate to="expiring" />} />
                     <Route path="expiring" element={<ExpiringSubscriptions />} />
-                    <Route path="renew" element={<SubscriptionRenewal />} />           {/* Updated */}
-                    <Route path="renew/:id" element={<SubscriptionRenewal />} />       {/* Updated */}
-                    <Route path="expired" element={<div>Expired Subscriptions Component</div>} />
+                    <Route path="expired" element={<ExpiredSubscriptions />} />
+                    <Route path="renew" element={<SubscriptionRenewal />} />
+                    <Route path="renew/:id" element={<SubscriptionRenewal />} />
                 </Route>
 
                 {/* Payment routes */}

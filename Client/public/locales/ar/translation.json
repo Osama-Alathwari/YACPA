@@ -276,7 +276,25 @@
             "sendReminder": "إرسال إشعار",
             "memberSelected": "العضو المختار",
             "renewalSuccess": "تم تجديد الاشتراك بنجاح",
-            "renewalError": "حدث خطأ أثناء تجديد الاشتراك. يرجى المحاولة مرة أخرى."
+            "renewalError": "حدث خطأ أثناء تجديد الاشتراك. يرجى المحاولة مرة أخرى.",
+            "expiredDescription": "الأعضاء الذين انتهت اشتراكاتهم ويحتاجون إلى تجديد",
+            "noExpiredSubscriptions": "لا توجد اشتراكات منتهية",
+            "expiredDays": "أيام الانتهاء",
+            "totalOwed": "إجمالي المستحق",
+            "amountOwed": "المبلغ المستحق",
+            "expired1Month": "منتهية منذ شهر",
+            "expired3Months": "منتهية منذ 3 أشهر", 
+            "expired6Months": "منتهية منذ 6 أشهر",
+            "expired1Year": "منتهية منذ سنة",
+            "expiredOver1Year": "منتهية أكثر من سنة",
+            "selectPeriod": "اختر المدة",
+            "sendBulkNotifications": "إرسال إشعارات جماعية",
+            "sendNotification": "إرسال إشعار",
+            "contactRequired": "يتطلب تواصل مباشر",
+            "gracePeriodEnded": "انتهت فترة السماح",
+            "notificationsSent": "الإشعارات المرسلة",
+            "renewalEligible": "مؤهل للتجديد",
+            "renewalBlocked": "مرفوض التجديد"
         },
         "reports": {
             "title": "التقارير",
@@ -386,7 +404,8 @@
         "noImageAvailable": "لا يوجد صورة",
         "days": "أيام",
         "viewMember": "عرض العضو",
-        "year": "سنه"
+        "year": "سنه",
+        "export": "تصدير"
         
     },
     "footer": {
@@ -404,6 +423,13 @@
     },
     "member": {
         "details": "التفاصيل",
+        "info": "معلومات العضو",
+        "status": {
+            "suspended": "موقوف",
+            "active": "نشط",
+            "inactive": "غير نشط",
+            "pending": "قيد المعالجة"
+        },
         "personalInfo": {
             "title": "البيانات الشخصية",
             "fullName": "الاسم الثلاثي واللقب",

@@ -1,0 +1,511 @@
+/* src/styles/expired-subscriptions.css */
+
+/* Expired Subscriptions Page Specific Styles */
+
+.expired-subscriptions-page {
+    min-height: calc(100vh - 120px);
+    padding: 1rem;
+}
+
+/* Statistics Cards Styling */
+.expired-stats-card {
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.expired-stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.expired-stats-card .stat-icon {
+    transition: transform 0.3s ease;
+}
+
+.expired-stats-card:hover .stat-icon {
+    transform: scale(1.1);
+}
+
+/* Urgency-based styling for expired days */
+.expired-days-critical {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border: 1px solid #f87171;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.expired-days-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1px solid #f59e0b;
+    color: #d97706;
+    font-weight: 600;
+}
+
+.expired-days-moderate {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid #3b82f6;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+/* Member info template styling */
+.member-info-card {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.member-info-card:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.member-info-card .member-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.member-info-card .member-id {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-family: 'Courier New', monospace;
+}
+
+.member-info-card .member-business {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+}
+
+/* Amount owed styling with urgency indicators */
+.amount-owed-display {
+    text-align: right;
+    position: relative;
+}
+
+.amount-owed-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.amount-owed-high {
+    color: #dc2626;
+}
+
+.amount-owed-medium {
+    color: #d97706;
+}
+
+.amount-owed-low {
+    color: #059669;
+}
+
+.amount-owed-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.125rem;
+}
+
+/* Notification badge styling */
+.notification-count-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc2626;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Action buttons enhancements */
+.expired-action-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.expired-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.expired-action-btn.renew-available {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.expired-action-btn.contact-required {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.expired-action-btn.send-notification {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+/* Bulk actions toolbar */
+.bulk-actions-toolbar {
+    background: linear-gradient(135deg, #1e40af, #1d4ed8);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: white;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+.bulk-actions-toolbar.show {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bulk-actions-toolbar .selection-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bulk-actions-toolbar .selection-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+.bulk-actions-toolbar .bulk-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.bulk-actions-toolbar .p-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.bulk-actions-toolbar .p-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Details dialog enhancements */
+.member-details-dialog .p-dialog-header {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.member-details-dialog .p-dialog-content {
+    padding: 1.5rem;
+}
+
+.member-details-dialog .detail-panel {
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.member-details-dialog .detail-panel .p-panel-header {
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+    color: #374151;
+}
+
+.member-details-dialog .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.member-details-dialog .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.member-details-dialog .detail-item:last-child {
+    border-bottom: none;
+}
+
+.member-details-dialog .detail-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.member-details-dialog .detail-value {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* Grace period indicator */
+.grace-period-ended {
+    color: #dc2626;
+    font-weight: 600;
+    background: #fee2e2;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #fecaca;
+}
+
+.grace-period-active {
+    color: #059669;
+    font-weight: 600;
+    background: #d1fae5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #a7f3d0;
+}
+
+/* Renewal eligibility indicators */
+.renewal-eligible {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #10b981;
+    font-weight: 500;
+}
+
+.renewal-blocked {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ef4444;
+    font-weight: 500;
+}
+
+/* Export and print styles */
+.export-options {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.export-btn:hover {
+    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    transform: translateY(-1px);
+}
+
+/* Data table row styling based on urgency */
+.p-datatable .p-datatable-tbody > tr.expired-critical {
+    background-color: #fef2f2 !important;
+    border-left: 4px solid #dc2626;
+}
+
+.p-datatable .p-datatable-tbody > tr.expired-critical:hover {
+    background-color: #fee2e2 !important;
+}
+
+.p-datatable .p-datatable-tbody > tr.expired-warning {
+    background-color: #fffbeb !important;
+    border-left: 4px solid #d97706;
+}
+
+.p-datatable .p-datatable-tbody > tr.expired-warning:hover {
+    background-color: #fef3c7 !important;
+}
+
+.p-datatable .p-datatable-tbody > tr.expired-moderate {
+    background-color: #f0f9ff !important;
+    border-left: 4px solid #3b82f6;
+}
+
+.p-datatable .p-datatable-tbody > tr.expired-moderate:hover {
+    background-color: #e0f2fe !important;
+}
+
+/* Loading states */
+.expired-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.expired-loading-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-red {
+    0%, 100% {
+        background-color: #fee2e2;
+    }
+    50% {
+        background-color: #fecaca;
+    }
+}
+
+.pulse-urgent {
+    animation: pulse-red 2s ease-in-out infinite;
+}
+
+/* RTL specific adjustments */
+[dir="rtl"] .expired-subscriptions-page .member-info-card {
+    text-align: right;
+}
+
+[dir="rtl"] .expired-subscriptions-page .amount-owed-display {
+    text-align: left;
+}
+
+[dir="rtl"] .notification-count-badge {
+    right: auto;
+    left: -5px;
+}
+
+[dir="rtl"] .p-datatable .p-datatable-tbody > tr.expired-critical,
+[dir="rtl"] .p-datatable .p-datatable-tbody > tr.expired-warning,
+[dir="rtl"] .p-datatable .p-datatable-tbody > tr.expired-moderate {
+    border-left: none;
+    border-right: 4px solid;
+}
+
+[dir="rtl"] .expired-subscriptions-page .bulk-actions-toolbar .selection-info {
+    flex-direction: row-reverse;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .expired-subscriptions-page {
+        padding: 0.5rem;
+    }
+    
+    .expired-stats-card {
+        margin-bottom: 1rem;
+    }
+    
+    .member-info-card {
+        padding: 0.5rem;
+    }
+    
+    .member-details-dialog .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .bulk-actions-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+    
+    .bulk-actions-toolbar .selection-info {
+        justify-content: center;
+    }
+    
+    .bulk-actions-toolbar .bulk-actions {
+        justify-content: center;
+    }
+    
+    .export-options {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .expired-subscriptions-page .p-datatable .p-datatable-thead > tr > th,
+    .expired-subscriptions-page .p-datatable .p-datatable-tbody > tr > td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+    }
+    
+    .expired-action-btn {
+        padding: 0.375rem;
+    }
+    
+    .member-info-card .member-name {
+        font-size: 0.9rem;
+    }
+    
+    .member-info-card .member-id,
+    .member-info-card .member-business {
+        font-size: 0.8rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .expired-subscriptions-page .bulk-actions-toolbar,
+    .expired-subscriptions-page .p-paginator,
+    .expired-subscriptions-page .p-column-filter,
+    .expired-subscriptions-page .expired-action-btn {
+        display: none !important;
+    }
+    
+    .expired-subscriptions-page .p-datatable {
+        border: 1px solid #000;
+    }
+    
+    .expired-subscriptions-page .p-datatable .p-datatable-thead > tr > th {
+        background: #f5f5f5 !important;
+        color: #000 !important;
+        border: 1px solid #000;
+    }
+    
+    .expired-subscriptions-page .p-datatable .p-datatable-tbody > tr > td {
+        border: 1px solid #000;
+    }
+    
+    .expired-stats-card {
+        border: 1px solid #000;
+        margin-bottom: 1rem;
+        break-inside: avoid;
+    }
+}

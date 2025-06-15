@@ -4,6 +4,7 @@
 
 /* Import subscription renewal styles */
 @import url('./styles/subscription-renewal.css');
+@import url('./styles/expired-subscriptions.css');
 
 .App {
   text-align: center;
