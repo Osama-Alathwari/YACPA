@@ -77,26 +77,26 @@ const Sidebar = () => {
                 }
             ]
         },
-        {
-            label: t('dashboard.payments.title'),
-            icon: 'pi pi-wallet',
-            expanded: isActive('/dashboard/payments'),
-            className: isActive('/dashboard/payments') ? 'active-menu-parent' : '',
-            items: [
-                {
-                    label: t('dashboard.payments.new'),
-                    icon: 'pi pi-plus',
-                    command: () => window.location.href = '/dashboard/payments/new',
-                    className: isActive('/dashboard/payments/new') ? 'active-menu-item' : '',
-                },
-                {
-                    label: t('dashboard.payments.history'),
-                    icon: 'pi pi-history',
-                    command: () => window.location.href = '/dashboard/payments/history',
-                    className: isActive('/dashboard/payments/history') ? 'active-menu-item' : '',
-                }
-            ]
-        },
+        // {
+        //     label: t('dashboard.payments.title'),
+        //     icon: 'pi pi-wallet',
+        //     expanded: isActive('/dashboard/payments'),
+        //     className: isActive('/dashboard/payments') ? 'active-menu-parent' : '',
+        //     items: [
+        //         {
+        //             label: t('dashboard.payments.new'),
+        //             icon: 'pi pi-plus',
+        //             command: () => window.location.href = '/dashboard/payments/new',
+        //             className: isActive('/dashboard/payments/new') ? 'active-menu-item' : '',
+        //         },
+        //         {
+        //             label: t('dashboard.payments.history'),
+        //             icon: 'pi pi-history',
+        //             command: () => window.location.href = '/dashboard/payments/history',
+        //             className: isActive('/dashboard/payments/history') ? 'active-menu-item' : '',
+        //         }
+        //     ]
+        // },
         {
             label: t('dashboard.reports.title'),
             icon: 'pi pi-chart-bar',

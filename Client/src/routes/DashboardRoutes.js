@@ -17,6 +17,7 @@ import AddMember from '../components/members/AddMember';
 import ExpiringSubscriptions from '../components/subscriptions/ExpiringSubscriptions';
 import ExpiredSubscriptions from '../components/subscriptions/ExpiredSubscriptions';
 import SubscriptionRenewal from '../components/subscriptions/SubscriptionRenewal';
+import NewPaymentComponent from '../components/payments/NewPayment';
 
 // Payment components
 
@@ -28,7 +29,7 @@ import SubscriptionRenewal from '../components/subscriptions/SubscriptionRenewal
 // import PermissionSettings from '../components/settings/PermissionSettings';
 
 // User profile
-// import UserProfile from '../components/profile/UserProfile';
+import UserProfile from '../components/profile/UserProfile';
 
 const DashboardRoutes = () => {
     return (
@@ -59,7 +60,7 @@ const DashboardRoutes = () => {
                 {/* Payment routes */}
                 <Route path="payments">
                     <Route index element={<Navigate to="history" />} />
-                    <Route path="new" element={<div>New Payment Component</div>} />
+                    <Route path="new" element={<NewPaymentComponent />} />
                     <Route path="history" element={<div>Payment History Component</div>} />
                 </Route>
 
@@ -80,7 +81,7 @@ const DashboardRoutes = () => {
                 </Route>
 
                 {/* Profile route */}
-                <Route path="profile" element={<div>User Profile Component</div>} />
+                <Route path="profile" element={<UserProfile />} />
             </Route>
         </Routes>
     );

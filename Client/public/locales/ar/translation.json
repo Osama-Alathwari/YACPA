@@ -529,5 +529,226 @@
             "title": "بطاقة العضوية",
             "print": "طباعة البطاقة"
         }
+    },
+    "userProfile": {
+        "title": "الملف الشخصي",
+        "subtitle": "إدارة معلوماتك الشخصية وإعدادات الحساب",
+        "editProfile": "تعديل الملف الشخصي",
+        "saveProfile": "حفظ التغييرات",
+        "cancelEdit": "إلغاء التعديل",
+        "profileStrength": "قوة الملف الشخصي",
+        
+        "tabs": {
+            "personalInfo": "المعلومات الشخصية",
+            "security": "الأمان والخصوصية",
+            "activity": "النشاط الحديث",
+            "preferences": "التفضيلات"
+        },
+        
+        "personalInfo": {
+            "basicInfo": "المعلومات الأساسية",
+            "workInfo": "معلومات العمل",
+            "additionalInfo": "معلومات إضافية",
+            "profilePicture": "الصورة الشخصية",
+            "uploadNewPhoto": "رفع صورة جديدة",
+            "maxFileSize": "الحد الأقصى: 1 ميجابايت، صيغ مقبولة: JPG, PNG",
+            
+            "firstName": "الاسم الأول",
+            "lastName": "اسم العائلة",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الهاتف",
+            "dateOfBirth": "تاريخ الميلاد",
+            "joinDate": "تاريخ الانضمام",
+            "department": "القسم",
+            "position": "المنصب",
+            "address": "العنوان",
+            "emergencyContact": "جهة الاتصال الطارئة",
+            "emergencyPhone": "هاتف الطوارئ",
+            "bio": "نبذة شخصية",
+            
+            "joinedOn": "انضم في",
+            "required": "مطلوب"
+        },
+        
+        "security": {
+            "changePassword": "تغيير كلمة المرور",
+            "securitySettings": "إعدادات الأمان",
+            "currentPassword": "كلمة المرور الحالية",
+            "newPassword": "كلمة المرور الجديدة",
+            "confirmPassword": "تأكيد كلمة المرور",
+            "changePasswordBtn": "تغيير كلمة المرور",
+            
+            "twoFactorAuth": "المصادقة الثنائية",
+            "twoFactorDesc": "حماية إضافية لحسابك",
+            "emailNotifications": "إشعارات البريد الإلكتروني",
+            "emailNotificationsDesc": "استلام إشعارات الأنشطة",
+            "smsNotifications": "إشعارات الرسائل النصية",
+            "smsNotificationsDesc": "استلام تنبيهات SMS",
+            "loginAlerts": "تنبيهات تسجيل الدخول",
+            "loginAlertsDesc": "إشعار عند تسجيل دخول جديد",
+            
+            "logoutAllDevices": "تسجيل خروج من جميع الأجهزة",
+            "deleteAccount": "حذف الحساب",
+            "deleteAccountWarning": "هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه.",
+            "deleteAccountTitle": "تأكيد حذف الحساب",
+            
+            "passwordStrength": {
+                "weak": "ضعيف",
+                "medium": "متوسط",
+                "strong": "قوي",
+                "enterPassword": "ادخل كلمة مرور"
+            }
+        },
+        
+        "activity": {
+            "recentActivity": "الأنشطة الحديثة",
+            "loginHistory": "تاريخ تسجيل الدخول",
+            "activityStats": "إحصائيات النشاط",
+            "viewAllActivities": "عرض جميع الأنشطة",
+            "noLoginHistory": "لا يوجد تاريخ تسجيل دخول",
+            
+            "actions": {
+                "memberUpdate": "تحديث ملف العضو",
+                "subscriptionRenewal": "تجديد اشتراك",
+                "memberCreate": "إضافة عضو جديد",
+                "login": "تسجيل دخول",
+                "export": "تصدير تقرير"
+            },
+            
+            "loginStatus": {
+                "success": "نجح",
+                "failed": "فشل",
+                "current": "الجلسة الحالية"
+            },
+            
+            "loginTable": {
+                "dateTime": "التاريخ والوقت",
+                "location": "الموقع",
+                "device": "الجهاز",
+                "status": "الحالة"
+            },
+            
+            "stats": {
+                "loginsThisMonth": "تسجيل دخول هذا الشهر",
+                "completedActions": "إجراءات مكتملة",
+                "reportsExported": "تقارير مُصدَّرة",
+                "membersUpdated": "أعضاء تم تحديثهم"
+            }
+        },
+        
+        "preferences": {
+            "languageDisplay": "اللغة والعرض",
+            "dashboardSettings": "إعدادات لوحة التحكم",
+            "exportSettings": "إعدادات التصدير",
+            "savePreferences": "حفظ التفضيلات",
+            
+            "language": "اللغة",
+            "theme": "المظهر",
+            "dateFormat": "تنسيق التاريخ",
+            "timezone": "المنطقة الزمنية",
+            
+            "languages": {
+                "arabic": "العربية",
+                "english": "English"
+            },
+            
+            "themes": {
+                "light": "فاتح",
+                "dark": "داكن",
+                "auto": "تلقائي"
+            },
+            
+            "dateFormats": {
+                "dmy": "يوم/شهر/سنة",
+                "mdy": "شهر/يوم/سنة",
+                "ymd": "سنة-شهر-يوم"
+            },
+            
+            "timezones": {
+                "yemen": "صنعاء (GMT+3)",
+                "saudi": "الرياض (GMT+3)",
+                "egypt": "القاهرة (GMT+2)"
+            },
+            
+            "dashboard": {
+                "detailedStats": "إظهار الإحصائيات المفصلة",
+                "detailedStatsDesc": "عرض تفاصيل أكثر في الصفحة الرئيسية",
+                "autoRefresh": "التحديث التلقائي",
+                "autoRefreshDesc": "تحديث البيانات تلقائياً كل دقيقة",
+                "popupNotifications": "الإشعارات المنبثقة",
+                "popupNotificationsDesc": "إظهار إشعارات في المتصفح",
+                "rowsPerPage": "عدد الصفوف في الجدول",
+                "rowsOptions": {
+                    "5": "5 صفوف",
+                    "10": "10 صفوف",
+                    "25": "25 صف",
+                    "50": "50 صف"
+                }
+            },
+            
+            "export": {
+                "defaultFormat": "تنسيق التصدير الافتراضي",
+                "includeLogo": "تضمين الشعار في التقارير",
+                "includeLogoDesc": "إضافة شعار الجمعية في التقارير المُصدَّرة",
+                "paperSize": "حجم الورق",
+                "includeDateTime": "تضمين التاريخ والوقت",
+                "includeDateTimeDesc": "إضافة تاريخ ووقت إنشاء التقرير",
+                
+                "formats": {
+                    "excel": "Excel (.xlsx)",
+                    "pdf": "PDF",
+                    "csv": "CSV"
+                },
+                
+                "paperSizes": {
+                    "a4": "A4",
+                    "a3": "A3",
+                    "letter": "Letter"
+                }
+            }
+        },
+        
+        "departments": {
+            "administration": "الإدارة العامة",
+            "accounting": "المحاسبة",
+            "auditing": "المراجعة",
+            "it": "تقنية المعلومات",
+            "hr": "الموارد البشرية",
+            "legal": "القانونية"
+        },
+        
+        "positions": {
+            "general_manager": "مدير عام",
+            "department_manager": "مدير إدارة",
+            "senior_accountant": "محاسب أول",
+            "accountant": "محاسب",
+            "assistant_accountant": "مساعد محاسب",
+            "auditor": "مراجع",
+            "employee": "موظف"
+        },
+        
+        "messages": {
+            "profileUpdated": "تم تحديث معلومات الملف الشخصي بنجاح",
+            "passwordChanged": "تم تغيير كلمة المرور بنجاح",
+            "photoUploaded": "تم رفع الصورة الشخصية بنجاح",
+            "deleteRequestSent": "تم إرسال طلب حذف الحساب للمراجعة",
+            "preferencesUpdated": "تم حفظ التفضيلات بنجاح",
+            
+            "errors": {
+                "updateFailed": "حدث خطأ أثناء حفظ المعلومات",
+                "passwordFailed": "حدث خطأ أثناء تغيير كلمة المرور",
+                "uploadFailed": "حدث خطأ أثناء رفع الصورة",
+                "firstNameRequired": "الاسم الأول مطلوب",
+                "lastNameRequired": "اسم العائلة مطلوب",
+                "emailRequired": "البريد الإلكتروني مطلوب",
+                "emailInvalid": "البريد الإلكتروني غير صحيح",
+                "phoneRequired": "رقم الهاتف مطلوب",
+                "phoneInvalid": "رقم الهاتف غير صحيح",
+                "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+                "newPasswordRequired": "كلمة المرور الجديدة مطلوبة",
+                "passwordTooShort": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+                "passwordMismatch": "كلمات المرور غير متطابقة"
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@
 /* Import subscription renewal styles */
 @import url('./styles/subscription-renewal.css');
 @import url('./styles/expired-subscriptions.css');
+@import url('./styles/user-profile.css');
 
 .App {
   text-align: center;
