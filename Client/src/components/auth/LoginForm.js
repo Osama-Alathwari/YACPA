@@ -58,10 +58,7 @@ const LoginForm = () => {
             setLoading(true);
 
             // Call the login function from auth context
-            const result = await login({
-                username: formData.username,
-                password: formData.password
-            });
+            const result = await login(formData.username, formData.password);
 
             if (result.success) {
                 toast.current?.show({
@@ -96,14 +93,14 @@ const LoginForm = () => {
         }
     };
 
-    
+    // rest of the component remains the same...
 
     return (
         <div>
             <Toast ref={toast} position="top-center" />
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                
+                {/* Form fields remain the same */}
                 <div className="p-field mb-4">
                     <label htmlFor="username" className="block text-right font-medium text-gray-700 mb-2">
                         {t('auth.login.username')}

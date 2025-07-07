@@ -30,6 +30,7 @@ import NewPaymentComponent from '../components/payments/NewPayment';
 
 // User profile
 import UserProfile from '../components/profile/UserProfile';
+import MembersReportComponent from '../components/reports/MembersReport';
 
 const DashboardRoutes = () => {
     return (
@@ -67,7 +68,7 @@ const DashboardRoutes = () => {
                 {/* Report routes */}
                 <Route path="reports">
                     <Route index element={<Navigate to="members" />} />
-                    <Route path="members" element={<div>Members Report Component</div>} />
+                    <Route path="members" element={<MembersReportComponent/>} />
                     <Route path="payments" element={<div>Payments Report Component</div>} />
                     <Route path="subscriptions" element={<div>Subscriptions Report Component</div>} />
                 </Route>
