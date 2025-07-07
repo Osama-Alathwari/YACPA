@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
     }, []);
 
-    // Login function
+    // Login function with enhanced error handling
     const login = async (username, password) => {
         try {
             setIsLoading(true);
@@ -47,7 +47,18 @@ export const AuthProvider = ({ children }) => {
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Mock credentials for testing until backend is ready
-            if (username === 'admin' && password === '1') {
+            // You can add more test credentials here
+            const validCredentials = [
+                { username: 'admin', password: '1' },
+                { username: 'administrator', password: 'admin123' },
+                { username: 'user', password: 'user123' }
+            ];
+
+            const isValidCredential = validCredentials.some(
+                cred => cred.username === username && cred.password === password
+            );
+
+            if (isValidCredential) {
                 // Mock successful login
                 const mockToken = 'mock-jwt-token-' + Math.random().toString(36).substr(2);
 
@@ -58,23 +69,29 @@ export const AuthProvider = ({ children }) => {
                 setIsAuthenticated(true);
                 setUser({
                     id: 1,
-                    username: 'admin',
-                    name: 'أحمد محمد',
-                    role: 'admin',
-                    permissions: ['view_members', 'add_members', 'edit_members', 'renew_subscriptions', 'view_reports']
+                    username: username,
+                    name: username === 'admin' ? 'أحمد محمد' : 'مستخدم النظام',
+                    role: username === 'admin' ? 'admin' : 'user',
+                    permissions: username === 'admin' ? 
+                        ['view_members', 'add_members', 'edit_members', 'renew_subscriptions', 'view_reports'] :
+                        ['view_members', 'renew_subscriptions']
                 });
 
                 return { success: true };
             } else {
+                // Return specific error for wrong credentials
                 return {
                     success: false,
-                    error: 'Invalid username or password'
+                    error: 'INVALID_CREDENTIALS',
+                    message: 'Invalid username or password'
                 };
             }
         } catch (error) {
+            // Return error for system/network issues
             return {
                 success: false,
-                error: error.message || 'An error occurred during login'
+                error: 'SYSTEM_ERROR',
+                message: error.message || 'An error occurred during login'
             };
         } finally {
             setIsLoading(false);

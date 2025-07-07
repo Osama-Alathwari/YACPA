@@ -34,16 +34,16 @@ const LoginPage = () => {
     }, [isRtl, isAuthenticated, isLoading, navigate]);
 
     // Show loading when checking authentication
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <i className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-3"></i>
-                    <p>{t('common.loading')}</p>
-                </div>
-            </div>
-        );
-    }
+    // if (isLoading) {
+    //     return (
+    //         <div className="flex items-center justify-center min-h-screen">
+    //             <div className="text-center">
+    //                 <i className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-3"></i>
+    //                 <p>{t('common.loading')}</p>
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 relative">
