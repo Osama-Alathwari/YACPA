@@ -3,10 +3,11 @@ import { Router } from 'express';
 import authController from '../controllers/authController.js';
 import verifyToken, { requireRole } from '../middlewares/authMiddleware.js';
 
-const { login, logout, getProfile } = authController;
+const { signup,login, logout, getProfile } = authController;
 const router = Router();
 
 // Public Routes
+router.post('/signup', signup);
 router.post('/login', login);
 router.post('/logout', logout);
 

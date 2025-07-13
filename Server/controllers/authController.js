@@ -2,89 +2,153 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '../db.js';
+// import bcrypt from 'bcrypt';
+
 
 // Login function
 const login = async (req, res) => {
-    // Login function
-    login: async (req, res) => {
-        try {
-            const { username, password } = req.body;
-
-            // Input validation
-            if (!username || !password) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'اسم المستخدم وكلمة المرور مطلوبان'
-                });
-            }
-
-            // Check if user exists in database
-            const userQuery = 'SELECT * FROM users WHERE username = $1';
-            const userResult = await pool.query(userQuery, [username]);
-
-            if (userResult.rows.length === 0) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'اسم المستخدم أو كلمة المرور غير صحيحة'
-                });
-            }
-
-            const user = userResult.rows[0];
-
-            // For the initial admin user with password "1", we'll check directly
-            // In production, passwords should be hashed
-            let isPasswordValid = false;
-            
-            if (user.username === 'admin' && password === '1') {
-                isPasswordValid = true;
-            } else {
-                // For other users, check hashed password
-                isPasswordValid = await bcrypt.compare(password, user.password);
-            }
-
-            if (!isPasswordValid) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'اسم المستخدم أو كلمة المرور غير صحيحة'
-                });
-            }
-
-            // Generate JWT token
-            const token = jwt.sign(
-                {
-                    userId: user.id,
-                    username: user.username,
-                    role: user.role
-                },
-                process.env.JWT_SECRET || 'your-secret-key',
-                { expiresIn: '24h' }
-            );
-
-            // Update last login timestamp
-            const updateLoginQuery = 'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1';
-            await pool.query(updateLoginQuery, [user.id]);
-
-            // Return success response
-            res.json({
-                success: true,
-                message: 'تم تسجيل الدخول بنجاح',
-                token,
-                user: {
-                    id: user.id,
-                    username: user.username,
-                    name: user.name || user.username,
-                    role: user.role,
-                    email: user.email
-                }
-            });
-
-        } catch (error) {
-            console.error('Login error:', error);
-            res.status(500).json({
+    try {
+        // Ensure req.body exists and is an object
+        if (!req.body || typeof req.body !== 'object') {
+            return res.status(400).json({
                 success: false,
-                message: 'خطأ في الخادم، يرجى المحاولة مرة أخرى'
+                message: 'البيانات المرسلة غير صحيحة'
             });
         }
+
+        // Extract username and password safely
+        const username = req.body.username;
+        const password = req.body.password;
+
+        // Input validation
+        if (!username || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'اسم المستخدم وكلمة المرور مطلوبان'
+            });
+        }
+
+        // Check if user exists in database
+        const userQuery = 'SELECT * FROM users WHERE username = $1';
+        const userResult = await pool.query(userQuery, [username]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: 'اسم المستخدم أو كلمة المرور غير صحيحة'
+            });
+        }
+
+        const user = userResult.rows[0];
+
+        let isPasswordValid = false;
+
+        
+            // For other users, check hashed password
+            isPasswordValid = await bcrypt.compare(
+                password,
+                user.passwordhash || user.password_hash || user.PasswordHash || ''
+            );
+        
+
+        if (!isPasswordValid) {
+            return res.status(401).json({
+                success: false,
+                message: 'اسم المستخدم أو كلمة المرور غير صحيحة'
+            });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            {
+                userId: user.id,
+                username: user.username,
+                // role: user.role
+            },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '24h' }
+        );
+
+        // Update last login timestamp
+        const updateLoginQuery = 'UPDATE users SET lastlogin = CURRENT_TIMESTAMP WHERE id = $1';
+        await pool.query(updateLoginQuery, [user.id]);
+
+        // Return success response
+        res.json({
+            success: true,
+            message: 'تم تسجيل الدخول بنجاح',
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                name: user.name || user.username,
+                // role: user.role,
+                // email: user.email
+            }
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'خطأ في الخادم، يرجى المحاولة مرة أخرى'
+        });
+    }
+};
+
+// Signup function
+const signup = async (req, res) => {
+    try {
+        const { username, password, email, phoneNumber } = req.body;
+
+        // Validate input
+        if (!username || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'اسم المستخدم وكلمة المرور مطلوبة'
+            });
+        }
+
+        // Check if username already exists
+        const userCheck = await pool.query(
+            'SELECT id FROM users WHERE username = $1',
+            [username]
+        );
+        if (userCheck.rows.length > 0) {
+            return res.status(409).json({
+                success: false,
+                message: 'اسم المستخدم مستخدم بالفعل'
+            });
+        }
+
+        // Hash the password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Insert new user into the database
+        const insertQuery = `
+            INSERT INTO users (username, passwordhash, email, phonenumber)
+            VALUES ($1, $2, $3, $4)
+            RETURNING id, username, email, phonenumber, isactive, createdat
+        `;
+        const insertResult = await pool.query(insertQuery, [
+            username,
+            hashedPassword,
+            email || null,
+            phoneNumber || null
+        ]);
+
+        res.status(201).json({
+            success: true,
+            message: 'تم إنشاء المستخدم بنجاح',
+            user: insertResult.rows[0]
+        });
+    } catch (error) {
+        console.error('Signup error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'حدث خطأ أثناء إنشاء المستخدم'
+        });
     }
 };
 
@@ -138,6 +202,7 @@ const getProfile = async (req, res) => {
 // Export the functions
     export default {
         login,
+        signup,
         logout,
         getProfile
     };
