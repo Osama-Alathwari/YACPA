@@ -65,7 +65,7 @@ const login = async (req, res) => {
                 username: user.username,
                 // role: user.role
             },
-            process.env.JWT_SECRET || 'your-secret-key',
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -82,7 +82,7 @@ const login = async (req, res) => {
                 id: user.id,
                 username: user.username,
                 name: user.name || user.username,
-                // role: user.role,
+                role: user.role,
                 // email: user.email
             }
         });
