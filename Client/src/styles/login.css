@@ -1,0 +1,282 @@
+/* src/styles/login.css - Enhanced styles for login components */
+
+/* Login Form Styles */
+.login-form {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Custom Password Field Styles */
+.custom-password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-password-wrapper .p-password {
+    width: 100%;
+}
+
+.custom-password-wrapper .p-password input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.rtl-password .p-password input {
+    padding-left: 3rem;
+    padding-right: 1rem;
+    direction: rtl;
+}
+
+.rtl-password .p-password .p-password-toggle {
+    left: 0.75rem;
+    right: auto;
+}
+
+/* Login Card Animations */
+.login-card {
+    animation: slideInUp 0.6s ease-out;
+    transform-origin: center bottom;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Logo Animation */
+.logo-container {
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Form Field Focus States */
+.p-inputtext:focus,
+.p-password input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Button Loading State */
+.p-button.p-button-loading {
+    pointer-events: none;
+}
+
+.p-button.p-button-loading .p-button-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error Message Styles */
+.p-message.p-message-error {
+    border: 1px solid #ef4444;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.p-message.p-message-warn {
+    border: 1px solid #f59e0b;
+    background: #fffbeb;
+    color: #d97706;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Small Error Text */
+.p-error {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Invalid Field Styles */
+.p-invalid {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Remember Me Checkbox */
+.p-checkbox .p-checkbox-box {
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.p-checkbox .p-checkbox-box.p-highlight {
+    border-color: #3b82f6;
+    background: #3b82f6;
+}
+
+/* Language Switcher in Login */
+.login-language-switcher {
+    position: absolute;
+    top: 1rem;
+    z-index: 10;
+}
+
+.login-language-switcher[dir="rtl"] {
+    left: 1rem;
+    right: auto;
+}
+
+.login-language-switcher[dir="ltr"] {
+    right: 1rem;
+    left: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .login-card {
+        margin: 1rem;
+        max-width: calc(100vw - 2rem);
+    }
+    
+    .logo-container {
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .login-form .p-button {
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .p-inputtext,
+    .p-password input,
+    .p-button {
+        border-width: 2px;
+    }
+    
+    .p-invalid {
+        border-width: 3px !important;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .login-card,
+    .logo-container,
+    .p-button.p-button-loading .p-button-icon {
+        animation: none;
+    }
+}
+
+/* Dark mode support (if implemented) */
+@media (prefers-color-scheme: dark) {
+    .login-card {
+        background: rgba(31, 41, 55, 0.95);
+        border: 1px solid rgba(75, 85, 99, 0.3);
+    }
+    
+    .p-inputtext,
+    .p-password input {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+    
+    .p-inputtext:focus,
+    .p-password input:focus {
+        border-color: #60a5fa;
+        background: #374151;
+    }
+}
+
+/* Loading overlay */
+.login-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.login-loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Toast positioning for login page */
+.p-toast.p-toast-top-center {
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Status indicator */
+.system-status {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    z-index: 10;
+}
+
+.status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background-color: #10b981;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Version info */
+.version-info {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    z-index: 10;
+}

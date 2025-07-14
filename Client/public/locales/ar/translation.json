@@ -225,19 +225,44 @@
             "welcome": "مرحباً بكم في نظام إدارة اشتراكات جمعية المحاسبين",
             "title": "تسجيل الدخول",
             "username": "اسم المستخدم",
-            "usernamePlaceholder": "أدخل اسم المستخدم",
-            "usernameRequired": "اسم المستخدم مطلوب",
             "password": "كلمة المرور",
+            "usernamePlaceholder": "أدخل اسم المستخدم",
             "passwordPlaceholder": "أدخل كلمة المرور",
+            "usernameRequired": "اسم المستخدم مطلوب",
             "passwordRequired": "كلمة المرور مطلوبة",
-            "submit": "تسجيل الدخول",
+            "usernameMinLength": "اسم المستخدم يجب أن يكون على الأقل 3 أحرف",
+            "passwordMinLength": "كلمة المرور يجب أن تكون على الأقل 3 أحرف",
             "rememberMe": "تذكرني",
             "forgotPassword": "نسيت كلمة المرور؟",
+            "submit": "تسجيل الدخول",
+            "success": "نجح",
+            "failed": "فشل تسجيل الدخول",
+            "error": "خطأ",
+            "welcomeBack": "مرحباً بعودتك!",
+            "generalError": "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+            "invalidCredentials": "اسم المستخدم أو كلمة المرور غير صحيحة",
+            "accountDisabled": "الحساب معطل أو غير نشط",
+            "networkError": "تعذر الاتصال بالخادم. تحقق من اتصالك بالإنترنت.",
+            "serverError": "خطأ في الخادم. يرجى المحاولة لاحقاً.",
+            "unexpectedError": "حدث خطأ غير متوقع",
+            "blocked": "الحساب محظور مؤقتاً",
+            "tooManyAttempts": "محاولات فاشلة كثيرة جداً. يرجى الانتظار 5 دقائق.",
+            "attemptsWarning": "تحذير: {{remaining}} محاولات متبقية",
+            "blockedMessage": "تم حظر الحساب لمدة 5 دقائق بسبب محاولات فاشلة متعددة",
+            "forgotPasswordComingSoon": "ميزة نسيان كلمة المرور قريباً",
             "noAccount": "ليس لديك حساب؟",
-            "register": "سجل الآن",
-            "validation": "يرجى إدخال اسم المستخدم وكلمة المرور",
-            "successMessage": "تم تسجيل الدخول بنجاح",
-            "genericError": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى"
+            "register": "سجل هنا",
+            "help": "مساعدة",
+            "contact": "اتصل بنا",
+            "privacy": "الخصوصية",
+            "connectionError": "خطأ في الاتصال",
+            "checkConnection": "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى",
+            "timeoutError": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
+            "rateLimited": "طلبات كثيرة جداً. يرجى الانتظار قليلاً والمحاولة مرة أخرى.",
+            "validationError": "بيانات تسجيل دخول غير صحيحة",
+            "offline": "أنت غير متصل حالياً. يرجى التحقق من اتصالك.",
+            "degraded": "جودة الاتصال ضعيفة. قد تكون بعض الميزات محدودة.",
+            "retryConnection": "إعادة محاولة الاتصال"
         }
     },
     "dashboard": {
@@ -283,7 +308,7 @@
             "totalOwed": "إجمالي المستحق",
             "amountOwed": "المبلغ المستحق",
             "expired1Month": "منتهية منذ شهر",
-            "expired3Months": "منتهية منذ 3 أشهر", 
+            "expired3Months": "منتهية منذ 3 أشهر",
             "expired6Months": "منتهية منذ 6 أشهر",
             "expired1Year": "منتهية منذ سنة",
             "expiredOver1Year": "منتهية أكثر من سنة",
@@ -344,7 +369,7 @@
         "save": "حفظ",
         "cancel": "إلغاء",
         "close": "اغلاق",
-        "back": "رجوع",        
+        "back": "رجوع",
         "edit": "تعديل",
         "delete": "حذف",
         "view": "عرض",
@@ -406,7 +431,6 @@
         "viewMember": "عرض العضو",
         "year": "سنه",
         "export": "تصدير"
-        
     },
     "footer": {
         "quickLinks": "روابط سريعة",
@@ -537,14 +561,12 @@
         "saveProfile": "حفظ التغييرات",
         "cancelEdit": "إلغاء التعديل",
         "profileStrength": "قوة الملف الشخصي",
-        
         "tabs": {
             "personalInfo": "المعلومات الشخصية",
             "security": "الأمان والخصوصية",
             "activity": "النشاط الحديث",
             "preferences": "التفضيلات"
         },
-        
         "personalInfo": {
             "basicInfo": "المعلومات الأساسية",
             "workInfo": "معلومات العمل",
@@ -552,7 +574,6 @@
             "profilePicture": "الصورة الشخصية",
             "uploadNewPhoto": "رفع صورة جديدة",
             "maxFileSize": "الحد الأقصى: 1 ميجابايت، صيغ مقبولة: JPG, PNG",
-            
             "firstName": "الاسم الأول",
             "lastName": "اسم العائلة",
             "email": "البريد الإلكتروني",
@@ -565,11 +586,9 @@
             "emergencyContact": "جهة الاتصال الطارئة",
             "emergencyPhone": "هاتف الطوارئ",
             "bio": "نبذة شخصية",
-            
             "joinedOn": "انضم في",
             "required": "مطلوب"
         },
-        
         "security": {
             "changePassword": "تغيير كلمة المرور",
             "securitySettings": "إعدادات الأمان",
@@ -577,7 +596,6 @@
             "newPassword": "كلمة المرور الجديدة",
             "confirmPassword": "تأكيد كلمة المرور",
             "changePasswordBtn": "تغيير كلمة المرور",
-            
             "twoFactorAuth": "المصادقة الثنائية",
             "twoFactorDesc": "حماية إضافية لحسابك",
             "emailNotifications": "إشعارات البريد الإلكتروني",
@@ -586,12 +604,10 @@
             "smsNotificationsDesc": "استلام تنبيهات SMS",
             "loginAlerts": "تنبيهات تسجيل الدخول",
             "loginAlertsDesc": "إشعار عند تسجيل دخول جديد",
-            
             "logoutAllDevices": "تسجيل خروج من جميع الأجهزة",
             "deleteAccount": "حذف الحساب",
             "deleteAccountWarning": "هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه.",
             "deleteAccountTitle": "تأكيد حذف الحساب",
-            
             "passwordStrength": {
                 "weak": "ضعيف",
                 "medium": "متوسط",
@@ -599,14 +615,12 @@
                 "enterPassword": "ادخل كلمة مرور"
             }
         },
-        
         "activity": {
             "recentActivity": "الأنشطة الحديثة",
             "loginHistory": "تاريخ تسجيل الدخول",
             "activityStats": "إحصائيات النشاط",
             "viewAllActivities": "عرض جميع الأنشطة",
             "noLoginHistory": "لا يوجد تاريخ تسجيل دخول",
-            
             "actions": {
                 "memberUpdate": "تحديث ملف العضو",
                 "subscriptionRenewal": "تجديد اشتراك",
@@ -614,20 +628,17 @@
                 "login": "تسجيل دخول",
                 "export": "تصدير تقرير"
             },
-            
             "loginStatus": {
                 "success": "نجح",
                 "failed": "فشل",
                 "current": "الجلسة الحالية"
             },
-            
             "loginTable": {
                 "dateTime": "التاريخ والوقت",
                 "location": "الموقع",
                 "device": "الجهاز",
                 "status": "الحالة"
             },
-            
             "stats": {
                 "loginsThisMonth": "تسجيل دخول هذا الشهر",
                 "completedActions": "إجراءات مكتملة",
@@ -635,41 +646,34 @@
                 "membersUpdated": "أعضاء تم تحديثهم"
             }
         },
-        
         "preferences": {
             "languageDisplay": "اللغة والعرض",
             "dashboardSettings": "إعدادات لوحة التحكم",
             "exportSettings": "إعدادات التصدير",
             "savePreferences": "حفظ التفضيلات",
-            
             "language": "اللغة",
             "theme": "المظهر",
             "dateFormat": "تنسيق التاريخ",
             "timezone": "المنطقة الزمنية",
-            
             "languages": {
                 "arabic": "العربية",
                 "english": "English"
             },
-            
             "themes": {
                 "light": "فاتح",
                 "dark": "داكن",
                 "auto": "تلقائي"
             },
-            
             "dateFormats": {
                 "dmy": "يوم/شهر/سنة",
                 "mdy": "شهر/يوم/سنة",
                 "ymd": "سنة-شهر-يوم"
             },
-            
             "timezones": {
                 "yemen": "صنعاء (GMT+3)",
                 "saudi": "الرياض (GMT+3)",
                 "egypt": "القاهرة (GMT+2)"
             },
-            
             "dashboard": {
                 "detailedStats": "إظهار الإحصائيات المفصلة",
                 "detailedStatsDesc": "عرض تفاصيل أكثر في الصفحة الرئيسية",
@@ -685,7 +689,6 @@
                     "50": "50 صف"
                 }
             },
-            
             "export": {
                 "defaultFormat": "تنسيق التصدير الافتراضي",
                 "includeLogo": "تضمين الشعار في التقارير",
@@ -693,13 +696,11 @@
                 "paperSize": "حجم الورق",
                 "includeDateTime": "تضمين التاريخ والوقت",
                 "includeDateTimeDesc": "إضافة تاريخ ووقت إنشاء التقرير",
-                
                 "formats": {
                     "excel": "Excel (.xlsx)",
                     "pdf": "PDF",
                     "csv": "CSV"
                 },
-                
                 "paperSizes": {
                     "a4": "A4",
                     "a3": "A3",
@@ -707,7 +708,6 @@
                 }
             }
         },
-        
         "departments": {
             "administration": "الإدارة العامة",
             "accounting": "المحاسبة",
@@ -716,7 +716,6 @@
             "hr": "الموارد البشرية",
             "legal": "القانونية"
         },
-        
         "positions": {
             "general_manager": "مدير عام",
             "department_manager": "مدير إدارة",
@@ -726,14 +725,12 @@
             "auditor": "مراجع",
             "employee": "موظف"
         },
-        
         "messages": {
             "profileUpdated": "تم تحديث معلومات الملف الشخصي بنجاح",
             "passwordChanged": "تم تغيير كلمة المرور بنجاح",
             "photoUploaded": "تم رفع الصورة الشخصية بنجاح",
             "deleteRequestSent": "تم إرسال طلب حذف الحساب للمراجعة",
             "preferencesUpdated": "تم حفظ التفضيلات بنجاح",
-            
             "errors": {
                 "updateFailed": "حدث خطأ أثناء حفظ المعلومات",
                 "passwordFailed": "حدث خطأ أثناء تغيير كلمة المرور",
