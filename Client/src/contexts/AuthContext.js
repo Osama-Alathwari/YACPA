@@ -151,14 +151,14 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Login function with Axios integration and navigation fix
+    // Login function with Axios integration (mock auth removed)
     const login = async (username, password) => {
         try {
             setIsLoading(true);
             console.log('Starting login process with Axios...');
 
             try {
-                // Try API login first
+                // Try API login
                 const response = await apiService.login({
                     username: username.trim(),
                     password: password
@@ -198,57 +198,12 @@ export const AuthProvider = ({ children }) => {
                     };
                 }
             } catch (apiError) {
-                console.log('API login failed, trying mock authentication:', apiError.message);
-                
-                // Fallback to mock authentication for development
-                const validCredentials = [
-                    { username: 'admin', password: '1' },
-                    { username: 'administrator', password: 'admin123' },
-                    { username: 'user', password: 'user123' }
-                ];
-
-                const isValidCredential = validCredentials.some(
-                    cred => cred.username === username && cred.password === password
-                );
-
-                if (isValidCredential) {
-                    console.log('Mock authentication successful');
-                    
-                    // Mock successful login
-                    const mockToken = 'mock-jwt-token-' + Math.random().toString(36).substr(2);
-                    localStorage.setItem('token', mockToken);
-
-                    // Prepare user data
-                    const userData = {
-                        id: 1,
-                        username: username,
-                        name: username === 'admin' ? 'أحمد محمد' : 'مستخدم النظام',
-                        role: username === 'admin' ? 'admin' : 'user',
-                        permissions: username === 'admin' ? 
-                            ['view_members', 'add_members', 'edit_members', 'renew_subscriptions', 'view_reports'] :
-                            ['view_members', 'renew_subscriptions']
-                    };
-
-                    // Set auth state SYNCHRONOUSLY
-                    setUser(userData);
-                    setIsAuthenticated(true);
-
-                    // Force a small delay to ensure state is updated
-                    await new Promise(resolve => setTimeout(resolve, 100));
-
-                    return { 
-                        success: true, 
-                        user: userData,
-                        message: 'تم تسجيل الدخول بنجاح (وضع التطوير)'
-                    };
-                } else {
-                    // Use enhanced error from API service if available
-                    return {
-                        success: false,
-                        error: apiError.errorType || 'INVALID_CREDENTIALS',
-                        message: apiError.userMessage || 'اسم المستخدم أو كلمة المرور غير صحيحة'
-                    };
-                }
+                // Use enhanced error from API service if available
+                return {
+                    success: false,
+                    error: apiError.errorType || 'INVALID_CREDENTIALS',
+                    message: apiError.userMessage || 'اسم المستخدم أو كلمة المرور غير صحيحة'
+                };
             }
         } catch (error) {
             console.error('Login error:', error);
