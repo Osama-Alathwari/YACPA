@@ -3,10 +3,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import router from './routes/authRoutes.js';
 import { PORT } from './config.js';
+import { startTokenCleanup } from './utils/tokenCleanup.js';
 
 dotenv.config();
 
 const app = express();
+startTokenCleanup();
 const corsOrigins = process.env.CORS_ORIGINS.split(',');
 
 // Configure CORS

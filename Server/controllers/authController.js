@@ -2,23 +2,13 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '../db.js';
-// import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 
 
 // Login function
 const login = async (req, res) => {
     try {
-        // Ensure req.body exists and is an object
-        if (!req.body || typeof req.body !== 'object') {
-            return res.status(400).json({
-                success: false,
-                message: 'البيانات المرسلة غير صحيحة'
-            });
-        }
-
-        // Extract username and password safely
-        const username = req.body.username;
-        const password = req.body.password;
+        const { username, password } = req.body;
 
         // Input validation
         if (!username || !password) {
@@ -28,8 +18,8 @@ const login = async (req, res) => {
             });
         }
 
-        // Check if user exists in database
-        const userQuery = 'SELECT * FROM users WHERE username = $1';
+        // Check if user exists
+        const userQuery = 'SELECT * FROM users WHERE username = $1 AND isactive = true';
         const userResult = await pool.query(userQuery, [username]);
 
         if (userResult.rows.length === 0) {
@@ -41,16 +31,9 @@ const login = async (req, res) => {
 
         const user = userResult.rows[0];
 
-        let isPasswordValid = false;
-
+        // Verify password
+        const isPasswordValid = await bcrypt.compare(password, user.passwordhash);
         
-            // For other users, check hashed password
-            isPasswordValid = await bcrypt.compare(
-                password,
-                user.passwordhash || user.password_hash || user.PasswordHash || ''
-            );
-        
-
         if (!isPasswordValid) {
             return res.status(401).json({
                 success: false,
@@ -58,22 +41,31 @@ const login = async (req, res) => {
             });
         }
 
-        // Generate JWT token
+        // Generate unique JWT ID for this token
+        const jwtId = uuidv4();
+        const tokenExpiry = '24h';
+
+        // Generate JWT token with JTI
         const token = jwt.sign(
             {
                 userId: user.id,
                 username: user.username,
-                // role: user.role
+                role: user.role,
+                jti: jwtId // JWT ID for blacklisting
             },
             process.env.JWT_SECRET,
-            { expiresIn: '24h' }
+            { 
+                expiresIn: tokenExpiry,
+                // jwtid: jwtId
+            }
         );
 
-        // Update last login timestamp
-        const updateLoginQuery = 'UPDATE users SET lastlogin = CURRENT_TIMESTAMP WHERE id = $1';
-        await pool.query(updateLoginQuery, [user.id]);
+        // Update last login
+        await pool.query(
+            'UPDATE users SET lastlogin = CURRENT_TIMESTAMP WHERE id = $1', 
+            [user.id]
+        );
 
-        // Return success response
         res.json({
             success: true,
             message: 'تم تسجيل الدخول بنجاح',
@@ -82,8 +74,7 @@ const login = async (req, res) => {
                 id: user.id,
                 username: user.username,
                 name: user.name || user.username,
-                role: user.role,
-                // email: user.email
+                role: user.role
             }
         });
 
@@ -91,7 +82,7 @@ const login = async (req, res) => {
         console.error('Login error:', error);
         res.status(500).json({
             success: false,
-            message: 'خطأ في الخادم، يرجى المحاولة مرة أخرى'
+            message: 'خطأ في الخادم'
         });
     }
 };
@@ -154,20 +145,55 @@ const signup = async (req, res) => {
 
 // Logout function
 const logout = async (req, res) => {
-        try {
-            // In a more sophisticated setup, you might want to blacklist the token
-            // For now, we'll just send a success response
-            res.json({
-                success: true,
-                message: 'تم تسجيل الخروج بنجاح'
-            });
-        } catch (error) {
-            console.error('Logout error:', error);
-            res.status(500).json({
+    try {
+        // Get token from header
+        const authHeader = req.headers.authorization;
+        
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(400).json({
                 success: false,
-                message: 'خطأ في تسجيل الخروج'
+                message: 'لا يوجد رمز مميز'
             });
         }
+
+        const token = authHeader.substring(7);
+        
+        // Decode token to get JTI and expiration
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Add token to blacklist
+        const blacklistQuery = `
+            INSERT INTO token_blacklist (token_jti, user_id, expires_at)
+            VALUES ($1, $2, to_timestamp($3))
+            ON CONFLICT (token_jti) DO NOTHING
+        `;
+        
+        await pool.query(blacklistQuery, [
+            decoded.jti,
+            decoded.userId,
+            decoded.exp
+        ]);
+
+        res.json({
+            success: true,
+            message: 'تم تسجيل الخروج بنجاح'
+        });
+
+    } catch (error) {
+        console.error('Logout error:', error);
+        
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                success: false,
+                message: 'رمز مميز غير صالح'
+            });
+        }
+        
+        res.status(500).json({
+            success: false,
+            message: 'خطأ في تسجيل الخروج'
+        });
+    }
 };
 
 // Get current user profile
