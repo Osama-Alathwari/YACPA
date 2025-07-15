@@ -4,7 +4,7 @@ import axios from 'axios';
 class ApiService {
     constructor() {
         this.baseURL = process.env.REACT_APP_API_URL;
-        
+
         // Create axios instance
         this.api = axios.create({
             baseURL: this.baseURL,
@@ -26,12 +26,12 @@ class ApiService {
                 if (token) {
                     config.headers.Authorization = `Bearer ${token}`;
                 }
-                
+
                 // Add request timestamp for debugging
                 config.metadata = { startTime: new Date() };
-                
+
                 console.log(`🔄 API Request: ${config.method?.toUpperCase()} ${config.url}`);
-                
+
                 return config;
             },
             (error) => {
@@ -48,9 +48,9 @@ class ApiService {
                     response.config.metadata.endTime = new Date();
                     response.duration = response.config.metadata.endTime - response.config.metadata.startTime;
                 }
-                
+
                 console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} (${response.duration}ms)`);
-                
+
                 return response;
             },
             (error) => {
@@ -58,14 +58,17 @@ class ApiService {
                 if (error.response) {
                     // Server responded with error status
                     const { status, data } = error.response;
-                    
+
                     console.log(`❌ API Error: ${status} - ${error.config?.url}`);
-                    
+
                     switch (status) {
                         case 401:
-                            // Unauthorized - token expired or invalid
-                            console.log('🔐 Unauthorized - dispatching event');
-                            this.handleUnauthorized();
+                            // Only handle as unauthorized if it's not the login endpoint
+                            if (!error.config.url.includes('/auth/login')) {
+                                // Unauthorized - token expired or invalid
+                                console.log('🔐 Unauthorized - dispatching event');
+                                this.handleUnauthorized();
+                            }
                             break;
                         case 403:
                             // Forbidden - insufficient permissions
@@ -82,7 +85,7 @@ class ApiService {
                         default:
                             console.error('⚠️ API error:', status, data.message);
                     }
-                    
+
                     // Enhance error with more details
                     error.message = data.message || error.message;
                     error.errorCode = data.errorCode;
@@ -98,7 +101,7 @@ class ApiService {
                     error.message = 'Request configuration error';
                     error.errorCode = 'CONFIG_ERROR';
                 }
-                
+
                 return Promise.reject(error);
             }
         );
@@ -108,10 +111,10 @@ class ApiService {
     handleUnauthorized() {
         // Clear token and dispatch custom event for auth context to handle
         localStorage.removeItem('token');
-        
+
         // Dispatch custom event for auth context to handle
         window.dispatchEvent(new CustomEvent('unauthorized'));
-        
+
         console.log('🚪 Unauthorized event dispatched');
     }
 
@@ -252,8 +255,8 @@ class ApiService {
             return response.data;
         } catch (error) {
             console.error('❌ Health check failed:', error);
-            return { 
-                status: 'error', 
+            return {
+                status: 'error',
                 message: error.message,
                 timestamp: new Date().toISOString()
             };
@@ -264,7 +267,7 @@ class ApiService {
     enhanceAuthError(error) {
         if (error.response) {
             const { status, data } = error.response;
-            
+
             switch (status) {
                 case 400:
                     error.userMessage = 'بيانات تسجيل الدخول غير صحيحة';
@@ -300,7 +303,7 @@ class ApiService {
             error.userMessage = 'حدث خطأ غير متوقع';
             error.errorType = 'UNKNOWN_ERROR';
         }
-        
+
         return error;
     }
 
@@ -330,12 +333,12 @@ class ApiService {
         try {
             console.log('🧪 Testing API connection...');
             const startTime = Date.now();
-            
+
             await this.healthCheck();
-            
+
             const responseTime = Date.now() - startTime;
             console.log(`✅ Connection test passed (${responseTime}ms)`);
-            
+
             return {
                 success: true,
                 responseTime,

@@ -178,37 +178,32 @@ const Sidebar = () => {
             <Divider className="my-2" />
 
             {/* User quick links */}
-            <div className="p-3 border-t border-gray-100 bg-gray-50">
-                <div className="text-xs font-medium text-gray-500 mb-3 px-2">الإعدادات الشخصية</div>
-                <ul className="space-y-1">
-                    <li>
+            <div className="p-3 border-t bg-gray-50 mx-1 border-gray-100">
+                <div className="text-sm font-medium text-gray-500 mx-3 px-2 mb-1"b>الإعدادات الشخصية</div>
+                
                         <NavLink
                             to="/dashboard/profile"
                             className={({ isActive }) =>
-                                `flex items-center px-3 py-2.5 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 ${
+                                `flex items-center my-2 no-underline px-3 py-2.5 bg-blue-50 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 ${
                                     isActive ? 'bg-blue-50 text-blue-700 font-medium' : ''
                                 }`
                             }
                         >
-                            <i className={`pi pi-user ${isRtl ? 'ml-3' : 'mr-3'} text-sm`}></i>
-                            <span className="text-sm">{t('navigation.profile')}</span>
+                            <i className={`pi pi-user ${isRtl ? 'ml-3' : 'mr-3'} text-sm font-medium`}></i>
+                            <span className="text-sm font-medium">{t('navigation.profile')}</span>
                         </NavLink>
-                    </li>
-                    <li>
                         <NavLink
                             to="/logout"
-                            className="flex items-center px-3 py-2.5 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-700 transition-all duration-200"
+                            className="flex items-center no-underline bg-red-100 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-700 transition-all duration-300"
                         >
-                            <i className={`pi pi-sign-out ${isRtl ? 'ml-3' : 'mr-3'} text-sm`}></i>
-                            <span className="text-sm">{t('navigation.logout')}</span>
+                            <i className={`pi pi-sign-out ${isRtl ? 'ml-3' : 'mr-3'} text-sm font-medium`}></i>
+                            <span className="text-sm font-medium">{t('navigation.logout')}</span>
                         </NavLink>
-                    </li>
-                </ul>
             </div>
 
             {/* Version info */}
             <div className="p-3 text-center border-t border-gray-100">
-                <p className="text-xs text-gray-400">النسخة 1.0.0</p>
+                <p className="text-xs text-gray-400"> النسخة <span className="text-blue-700">1.0.0</span></p>
             </div>
         </div>
     );
