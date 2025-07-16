@@ -18,11 +18,11 @@ import { Checkbox } from 'primereact/checkbox';
 const AddMemberScreen = () => {
     const { t } = useTranslation();
     const toast = useRef(null);
-    
+
     // Form progress tracking
     const [currentStep, setCurrentStep] = useState(1);
     const totalSteps = 4;
-    
+
     // Form state
     const [formData, setFormData] = useState({
         // Personal Information
@@ -34,7 +34,7 @@ const AddMemberScreen = () => {
         qualification: null,
         profileImage: null,
         idImage: null,
-        
+
         // Business Information
         businessName: '',
         businessType: null,
@@ -43,58 +43,56 @@ const AddMemberScreen = () => {
         licenseNumber: '',
         licenseIssueDate: null,
         licenseImage: null,
-        
+
         // Contact Information
         phone1: '',
         phone2: '',
         mobile: '',
         whatsapp: '',
         email: '',
-        
+
         // Attachments
         degreeImage: null,
         signatureImage: null,
-        
+
         // Payment Information
-        registrationFee: 200,
-        subscriptionFee: 150,
-        totalAmount: 500, // registration + 2 years subscription
+        registrationFee: 100000,
+        subscriptionFee: 75000,
+        totalAmount: 250000, // registration + 2 years subscription
         paymentMethod: null,
         referenceNumber: '',
         referenceDate: null,
         paymentReceipt: null,
         notes: ''
     });
-    
+
     // Validation state
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
-    
+
     // Dropdown options
     const idTypes = [
         { label: t('member.personalInfo.nationalId'), value: 'national_id' },
         { label: t('member.personalInfo.passport'), value: 'passport' },
-        { label: t('member.personalInfo.residencyCard'), value: 'residency_card' }
     ];
-    
+
     const qualifications = [
         { label: t('member.personalInfo.bachelor'), value: 'bachelor' },
         { label: t('member.personalInfo.master'), value: 'master' },
-        { label: t('member.personalInfo.doctorate'), value: 'doctorate' },
-        { label: t('member.personalInfo.diploma'), value: 'diploma' }
+        { label: t('member.personalInfo.doctorate'), value: 'doctorate' }
     ];
-    
+
     const businessTypes = [
         { label: t('member.businessInfo.company'), value: 'company' },
         { label: t('member.businessInfo.individual'), value: 'individual' }
     ];
-    
+
     const paymentMethods = [
         { label: t('common.cash'), value: 'cash' },
         { label: t('common.bankTransfer'), value: 'bank_transfer' },
         { label: t('common.check'), value: 'check' }
     ];
-    
+
     // Handle input changes
     const handleInputChange = (field, value) => {
         setFormData(prev => ({
@@ -102,14 +100,14 @@ const AddMemberScreen = () => {
             [field]: value
         }));
     };
-    
+
     // Handle file uploads
     const handleFileUpload = (field, file) => {
         setFormData(prev => ({
             ...prev,
             [field]: file
         }));
-        
+
         toast.current?.show({
             severity: 'success',
             summary: t('common.fileUploaded'),
@@ -117,38 +115,38 @@ const AddMemberScreen = () => {
             life: 3000
         });
     };
-    
+
     // Validation functions
     const validateStep1 = () => {
-        return formData.fullNameArabic && formData.fullNameEnglish && 
-               formData.idType && formData.idNumber && formData.qualification;
+        return formData.fullNameArabic && formData.fullNameEnglish &&
+            formData.idType && formData.idNumber && formData.qualification;
     };
-    
+
     const validateStep2 = () => {
-        return formData.businessName && formData.businessType && 
-               formData.headOfficeAddress && formData.licenseNumber;
+        return formData.businessName && formData.businessType &&
+            formData.headOfficeAddress && formData.licenseNumber;
     };
-    
+
     const validateStep3 = () => {
         return formData.phone1 && formData.email;
     };
-    
+
     const validateStep4 = () => {
         return formData.paymentMethod && formData.referenceNumber && formData.referenceDate;
     };
-    
+
     // Navigation between steps
     const nextStep = () => {
         let isValid = false;
-        
-        switch(currentStep) {
+
+        switch (currentStep) {
             case 1: isValid = validateStep1(); break;
             case 2: isValid = validateStep2(); break;
             case 3: isValid = validateStep3(); break;
             case 4: isValid = validateStep4(); break;
             default: isValid = true;
         }
-        
+
         if (isValid) {
             setCurrentStep(prev => Math.min(prev + 1, totalSteps));
         } else {
@@ -161,31 +159,31 @@ const AddMemberScreen = () => {
             });
         }
     };
-    
+
     const prevStep = () => {
         setCurrentStep(prev => Math.max(prev - 1, 1));
     };
-    
+
     // Handle form submission
     const handleSubmit = async () => {
         if (!validateStep4()) {
             setSubmitted(true);
             return;
         }
-        
+
         setLoading(true);
-        
+
         try {
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             toast.current?.show({
                 severity: 'success',
                 summary: t('dashboard.members.addSuccess'),
                 detail: t('dashboard.members.memberAddedSuccessfully'),
                 life: 5000
             });
-            
+
             // Reset form or redirect
             setFormData({
                 fullNameArabic: '',
@@ -210,9 +208,9 @@ const AddMemberScreen = () => {
                 email: '',
                 degreeImage: null,
                 signatureImage: null,
-                registrationFee: 200,
-                subscriptionFee: 150,
-                totalAmount: 500,
+                registrationFee: 100000,
+                subscriptionFee: 75000,
+                totalAmount: 250000,
                 paymentMethod: null,
                 referenceNumber: '',
                 referenceDate: null,
@@ -221,7 +219,7 @@ const AddMemberScreen = () => {
             });
             setCurrentStep(1);
             setSubmitted(false);
-            
+
         } catch (error) {
             toast.current?.show({
                 severity: 'error',
@@ -233,12 +231,12 @@ const AddMemberScreen = () => {
             setLoading(false);
         }
     };
-    
+
     // Step 1: Personal Information
     const renderStep1 = () => (
         <Card className="mb-4">
             <h3 className="text-xl font-semibold mb-4">{t('member.personalInfo.title')}</h3>
-            
+
             {/* Profile Image Upload */}
             <div className="flex flex-col items-center mb-6">
                 <div className="mb-4">
@@ -267,7 +265,7 @@ const AddMemberScreen = () => {
                     onSelect={(e) => handleFileUpload('profileImage', e.files[0])}
                 />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Full Name in Arabic */}
                 <div className="p-field">
@@ -284,7 +282,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Full Name in English */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -300,7 +298,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Surname */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -313,7 +311,7 @@ const AddMemberScreen = () => {
                         placeholder={t('member.personalInfo.surnamePlaceholder')}
                     />
                 </div>
-                
+
                 {/* ID Type */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -330,7 +328,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* ID Number */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -346,7 +344,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Qualification */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -364,7 +362,7 @@ const AddMemberScreen = () => {
                     )}
                 </div>
             </div>
-            
+
             {/* ID Image Upload */}
             <div className="mt-6">
                 <label className="block font-medium mb-2">
@@ -390,12 +388,12 @@ const AddMemberScreen = () => {
             </div>
         </Card>
     );
-    
+
     // Step 2: Business Information
     const renderStep2 = () => (
         <Card className="mb-4">
             <h3 className="text-xl font-semibold mb-4">{t('member.businessInfo.title')}</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Business Name */}
                 <div className="p-field md:col-span-2">
@@ -412,7 +410,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Business Type */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -429,7 +427,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* License Number */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -445,7 +443,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* License Issue Date */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -460,7 +458,7 @@ const AddMemberScreen = () => {
                         showIcon
                     />
                 </div>
-                
+
                 {/* Head Office Address */}
                 <div className="p-field md:col-span-2">
                     <label className="block font-medium mb-2">
@@ -477,7 +475,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Local Branch Address */}
                 <div className="p-field md:col-span-2">
                     <label className="block font-medium mb-2">
@@ -492,7 +490,7 @@ const AddMemberScreen = () => {
                     />
                 </div>
             </div>
-            
+
             {/* License Image Upload */}
             <div className="mt-6">
                 <label className="block font-medium mb-2">
@@ -514,13 +512,13 @@ const AddMemberScreen = () => {
             </div>
         </Card>
     );
-    
+
     // Step 3: Contact Information & Attachments
     const renderStep3 = () => (
         <>
             <Card className="mb-4">
                 <h3 className="text-xl font-semibold mb-4">{t('member.contactInfo.title')}</h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Phone 1 */}
                     <div className="p-field">
@@ -531,13 +529,16 @@ const AddMemberScreen = () => {
                             value={formData.phone1}
                             onChange={(e) => handleInputChange('phone1', e.target.value)}
                             className={`w-full ${submitted && !formData.phone1 ? 'p-invalid' : ''}`}
-                            placeholder="+967 777 123 456"
+                            placeholder=" 456 123  777 967+"
+                        // locale="ar-SA"
+                        // dir='rtl'
+
                         />
                         {submitted && !formData.phone1 && (
                             <small className="p-error">{t('common.required')}</small>
                         )}
                     </div>
-                    
+
                     {/* Phone 2 */}
                     <div className="p-field">
                         <label className="block font-medium mb-2">
@@ -550,7 +551,7 @@ const AddMemberScreen = () => {
                             placeholder="+967 777 123 457"
                         />
                     </div>
-                    
+
                     {/* Mobile */}
                     <div className="p-field">
                         <label className="block font-medium mb-2">
@@ -563,7 +564,7 @@ const AddMemberScreen = () => {
                             placeholder="+967 733 123 456"
                         />
                     </div>
-                    
+
                     {/* WhatsApp */}
                     <div className="p-field">
                         <label className="block font-medium mb-2">
@@ -576,7 +577,7 @@ const AddMemberScreen = () => {
                             placeholder="+967 733 123 456"
                         />
                     </div>
-                    
+
                     {/* Email */}
                     <div className="p-field md:col-span-2">
                         <label className="block font-medium mb-2">
@@ -595,10 +596,10 @@ const AddMemberScreen = () => {
                     </div>
                 </div>
             </Card>
-            
+
             <Card className="mb-4">
                 <h3 className="text-xl font-semibold mb-4">{t('member.attachments.title')}</h3>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Degree Certificate */}
                     <div>
@@ -619,7 +620,7 @@ const AddMemberScreen = () => {
                             </div>
                         )}
                     </div>
-                    
+
                     {/* Signature & Stamp */}
                     <div>
                         <label className="block font-medium mb-2">
@@ -643,30 +644,30 @@ const AddMemberScreen = () => {
             </Card>
         </>
     );
-    
+
     // Step 4: Payment Information
     const renderStep4 = () => (
         <Card className="mb-4">
             <h3 className="text-xl font-semibold mb-4">{t('member.payment.title')}</h3>
-            
+
             {/* Fee Breakdown */}
             <Panel header={t('member.payment.feeBreakdown')} className="mb-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                     <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">${formData.registrationFee}</div>
+                        <div className="text-2xl font-bold text-blue-600">YER {formData.registrationFee}</div>
                         <div className="text-sm text-gray-600">{t('member.payment.registrationFee')}</div>
                     </div>
                     <div className="bg-green-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-green-600">${formData.subscriptionFee * 2}</div>
+                        <div className="text-2xl font-bold text-green-600">YER {formData.subscriptionFee * 2}</div>
                         <div className="text-sm text-gray-600">{t('member.payment.subscriptionFee')} (2 {t('common.years')})</div>
                     </div>
                     <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
-                        <div className="text-3xl font-bold text-purple-600">${formData.totalAmount}</div>
+                        <div className="text-2xl font-bold text-purple-600">YER {formData.totalAmount}</div>
                         <div className="text-sm text-gray-600">{t('common.total')}</div>
                     </div>
                 </div>
             </Panel>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Payment Method */}
                 <div className="p-field">
@@ -684,7 +685,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Reference Number */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -700,7 +701,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Reference Date */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -718,7 +719,7 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
-                
+
                 {/* Total Amount (Read-only) */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
@@ -727,13 +728,13 @@ const AddMemberScreen = () => {
                     <InputNumber
                         value={formData.totalAmount}
                         mode="currency"
-                        currency="USD"
+                        currency="YER"
                         locale="en-US"
                         className="w-full"
                         disabled
                     />
                 </div>
-                
+
                 {/* Notes */}
                 <div className="p-field md:col-span-2">
                     <label className="block font-medium mb-2">
@@ -748,7 +749,7 @@ const AddMemberScreen = () => {
                     />
                 </div>
             </div>
-            
+
             {/* Payment Receipt Upload */}
             <div className="mt-6">
                 <label className="block font-medium mb-2">
@@ -770,7 +771,7 @@ const AddMemberScreen = () => {
             </div>
         </Card>
     );
-    
+
     // Step indicator component
     const StepIndicator = () => (
         <div className="mb-6">
@@ -779,8 +780,8 @@ const AddMemberScreen = () => {
                     <div key={step} className="flex items-center">
                         <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm
-                                ${step <= currentStep 
-                                    ? 'bg-blue-600 text-white' 
+                                ${step <= currentStep
+                                    ? 'bg-blue-600 text-white'
                                     : 'bg-gray-200 text-gray-500'
                                 }`}
                         >
@@ -793,8 +794,8 @@ const AddMemberScreen = () => {
                         {step < 4 && (
                             <div
                                 className={`h-1 w-24 mx-2 
-                                    ${step < currentStep 
-                                        ? 'bg-blue-600' 
+                                    ${step < currentStep
+                                        ? 'bg-blue-600'
                                         : 'bg-gray-200'
                                     }`}
                             />
@@ -802,7 +803,7 @@ const AddMemberScreen = () => {
                     </div>
                 ))}
             </div>
-            
+
             <div className="grid grid-cols-4 gap-2 text-center text-xs">
                 <div className={currentStep === 1 ? 'font-bold text-blue-600' : 'text-gray-500'}>
                     {t('member.personalInfo.title')}
@@ -817,19 +818,19 @@ const AddMemberScreen = () => {
                     {t('member.payment.title')}
                 </div>
             </div>
-            
-            <ProgressBar 
-                value={(currentStep / totalSteps) * 100} 
-                className="mt-4" 
-                style={{ height: '6px' }}
+
+            <ProgressBar
+                value={(currentStep / totalSteps) * 100}
+                className="mt-4"
+                style={{ height: '17px' }}
             />
         </div>
     );
-    
+
     return (
         <div className="add-member-screen p-4" dir="rtl">
             <Toast ref={toast} position="top-center" />
-            
+
             {/* Header */}
             <div className="mb-6">
                 <div className="flex items-center justify-between">
@@ -847,17 +848,17 @@ const AddMemberScreen = () => {
                     />
                 </div>
             </div>
-            
+
             {/* Step Indicator */}
             <StepIndicator />
-            
+
             {/* Form Content */}
             <div className="max-w-4xl mx-auto">
                 {currentStep === 1 && renderStep1()}
                 {currentStep === 2 && renderStep2()}
                 {currentStep === 3 && renderStep3()}
                 {currentStep === 4 && renderStep4()}
-                
+
                 {/* Navigation Buttons */}
                 <Card>
                     <div className="flex justify-between items-center">
@@ -868,11 +869,11 @@ const AddMemberScreen = () => {
                             className="p-button-outlined"
                             disabled={currentStep === 1}
                         />
-                        
+
                         <div className="text-sm text-gray-500">
                             {t('common.step')} {currentStep} {t('common.of')} {totalSteps}
                         </div>
-                        
+
                         {currentStep < totalSteps ? (
                             <Button
                                 label={t('common.next')}
@@ -893,7 +894,7 @@ const AddMemberScreen = () => {
                     </div>
                 </Card>
             </div>
-            
+
             {/* Summary Panel (visible on last step) */}
             {currentStep === 4 && (
                 <Card className="mt-6 max-w-4xl mx-auto">
@@ -908,7 +909,7 @@ const AddMemberScreen = () => {
                                 <div><strong>{t('member.personalInfo.qualification')}:</strong> {qualifications.find(q => q.value === formData.qualification)?.label}</div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 className="font-medium text-gray-800 mb-2">{t('member.businessInfo.title')}</h4>
                             <div className="space-y-1 text-sm">
@@ -917,7 +918,7 @@ const AddMemberScreen = () => {
                                 <div><strong>{t('member.businessInfo.licenseNumber')}:</strong> {formData.licenseNumber}</div>
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 className="font-medium text-gray-800 mb-2">{t('member.contactInfo.title')}</h4>
                             <div className="space-y-1 text-sm">
@@ -926,7 +927,7 @@ const AddMemberScreen = () => {
                                 {formData.mobile && <div><strong>{t('member.contactInfo.mobile')}:</strong> {formData.mobile}</div>}
                             </div>
                         </div>
-                        
+
                         <div>
                             <h4 className="font-medium text-gray-800 mb-2">{t('member.payment.title')}</h4>
                             <div className="space-y-1 text-sm">
@@ -936,7 +937,7 @@ const AddMemberScreen = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Uploaded Files Summary */}
                     <div className="mt-6">
                         <h4 className="font-medium text-gray-800 mb-2">{t('member.attachments.uploadedFiles')}</h4>
@@ -973,7 +974,7 @@ const AddMemberScreen = () => {
                             )}
                         </div>
                     </div>
-                    
+
                     {/* Important Notes */}
                     <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                         <div className="flex items-start">
