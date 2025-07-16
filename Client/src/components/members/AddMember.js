@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
@@ -14,6 +14,7 @@ import { ProgressBar } from 'primereact/progressbar';
 import { Avatar } from 'primereact/avatar';
 import { Panel } from 'primereact/panel';
 import { Checkbox } from 'primereact/checkbox';
+import { Message } from 'primereact/message';
 
 const AddMemberScreen = () => {
     const { t } = useTranslation();
@@ -58,12 +59,21 @@ const AddMemberScreen = () => {
         // Payment Information
         registrationFee: 100000,
         subscriptionFee: 75000,
-        totalAmount: 250000, // registration + 2 years subscription
+        totalAmount: 250000,
         paymentMethod: null,
         referenceNumber: '',
         referenceDate: null,
         paymentReceipt: null,
         notes: ''
+    });
+
+    // Fee calculation state
+    const [feeCalculation, setFeeCalculation] = useState({
+        registrationFee: 100000,
+        subscriptionYears: [],
+        subscriptionAmount: 0,
+        totalAmount: 100000,
+        calculationDetails: ''
     });
 
     // Validation state
@@ -89,9 +99,92 @@ const AddMemberScreen = () => {
 
     const paymentMethods = [
         { label: t('common.cash'), value: 'cash' },
-        { label: t('common.bankTransfer'), value: 'bank_transfer' },
-        { label: t('common.check'), value: 'check' }
+        { label: t('common.bankTransfer'), value: 'bank_transfer' }
     ];
+
+    // Fee calculation function
+    const calculateFees = (licenseIssueDate) => {
+        if (!licenseIssueDate) {
+            // Reset to default if no date
+            const defaultCalculation = {
+                registrationFee: 100000,
+                subscriptionYears: [2024, 2025],
+                subscriptionAmount: 150000, // 2 years * 75000
+                totalAmount: 250000,
+                calculationDetails: t('member.payment.defaultCalculation')
+            };
+            setFeeCalculation(defaultCalculation);
+            setFormData(prev => ({
+                ...prev,
+                registrationFee: defaultCalculation.registrationFee,
+                totalAmount: defaultCalculation.totalAmount
+            }));
+            return;
+        }
+
+        const issueDate = new Date(licenseIssueDate);
+        const currentYear = new Date().getFullYear(); // 2025
+        const associationStartYear = 2024;
+        const licenseYear = issueDate.getFullYear();
+
+        const registrationFee = 100000;
+        const annualSubscriptionFee = 75000;
+        let subscriptionYears = [];
+        let subscriptionAmount = 0;
+        let calculationDetails = '';
+
+        if (licenseYear <= associationStartYear) {
+            // License issued in 2024 or before
+            // Pay registration + subscription from 2024 to current year (2025)
+            subscriptionYears = [];
+            for (let year = associationStartYear; year <= currentYear; year++) {
+                subscriptionYears.push(year);
+            }
+            subscriptionAmount = subscriptionYears.length * annualSubscriptionFee;
+            calculationDetails = t('member.payment.pre2024Calculation', {
+                years: subscriptionYears.join(', '),
+                count: subscriptionYears.length
+            });
+        } else {
+            // License issued after 2024
+            // Pay registration + subscription from license year to current year
+            subscriptionYears = [];
+            for (let year = licenseYear; year <= currentYear; year++) {
+                subscriptionYears.push(year);
+            }
+            subscriptionAmount = subscriptionYears.length * annualSubscriptionFee;
+            calculationDetails = t('member.payment.post2024Calculation', {
+                licenseYear: licenseYear,
+                years: subscriptionYears.join(', '),
+                count: subscriptionYears.length
+            });
+        }
+
+        const totalAmount = registrationFee + subscriptionAmount;
+
+        const calculation = {
+            registrationFee,
+            subscriptionYears,
+            subscriptionAmount,
+            totalAmount,
+            calculationDetails
+        };
+
+        setFeeCalculation(calculation);
+        setFormData(prev => ({
+            ...prev,
+            registrationFee,
+            totalAmount
+        }));
+
+        // Show toast notification about fee calculation
+        toast.current?.show({
+            severity: 'info',
+            summary: t('member.payment.feeCalculated'),
+            detail: calculationDetails,
+            life: 5000
+        });
+    };
 
     // Handle input changes
     const handleInputChange = (field, value) => {
@@ -99,7 +192,17 @@ const AddMemberScreen = () => {
             ...prev,
             [field]: value
         }));
+
+        // Trigger fee calculation when license issue date changes
+        if (field === 'licenseIssueDate') {
+            calculateFees(value);
+        }
     };
+
+    // Initialize fee calculation on component mount
+    useEffect(() => {
+        calculateFees(formData.licenseIssueDate);
+    }, []);
 
     // Handle file uploads
     const handleFileUpload = (field, file) => {
@@ -219,6 +322,8 @@ const AddMemberScreen = () => {
             });
             setCurrentStep(1);
             setSubmitted(false);
+            // Reset fee calculation
+            calculateFees(null);
 
         } catch (error) {
             toast.current?.show({
@@ -282,6 +387,19 @@ const AddMemberScreen = () => {
                         <small className="p-error">{t('common.required')}</small>
                     )}
                 </div>
+                {/* Surname */}
+                <div className="p-field">
+                    <label className="block font-medium mb-2">
+                        {t('member.personalInfo.surname')}
+                    </label>
+                    <InputText
+                        value={formData.surname}
+                        onChange={(e) => handleInputChange('surname', e.target.value)}
+                        className="w-full"
+                        placeholder={t('member.personalInfo.surnamePlaceholder')}
+                    />
+                </div>
+
 
                 {/* Full Name in English */}
                 <div className="p-field">
@@ -297,19 +415,6 @@ const AddMemberScreen = () => {
                     {submitted && !formData.fullNameEnglish && (
                         <small className="p-error">{t('common.required')}</small>
                     )}
-                </div>
-
-                {/* Surname */}
-                <div className="p-field">
-                    <label className="block font-medium mb-2">
-                        {t('member.personalInfo.surname')}
-                    </label>
-                    <InputText
-                        value={formData.surname}
-                        onChange={(e) => handleInputChange('surname', e.target.value)}
-                        className="w-full"
-                        placeholder={t('member.personalInfo.surnamePlaceholder')}
-                    />
                 </div>
 
                 {/* ID Type */}
@@ -447,16 +552,20 @@ const AddMemberScreen = () => {
                 {/* License Issue Date */}
                 <div className="p-field">
                     <label className="block font-medium mb-2">
-                        {t('member.businessInfo.licenseIssueDate')}
+                        {t('member.businessInfo.licenseIssueDate')} *
                     </label>
                     <Calendar
                         value={formData.licenseIssueDate}
                         onChange={(e) => handleInputChange('licenseIssueDate', e.value)}
-                        className="w-full"
+                        className={`w-full ${submitted && !formData.licenseIssueDate ? 'p-invalid' : ''}`}
                         dateFormat="yy-mm-dd"
                         placeholder={t('common.selectDate')}
                         showIcon
+                        maxDate={new Date()} // Can't select future dates
                     />
+                    {submitted && !formData.licenseIssueDate && (
+                        <small className="p-error">{t('common.required')}</small>
+                    )}
                 </div>
 
                 {/* Head Office Address */}
@@ -490,6 +599,17 @@ const AddMemberScreen = () => {
                     />
                 </div>
             </div>
+
+            {/* Fee Calculation Info */}
+            {formData.licenseIssueDate && (
+                <div className="mt-6">
+                    <Message
+                        severity="info"
+                        text={feeCalculation.calculationDetails}
+                        className="w-full"
+                    />
+                </div>
+            )}
 
             {/* License Image Upload */}
             <div className="mt-6">
@@ -529,10 +649,7 @@ const AddMemberScreen = () => {
                             value={formData.phone1}
                             onChange={(e) => handleInputChange('phone1', e.target.value)}
                             className={`w-full ${submitted && !formData.phone1 ? 'p-invalid' : ''}`}
-                            placeholder=" 456 123  777 967+"
-                        // locale="ar-SA"
-                        // dir='rtl'
-
+                            placeholder="+967 777 123 456"
                         />
                         {submitted && !formData.phone1 && (
                             <small className="p-error">{t('common.required')}</small>
@@ -652,19 +769,61 @@ const AddMemberScreen = () => {
 
             {/* Fee Breakdown */}
             <Panel header={t('member.payment.feeBreakdown')} className="mb-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-blue-600">YER {formData.registrationFee}</div>
-                        <div className="text-sm text-gray-600">{t('member.payment.registrationFee')}</div>
+                <div className="space-y-4">
+                    {/* Registration Fee */}
+                    <div className="flex justify-between items-center bg-blue-50 p-4 rounded-lg">
+                        <div>
+                            <div className="font-medium text-blue-800">{t('member.payment.registrationFee')}</div>
+                            <div className="text-sm text-blue-600">{t('member.payment.oneTimeFee')}</div>
+                        </div>
+                        <div className="text-xl font-bold text-blue-600">
+                            {feeCalculation.registrationFee.toLocaleString()} YER
+                        </div>
                     </div>
+
+                    {/* Subscription Fees */}
                     <div className="bg-green-50 p-4 rounded-lg">
-                        <div className="text-2xl font-bold text-green-600">YER {formData.subscriptionFee * 2}</div>
-                        <div className="text-sm text-gray-600">{t('member.payment.subscriptionFee')} (2 {t('common.years')})</div>
+                        <div className="flex justify-between items-center mb-2">
+                            <div>
+                                <div className="font-medium text-green-800">{t('member.payment.subscriptionFee')}</div>
+                                <div className="text-sm text-green-600">
+                                    {feeCalculation.subscriptionYears.length > 0
+                                        ? `${feeCalculation.subscriptionYears.length} ${t('common.years')} (${feeCalculation.subscriptionYears.join(', ')})`
+                                        : t('member.payment.noSubscriptionYet')
+                                    }
+                                </div>
+                            </div>
+                            <div className="text-xl font-bold text-green-600">
+                                {feeCalculation.subscriptionAmount.toLocaleString()} YER
+                            </div>
+                        </div>
+                        {feeCalculation.subscriptionYears.length > 0 && (
+                            <div className="text-xs text-green-600">
+                                {feeCalculation.subscriptionYears.map(year => (
+                                    <div key={year} className="flex justify-between">
+                                        <span>{year}:</span>
+                                        <span>75,000 YER</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
+
+                    {/* Total Amount */}
                     <div className="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
-                        <div className="text-2xl font-bold text-purple-600">YER {formData.totalAmount}</div>
-                        <div className="text-sm text-gray-600">{t('common.total')}</div>
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <div className="font-bold text-purple-800">{t('common.total')}</div>
+                                <div className="text-sm text-purple-600">{t('member.payment.totalDescription')}</div>
+                            </div>
+                            <div className="text-2xl font-bold text-purple-600">
+                                {feeCalculation.totalAmount.toLocaleString()} YER
+                            </div>
+                        </div>
                     </div>
+
+                    {/* Calculation Details */}
+
                 </div>
             </Panel>
 
@@ -714,6 +873,7 @@ const AddMemberScreen = () => {
                         dateFormat="yy-mm-dd"
                         placeholder={t('common.selectDate')}
                         showIcon
+                        maxDate={new Date()} // Can't select future dates
                     />
                     {submitted && !formData.referenceDate && (
                         <small className="p-error">{t('common.required')}</small>
@@ -726,7 +886,7 @@ const AddMemberScreen = () => {
                         {t('member.payment.amount')}
                     </label>
                     <InputNumber
-                        value={formData.totalAmount}
+                        value={feeCalculation.totalAmount}
                         mode="currency"
                         currency="YER"
                         locale="en-US"
@@ -916,6 +1076,9 @@ const AddMemberScreen = () => {
                                 <div><strong>{t('member.businessInfo.businessName')}:</strong> {formData.businessName}</div>
                                 <div><strong>{t('member.businessInfo.businessType')}:</strong> {businessTypes.find(b => b.value === formData.businessType)?.label}</div>
                                 <div><strong>{t('member.businessInfo.licenseNumber')}:</strong> {formData.licenseNumber}</div>
+                                {formData.licenseIssueDate && (
+                                    <div><strong>{t('member.businessInfo.licenseIssueDate')}:</strong> {formData.licenseIssueDate.toLocaleDateString()}</div>
+                                )}
                             </div>
                         </div>
 
@@ -933,7 +1096,8 @@ const AddMemberScreen = () => {
                             <div className="space-y-1 text-sm">
                                 <div><strong>{t('member.payment.paymentMethod')}:</strong> {paymentMethods.find(p => p.value === formData.paymentMethod)?.label}</div>
                                 <div><strong>{t('member.payment.referenceNumber')}:</strong> {formData.referenceNumber}</div>
-                                <div><strong>{t('member.payment.amount')}:</strong> ${formData.totalAmount}</div>
+                                <div><strong>{t('member.payment.amount')}:</strong> {feeCalculation.totalAmount.toLocaleString()} YER</div>
+                                <div><strong>{t('member.payment.subscriptionYears')}:</strong> {feeCalculation.subscriptionYears.join(', ')}</div>
                             </div>
                         </div>
                     </div>
@@ -982,7 +1146,7 @@ const AddMemberScreen = () => {
                             <div className="text-sm">
                                 <strong className="text-yellow-800">{t('common.importantNote')}:</strong>
                                 <ul className="mt-2 space-y-1 text-yellow-700">
-                                    <li>• {t('member.notes.initialPayment')}</li>
+                                    <li>• {t('member.notes.feeCalculation')}</li>
                                     <li>• {t('member.notes.documentVerification')}</li>
                                     <li>• {t('member.notes.membershipCard')}</li>
                                 </ul>
