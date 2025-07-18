@@ -6,7 +6,7 @@ const verifyToken = async (req, res, next) => {
     try {
         // Get token from header
         const authHeader = req.headers.authorization;
-        
+
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({
                 success: false,
@@ -36,7 +36,7 @@ const verifyToken = async (req, res, next) => {
 
         // Check if user still exists and is active
         const userQuery = `
-            SELECT id, username, role, isactive, token_version 
+            SELECT id, username, role, isactive
             FROM users 
             WHERE id = $1 AND isactive = true
         `;
@@ -49,15 +49,15 @@ const verifyToken = async (req, res, next) => {
             });
         }
 
-        const user = userResult.rows[0];
+        // const user = userResult.rows[0];
 
         // Optional: Check token version for additional security
-        if (user.token_version && decoded.tokenVersion !== user.token_version) {
-            return res.status(401).json({
-                success: false,
-                message: 'انتهت صلاحية الجلسة'
-            });
-        }
+        // if (user.token_version && decoded.tokenVersion !== user.token_version) {
+        //     return res.status(401).json({
+        //         success: false,
+        //         message: 'انتهت صلاحية الجلسة'
+        //     });
+        // }
 
         // Add user info to request object
         req.user = {
@@ -70,7 +70,7 @@ const verifyToken = async (req, res, next) => {
         next();
     } catch (error) {
         console.error('Token verification error:', error);
-        
+
         if (error.name === 'JsonWebTokenError') {
             return res.status(401).json({
                 success: false,
