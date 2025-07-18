@@ -10,30 +10,9 @@ const __dirname = path.dirname(__filename);
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        let uploadPath = '';
-
-        switch (file.fieldname) {
-            case 'profileImage':
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/profile`);
-                break;
-            case 'idImage':
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/documents/ids`);
-                break;
-            case 'licenseImage':
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/documents/licenses`);
-                break;
-            case 'degreeImage':
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/documents/degrees`);
-                break;
-            case 'signatureImage':
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/documents/signatures`);
-                break;
-            case 'paymentReceipt':
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/receipts`);
-                break;
-            default:
-                uploadPath = path.join(__dirname, `../uploads/users/${req.user.userId}/misc`);
-        }
+        // We'll get memberId from req.memberId (set in controller after member creation)
+        const memberId = req.memberId || 'temp';
+        const uploadPath = path.join(__dirname, `../uploads/${memberId}`);
 
         fs.mkdirSync(uploadPath, { recursive: true });
         cb(null, uploadPath);

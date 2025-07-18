@@ -1,7 +1,12 @@
 // Server/controllers/memberController.js
 import pool from '../db.js';
 import { getRelativeFilePath, getAttachmentTypeId } from '../utils/memberHelpers.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const addMember = async (req, res) => {
     const client = await pool.connect();
 
@@ -40,29 +45,95 @@ const addMember = async (req, res) => {
         const parsedLicenseDate = licenseIssueDate ? new Date(licenseIssueDate) : null;
         const parsedReferenceDate = new Date(referenceDate);
 
-        const profileImagePath = req.files?.profileImage?.[0] ? getRelativeFilePath(req.files.profileImage[0].path) : null;
-        const idImagePath = req.files?.idImage?.[0] ? getRelativeFilePath(req.files.idImage[0].path) : null;
-
-        // 1. Insert member
+        // 1. Insert member first (without file paths)
         const memberQuery = `
             INSERT INTO members (
                 fullname, surname, businessname, businesstypeid, headofficeaddress,
                 localbranchaddress, email, licensenumber, licenseissuedate,
-                idtypeid, idnumber, idimagepath, qualificationid, status,
-                profileimagepath, createdbyuserid, createdat
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, CURRENT_TIMESTAMP)
+                idtypeid, idnumber, qualificationid, status,
+                createdbyuserid, createdat
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, CURRENT_TIMESTAMP)
             RETURNING id
         `;
 
         const memberValues = [
             fullname, surname || null, businessName, parseInt(businessType),
             headOfficeAddress, localBranchAddress || null, email, licenseNumber,
-            parsedLicenseDate, parseInt(idType), idNumber, idImagePath,
-            parseInt(qualification), 'Active', profileImagePath, req.user.userId
+            parsedLicenseDate, parseInt(idType), idNumber,
+            parseInt(qualification), 'Active', req.user.userId
         ];
 
         const memberResult = await client.query(memberQuery, memberValues);
         const memberId = memberResult.rows[0].id;
+
+        // 2. Handle file uploads with member ID
+        let profileImagePath = null;
+        let idImagePath = null;
+
+        if (req.files) {
+            // Create member directory
+            const memberUploadPath = path.join(__dirname, `../uploads/${memberId}`);
+            fs.mkdirSync(memberUploadPath, { recursive: true });
+
+            // Move and rename files to member directory
+            const filePromises = [];
+
+            Object.entries(req.files).forEach(([fieldName, files]) => {
+                if (files && files[0]) {
+                    const file = files[0];
+                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+                    const ext = path.extname(file.originalname);
+                    const newFileName = `${fieldName}-${uniqueSuffix}${ext}`;
+                    const newFilePath = path.join(memberUploadPath, newFileName);
+
+                    // Move file from temp location to member directory
+                    const movePromise = fs.promises.rename(file.path, newFilePath).then(() => {
+                        const relativePath = `uploads/${memberId}/${newFileName}`;
+
+                        // Store paths for database update
+                        if (fieldName === 'profileImage') {
+                            profileImagePath = relativePath;
+                        } else if (fieldName === 'idImage') {
+                            idImagePath = relativePath;
+                        }
+
+                        return { fieldName, relativePath, file };
+                    });
+
+                    filePromises.push(movePromise);
+                }
+            });
+
+            // Wait for all files to be moved
+            const movedFiles = await Promise.all(filePromises);
+
+            // 3. Update member with file paths
+            if (profileImagePath || idImagePath) {
+                const updateMemberQuery = `
+                    UPDATE members SET 
+                        profileimagepath = COALESCE($1, profileimagepath),
+                        idimagepath = COALESCE($2, idimagepath)
+                    WHERE id = $3
+                `;
+                await client.query(updateMemberQuery, [profileImagePath, idImagePath, memberId]);
+            }
+
+            // 4. Insert attachments for other files
+            const attachmentPromises = movedFiles
+                .filter(({ fieldName }) => !['profileImage', 'idImage'].includes(fieldName))
+                .map(({ fieldName, relativePath }) => {
+                    const attachmentTypeId = getAttachmentTypeId(fieldName);
+                    if (attachmentTypeId) {
+                        const attachmentQuery = `
+                            INSERT INTO attachments (memberid, attachmenttypeid, filepath, uploadedbyuserid)
+                            VALUES ($1, $2, $3, $4)
+                        `;
+                        return client.query(attachmentQuery, [memberId, attachmentTypeId, relativePath, req.user.userId]);
+                    }
+                });
+
+            await Promise.all(attachmentPromises.filter(Boolean));
+        }
 
         // 2. Insert contact information
         // Replace the existing contact query with multiple inserts for each contact type
@@ -108,27 +179,39 @@ const addMember = async (req, res) => {
                     INSERT INTO subscriptions (memberid, paymentid, subscriptionyear, startdate, enddate, isactive)
                     VALUES ($1, $2, $3, $4, $5, $6)
                 `;
-                const startDate = new Date(year, 0, 1);
-                const endDate = new Date(year, 11, 31);
-                await client.query(subscriptionQuery, [memberId, paymentId, year, startDate, endDate, true]);
+                let startDate = null;
+                let endDate = null;
+                let isactive = false;
+                if (year === 2024) {
+                    startDate = new Date(year, 0, 1);
+                    endDate = new Date(year, 11, 31);
+                } else {
+                    const today = new Date();              // Today's date: 18/7/2025
+                    startDate = today;
+                    endDate = new Date(today);
+                    endDate.setFullYear(endDate.getFullYear() + 1);
+                    endDate.setDate(endDate.getDate() - 1); // Make it exactly one year minus 1 day: 17/7/2026
+                    isactive = true;
+                }
+                await client.query(subscriptionQuery, [memberId, paymentId, year, startDate, endDate, isactive]);
             }
         }
 
         // 5. Insert attachments
-        const fileFields = ['licenseImage', 'degreeImage', 'signatureImage', 'paymentReceipt'];
-        for (const fieldName of fileFields) {
-            if (req.files?.[fieldName]?.[0]) {
-                const file = req.files[fieldName][0];
-                const attachmentTypeId = getAttachmentTypeId(fieldName);
-                if (attachmentTypeId) {
-                    const attachmentQuery = `
-                        INSERT INTO attachments (memberid, attachmenttypeid, filepath, uploadedbyuserid)
-                        VALUES ($1, $2, $3, $4)
-                    `;
-                    await client.query(attachmentQuery, [memberId, attachmentTypeId, getRelativeFilePath(file.path), req.user.userId]);
-                }
-            }
-        }
+        // const fileFields = ['licenseImage', 'degreeImage', 'signatureImage', 'paymentReceipt'];
+        // for (const fieldName of fileFields) {
+        //     if (req.files?.[fieldName]?.[0]) {
+        //         const file = req.files[fieldName][0];
+        //         const attachmentTypeId = getAttachmentTypeId(fieldName);
+        //         if (attachmentTypeId) {
+        //             const attachmentQuery = `
+        //                 INSERT INTO attachments (memberid, attachmenttypeid, filepath, uploadedbyuserid)
+        //                 VALUES ($1, $2, $3, $4)
+        //             `;
+        //             await client.query(attachmentQuery, [memberId, attachmentTypeId, getRelativeFilePath(file.path), req.user.userId]);
+        //         }
+        //     }
+        // }
 
         await client.query('COMMIT');
 
