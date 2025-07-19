@@ -15,6 +15,7 @@ import { Avatar } from 'primereact/avatar';
 import { Panel } from 'primereact/panel';
 import { Checkbox } from 'primereact/checkbox';
 import { Message } from 'primereact/message';
+import apiService from '../../services/apiService';
 
 const AddMemberScreen = () => {
     const { t } = useTranslation();
@@ -277,17 +278,65 @@ const AddMemberScreen = () => {
         setLoading(true);
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Prepare data for API
+            const memberData = {
+                // Personal Information
+                fullNameArabic: formData.fullNameArabic,
+                fullNameEnglish: formData.fullNameEnglish,
+                surname: formData.surname,
+                idType: formData.idType,
+                idNumber: formData.idNumber,
+                qualification: formData.qualification,
 
+                // Business Information
+                businessName: formData.businessName,
+                businessType: formData.businessType,
+                headOfficeAddress: formData.headOfficeAddress,
+                localBranchAddress: formData.localBranchAddress,
+                licenseNumber: formData.licenseNumber,
+                licenseIssueDate: formData.licenseIssueDate,
+
+                // Contact Information
+                phone1: formData.phone1,
+                phone2: formData.phone2,
+                mobile: formData.mobile,
+                whatsapp: formData.whatsapp,
+                email: formData.email,
+
+                // Payment Information
+                paymentMethod: formData.paymentMethod,
+                referenceNumber: formData.referenceNumber,
+                referenceDate: formData.referenceDate,
+                registrationFee: feeCalculation.registrationFee,
+                totalAmount: feeCalculation.totalAmount,
+                subscriptionYears: feeCalculation.subscriptionYears,
+                notes: formData.notes,
+
+                // File attachments
+                profileImage: formData.profileImage,
+                idImage: formData.idImage,
+                licenseImage: formData.licenseImage,
+                degreeImage: formData.degreeImage,
+                signatureImage: formData.signatureImage,
+                paymentReceipt: formData.paymentReceipt
+            };
+
+            console.log('Submitting member data:', memberData);
+
+            // Call API service
+            const response = await apiService.createMember(memberData);
+
+            console.log('Member creation response:', response);
+
+            // Show success message
             toast.current?.show({
                 severity: 'success',
                 summary: t('dashboard.members.addSuccess'),
-                detail: t('dashboard.members.memberAddedSuccessfully'),
+                detail: response.message || t('dashboard.members.memberAddedSuccessfully'),
                 life: 5000
             });
 
-            // Reset form or redirect
+            // Reset form
             setFormData({
                 fullNameArabic: '',
                 fullNameEnglish: '',
@@ -320,18 +369,36 @@ const AddMemberScreen = () => {
                 paymentReceipt: null,
                 notes: ''
             });
+
             setCurrentStep(1);
             setSubmitted(false);
+
             // Reset fee calculation
             calculateFees(null);
 
+            // Optionally redirect to member list or member details
+            // window.location.href = '/members';
+
         } catch (error) {
+            console.error('Member creation error:', error);
+
+            // Show error message with details from API
+            const errorMessage = error.userMessage ||
+                error.response?.data?.message ||
+                error.message ||
+                t('dashboard.members.addError');
+
             toast.current?.show({
                 severity: 'error',
                 summary: t('common.error'),
-                detail: t('dashboard.members.addError'),
-                life: 3000
+                detail: errorMessage,
+                life: 5000
             });
+
+            // If validation errors, show them
+            if (error.response?.data?.missingFields) {
+                console.log('Missing fields:', error.response.data.missingFields);
+            }
         } finally {
             setLoading(false);
         }

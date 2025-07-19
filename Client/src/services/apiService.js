@@ -216,9 +216,65 @@ class ApiService {
         }
     }
 
+    // Update the createMember method in apiService.js
+
     async createMember(memberData) {
         try {
-            const response = await this.api.post('/members', memberData);
+            console.log('👤 Creating new member...');
+
+            // Create FormData for file uploads
+            const formData = new FormData();
+
+            // Add text fields
+            const textFields = [
+                'fullNameArabic', 'fullNameEnglish', 'surname', 'idType', 'idNumber',
+                'qualification', 'businessName', 'businessType', 'headOfficeAddress',
+                'localBranchAddress', 'licenseNumber', 'licenseIssueDate', 'phone1',
+                'phone2', 'mobile', 'whatsapp', 'email', 'paymentMethod', 'referenceNumber',
+                'referenceDate', 'registrationFee', 'totalAmount', 'notes'
+            ];
+
+            textFields.forEach(field => {
+                if (memberData[field] !== null && memberData[field] !== undefined) {
+                    // Handle dates
+                    if (field === 'licenseIssueDate' || field === 'referenceDate') {
+                        if (memberData[field] instanceof Date) {
+                            formData.append(field, memberData[field].toISOString().split('T')[0]);
+                        } else {
+                            formData.append(field, memberData[field]);
+                        }
+                    } else {
+                        formData.append(field, memberData[field]);
+                    }
+                }
+            });
+
+            // Add subscription years as JSON string
+            if (memberData.subscriptionYears && Array.isArray(memberData.subscriptionYears)) {
+                formData.append('subscriptionYears', JSON.stringify(memberData.subscriptionYears));
+            }
+
+            // Add file fields
+            const fileFields = [
+                'profileImage', 'idImage', 'licenseImage', 'degreeImage',
+                'signatureImage', 'paymentReceipt'
+            ];
+
+            fileFields.forEach(field => {
+                if (memberData[field] && memberData[field] instanceof File) {
+                    formData.append(field, memberData[field]);
+                }
+            });
+
+            // Use multipart/form-data for file uploads
+            const response = await this.api.post('/members/add', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                timeout: 30000, // 30 seconds for file uploads
+            });
+
+            console.log('✅ Member created successfully');
             return response.data;
         } catch (error) {
             console.error('❌ Create member API error:', error);
