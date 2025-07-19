@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url'
 import memberRoutes from './routes/memberRoutes.js';
-import router from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import { PORT } from './config.js';
 import { startTokenCleanup } from './utils/tokenCleanup.js';
 
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
     res.send(`YACPA Management System API - ${req.hostname} || ${req.ip} || ${req.ips}`);
 });
 
-app.use('/api/auth', router);
+app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
 
 // Start the server

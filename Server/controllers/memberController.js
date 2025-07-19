@@ -297,4 +297,193 @@ const getMembers = async (req, res) => {
     }
 };
 
-export default { addMember, getMembers };
+// Add this to Server/controllers/memberController.js
+
+const getMember = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Extract numeric ID from the formatted ID (e.g., "M1001" -> 1001)
+        const numericId = parseInt(id.replace('M', ''));
+
+        if (!numericId || isNaN(numericId)) {
+            return res.status(400).json({
+                success: false,
+                message: 'معرف العضو غير صالح'
+            });
+        }
+
+        // Main member query with joins
+        const memberQuery = `
+            SELECT 
+                m.id,
+                m.fullname,
+                m.surname,
+                m.businessname,
+                bt.name as businesstype,
+                m.email,
+                m.headofficeaddress,
+                m.localbranchaddress,
+                m.licensenumber,
+                m.licenseissuedate,
+                it.name as idtype,
+                m.idnumber,
+                q.name as qualification,
+                m.profileimagepath,
+                m.idimagepath,
+                m.status,
+                m.createdat,
+                u.username as createdby
+            FROM members m
+            LEFT JOIN businesstypes bt ON m.businesstypeid = bt.id
+            LEFT JOIN idtypes it ON m.idtypeid = it.id
+            LEFT JOIN qualifications q ON m.qualificationid = q.id
+            LEFT JOIN users u ON m.createdbyuserid = u.id
+            WHERE m.id = $1
+        `;
+
+        const memberResult = await pool.query(memberQuery, [numericId]);
+
+        if (memberResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'العضو غير موجود'
+            });
+        }
+
+        const memberData = memberResult.rows[0];
+
+        // Get contact information
+        const contactQuery = `
+            SELECT contacttype, contactvalue, isprimary
+            FROM contactinformation
+            WHERE memberid = $1
+        `;
+        const contactResult = await pool.query(contactQuery, [numericId]);
+
+        // Get attachments
+        const attachmentQuery = `
+            SELECT 
+                at.name as type,
+                a.filepath as path,
+                a.uploadedat as uploaddate
+            FROM attachments a
+            LEFT JOIN attachmenttypes at ON a.attachmenttypeid = at.id
+            WHERE a.memberid = $1
+        `;
+        const attachmentResult = await pool.query(attachmentQuery, [numericId]);
+
+        // Get subscriptions with payments
+        const subscriptionQuery = `
+            SELECT 
+                s.id,
+                s.startdate,
+                s.enddate,
+                s.paymentid,
+                s.isactive
+            FROM subscriptions s
+            WHERE s.memberid = $1
+            ORDER BY s.startdate DESC
+        `;
+        const subscriptionResult = await pool.query(subscriptionQuery, [numericId]);
+
+        // Get payments
+        const paymentQuery = `
+            SELECT 
+                p.id,
+                p.referencedate as date,
+                p.amount,
+                pp.name as type,
+                p.referencenumber,
+                pt.name as paymentmethod,
+                p.notes
+            FROM payments p
+            LEFT JOIN paymentpurposes pp ON p.paymentpurposeid = pp.id
+            LEFT JOIN paymenttypes pt ON p.paymenttypeid = pt.id
+            WHERE p.memberid = $1
+            ORDER BY p.referencedate DESC
+        `;
+        const paymentResult = await pool.query(paymentQuery, [numericId]);
+
+        // Process contact information
+        const contacts = contactResult.rows.reduce((acc, contact) => {
+            const type = contact.contacttype.toLowerCase();
+            if (type === 'phone1') acc.phone1 = contact.contactvalue;
+            else if (type === 'phone2') acc.phone2 = contact.contactvalue;
+            else if (type === 'mobile') acc.mobile = contact.contactvalue;
+            else if (type === 'whatsapp') acc.whatsapp = contact.contactvalue;
+            return acc;
+        }, {});
+
+        // Process attachments
+        const attachments = attachmentResult.rows.map(att => ({
+            type: att.type?.toLowerCase() || 'unknown',
+            path: att.path,
+            uploadDate: att.uploaddate ? new Date(att.uploaddate).toLocaleDateString('sv-SE').split('T')[0] : null
+        }));
+
+        // Process subscriptions
+        const subscriptions = subscriptionResult.rows.map(sub => ({
+            id: `SUB${sub.id.toString().padStart(4, '0')}`,
+            startDate: sub.startdate ? new Date(sub.startdate).toLocaleDateString('sv-SE').split('T')[0] : null,
+            endDate: sub.enddate ? new Date(sub.enddate).toLocaleDateString('sv-SE').split('T')[0] : null,
+            paymentId: sub.paymentid ? `P${sub.paymentid.toString().padStart(4, '0')}` : null,
+            isActive: sub.isactive
+        }));
+
+        // Process payments
+        const payments = paymentResult.rows.map(payment => ({
+            id: `P${payment.id.toString().padStart(4, '0')}`,
+            date: payment.date ? new Date(payment.date).toLocaleDateString('sv-SE').split('T')[0] : null,
+            amount: parseFloat(payment.amount) || 0,
+            type: payment.type || 'unknown',
+            referenceNumber: payment.referencenumber,
+            paymentMethod: payment.paymentmethod || 'unknown',
+            notes: payment.notes
+        }));
+
+        // Build the response object matching the required format
+        const member = {
+            id: `M${memberData.id.toString().padStart(4, '0')}`,
+            fullName: `${memberData.fullname}${memberData.surname ? ' ' + memberData.surname : ''}`,
+            businessName: memberData.businessname,
+            businessType: memberData.businesstype,
+            email: memberData.email,
+            phone1: contacts.phone1 || null,
+            phone2: contacts.phone2 || null,
+            mobile: contacts.mobile || null,
+            whatsapp: contacts.whatsapp || null,
+            idType: memberData.idtype,
+            idNumber: memberData.idnumber,
+            qualification: memberData.qualification,
+            headOfficeAddress: memberData.headofficeaddress,
+            localBranchAddress: memberData.localbranchaddress,
+            licenseNumber: memberData.licensenumber,
+            licenseIssueDate: memberData.licenseissuedate ?
+                new Date(memberData.licenseissuedate).toLocaleDateString('sv-SE').split('T')[0] : null,
+            profileImagePath: memberData.profileimagepath,
+            idImagePath: memberData.idimagepath,
+            attachments,
+            status: memberData.status?.toLowerCase() || 'pending',
+            createdAt: memberData.createdat ?
+                new Date(memberData.createdat).toLocaleDateString('sv-SE').split('T')[0] : null,
+            createdBy: memberData.createdby,
+            subscriptions,
+            payments
+        };
+
+        res.json({
+            success: true,
+            data: member
+        });
+
+    } catch (error) {
+        console.error('Error fetching member:', error);
+        res.status(500).json({
+            success: false,
+            message: 'خطأ في استرجاع بيانات العضو',
+            error: error.message
+        });
+    }
+};
+
+export default { addMember, getMembers, getMember };
