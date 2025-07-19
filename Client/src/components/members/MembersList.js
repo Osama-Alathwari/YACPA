@@ -24,7 +24,7 @@ const MembersList = () => {
             businessName: 'شركة الأمل للمحاسبة',
             businessType: 'company',
             email: 'abdullah@alamamal.com',
-            phone: '+967 777 123 456',
+            phone: '+967 777 123 456', // the primary
             subscriptionEndDate: '2026-04-28',
             status: 'active'
         },

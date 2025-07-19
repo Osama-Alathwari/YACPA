@@ -245,4 +245,56 @@ const addMember = async (req, res) => {
     }
 };
 
-export default { addMember };
+const getMembers = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                m.id,
+                m.fullname,
+                m.businessname,
+                bt.name as businesstype,
+                m.email,
+                ci.contactvalue as phone,
+                s.enddate as subscriptionenddate,
+                CASE 
+                    WHEN s.enddate >= CURRENT_DATE AND s.isactive = true THEN 'active'
+                    WHEN s.enddate < CURRENT_DATE THEN 'inactive'
+                    ELSE 'pending'
+                END as status
+            FROM members m
+            LEFT JOIN businesstypes bt ON m.businesstypeid = bt.id
+            LEFT JOIN contactinformation ci ON m.id = ci.memberid AND ci.isprimary = true
+            LEFT JOIN subscriptions s ON m.id = s.memberid AND s.isactive = true
+            ORDER BY m.id DESC
+        `;
+
+        const result = await pool.query(query);
+
+        const formattedMembers = result.rows.map(row => ({
+            id: `M${row.id.toString().padStart(4, '0')}`,
+            fullName: row.fullname,
+            businessName: row.businessname,
+            businessType: row.businesstype,
+            email: row.email,
+            phone: row.phone || '',
+            subscriptionEndDate: row.subscriptionenddate ?
+                new Date(row.subscriptionenddate).toLocaleDateString('sv-SE').split('T')[0] : null,
+            status: row.status
+        }));
+
+        res.json({
+            success: true,
+            data: formattedMembers
+        });
+
+    } catch (error) {
+        console.error('Error fetching members:', error);
+        res.status(500).json({
+            success: false,
+            message: 'خطأ في استرجاع بيانات الأعضاء',
+            error: error.message
+        });
+    }
+};
+
+export default { addMember, getMembers };
