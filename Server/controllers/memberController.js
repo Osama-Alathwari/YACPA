@@ -1,6 +1,6 @@
 // Server/controllers/memberController.js
 import pool from '../db.js';
-import { getRelativeFilePath, getAttachmentTypeId } from '../utils/memberHelpers.js';
+import { getAttachmentTypeId } from '../utils/memberHelpers.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,6 +20,7 @@ const addMember = async (req, res) => {
             paymentMethod, referenceNumber, referenceDate, registrationFee,
             subscriptionFee, totalAmount, subscriptionYears, notes
         } = req.body;
+        console.log(req.body);
 
         // Validate required fields
         const requiredFields = {
