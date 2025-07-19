@@ -196,9 +196,9 @@ class ApiService {
     }
 
     // Member endpoints
-    async getMembers(params = {}) {
+    async getMembers() {
         try {
-            const response = await this.api.get('/members', { params });
+            const response = await this.api.get('/members/get');
             return response.data;
         } catch (error) {
             console.error('❌ Get members API error:', error);

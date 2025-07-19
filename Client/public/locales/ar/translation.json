@@ -366,6 +366,7 @@
         }
     },
     "common": {
+        "all": "الكل",
         "save": "حفظ",
         "cancel": "إلغاء",
         "close": "اغلاق",
@@ -430,7 +431,9 @@
         "days": "أيام",
         "viewMember": "عرض العضو",
         "year": "سنه",
-        "export": "تصدير"
+        "export": "تصدير",
+        "refresh": "تحديث",
+        "deactivate": "الغاء الاشتراك"
     },
     "footer": {
         "quickLinks": "روابط سريعة",
