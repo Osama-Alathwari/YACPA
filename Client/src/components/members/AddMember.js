@@ -268,6 +268,27 @@ const AddMemberScreen = () => {
         setCurrentStep(prev => Math.max(prev - 1, 1));
     };
 
+
+    const DROPDOWN_MAPPINGS = {
+        idType: {
+            'national_id': 1,
+            'passport': 2
+        },
+        qualification: {
+            'bachelor': 1,
+            'master': 2,
+            'doctorate': 3
+        },
+        businessType: {
+            'company': 1,
+            'individual': 2
+        },
+        paymentMethod: {
+            'cash': 1,
+            'bank_transfer': 2
+        }
+    };
+
     // Handle form submission
     const handleSubmit = async () => {
         if (!validateStep4()) {
@@ -278,19 +299,19 @@ const AddMemberScreen = () => {
         setLoading(true);
 
         try {
-            // Prepare data for API
+            // Prepare data for API with mapped dropdown values
             const memberData = {
                 // Personal Information
                 fullNameArabic: formData.fullNameArabic,
                 fullNameEnglish: formData.fullNameEnglish,
                 surname: formData.surname,
-                idType: formData.idType,
+                idType: DROPDOWN_MAPPINGS.idType[formData.idType],
                 idNumber: formData.idNumber,
-                qualification: formData.qualification,
+                qualification: DROPDOWN_MAPPINGS.qualification[formData.qualification],
 
                 // Business Information
                 businessName: formData.businessName,
-                businessType: formData.businessType,
+                businessType: DROPDOWN_MAPPINGS.businessType[formData.businessType],
                 headOfficeAddress: formData.headOfficeAddress,
                 localBranchAddress: formData.localBranchAddress,
                 licenseNumber: formData.licenseNumber,
@@ -304,7 +325,7 @@ const AddMemberScreen = () => {
                 email: formData.email,
 
                 // Payment Information
-                paymentMethod: formData.paymentMethod,
+                paymentMethod: DROPDOWN_MAPPINGS.paymentMethod[formData.paymentMethod],
                 referenceNumber: formData.referenceNumber,
                 referenceDate: formData.referenceDate,
                 registrationFee: feeCalculation.registrationFee,
