@@ -433,7 +433,8 @@
         "year": "سنه",
         "export": "تصدير",
         "refresh": "تحديث",
-        "deactivate": "الغاء الاشتراك"
+        "deactivate": "الغاء الاشتراك",
+        "noMembersFound": "لا يوجد اعضاء"
     },
     "footer": {
         "quickLinks": "روابط سريعة",

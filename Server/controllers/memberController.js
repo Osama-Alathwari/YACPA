@@ -20,7 +20,6 @@ const addMember = async (req, res) => {
             paymentMethod, referenceNumber, referenceDate, registrationFee,
             subscriptionFee, totalAmount, subscriptionYears, notes
         } = req.body;
-        console.log(req.body);
 
         // Validate required fields
         const requiredFields = {
@@ -251,6 +250,7 @@ const getMembers = async (req, res) => {
             SELECT 
                 m.id,
                 m.fullname,
+                m.surname,
                 m.businessname,
                 bt.name as businesstype,
                 m.email,
@@ -272,7 +272,7 @@ const getMembers = async (req, res) => {
 
         const formattedMembers = result.rows.map(row => ({
             id: `M${row.id.toString().padStart(4, '0')}`,
-            fullName: row.fullname,
+            fullName: row.fullname + ' ' + row.surname,
             businessName: row.businessname,
             businessType: row.businesstype,
             email: row.email,

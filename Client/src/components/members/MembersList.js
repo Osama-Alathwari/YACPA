@@ -52,16 +52,13 @@ const MembersList = () => {
         console.log('Deactivate member:', member.id);
     };
 
-
     // Filter options
     const statusOptions = [
-        { label: t('common.all'), value: null },
-        { label: t('common.active'), value: t('common.active') },
-        { label: t('common.inactive'), value: t('common.inactive') },
+        { label: t('common.active'), value: 'active' },
+        { label: t('common.inactive'), value: 'inactive' },
     ];
 
     const businessTypeOptions = [
-        { label: t('common.all'), value: null },
         { label: t('member.businessInfo.company'), value: t('member.businessInfo.company') },
         { label: t('member.businessInfo.individual'), value: t('member.businessInfo.individual') }
     ];
@@ -121,30 +118,18 @@ const MembersList = () => {
     };
 
     // Filter templates
-    const statusFilterTemplate = (options) => {
-        return (
-            <Dropdown
-                value={options.value}
-                options={statusOptions}
-                onChange={(e) => options.filterCallback(e.value)}
-                placeholder={t('common.selectStatus')}
-                className="p-column-filter"
-                showClear
-            />
-        );
+    const statusFilterTemplate = (e) => {
+        const value = e.value;
+        const _filters = { ...filters };
+        _filters.status.value = value;
+        setFilters(_filters);
     };
 
-    const businessTypeFilterTemplate = (options) => {
-        return (
-            <Dropdown
-                value={options.value}
-                options={businessTypeOptions}
-                onChange={(e) => options.filterCallback(e.value)}
-                placeholder={t('common.selectType')}
-                className="p-column-filter"
-                showClear
-            />
-        );
+    const businessTypeFilterTemplate = (e) => {
+        const value = e.value;
+        const _filters = { ...filters };
+        _filters.businessType.value = value;
+        setFilters(_filters);
     };
 
     // Header functions
@@ -178,12 +163,33 @@ const MembersList = () => {
                             className="p-inputtext-sm"
                         />
                     </span>
+                    <Dropdown
+                        value={filters.businessType.value}
+                        options={businessTypeOptions}
+                        onChange={(e) => businessTypeFilterTemplate(e)}
+                        placeholder={t('common.selectType')}
+                        className="p-column-filter"
+                        showClear
+                        style={{ width: '100%', height: '100%' }}
+
+                    />
+                    <Dropdown
+                        value={filters.status.value}
+                        options={statusOptions}
+                        onChange={(e) => statusFilterTemplate(e)}
+                        placeholder={t('common.selectStatus')}
+                        className="p-column-filter"
+                        showClear
+                        style={{ width: '100%', height: '100%' }}
+
+                    />
                     <Button
                         icon="pi pi-filter-slash"
                         label={t('common.clearFilters')}
                         className="p-button-outlined p-button-sm"
                         onClick={clearFilters}
-                        disabled={!globalFilterValue && !filters.status.value && !filters.businessType.value}
+                        disabled={!filters.global.value && !filters.status.value && !filters.businessType.value}
+                        style={{ width: '100%', height: '100%' }}
                     />
                 </div>
                 <div className="flex gap-2">
@@ -225,79 +231,71 @@ const MembersList = () => {
                     filters={filters}
                     filterDisplay="row"
                     globalFilterFields={['id', 'fullName', 'businessName', 'email', 'phone']}
-                    selectionMode="checkbox"
-                    selection={selectedMembers}
-                    onSelectionChange={e => setSelectedMembers(e.value)}
                     scrollable
-                    scrollHeight="calc(100vh - 350px)"
                     className="p-datatable-members"
                     emptyMessage={t('common.noMembersFound')}
                     currentPageReportTemplate={t('common.showing') + ' {first} ' + t('common.to') + ' {last} ' + t('common.of') + ' {totalRecords} ' + t('common.entries')}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 >
-                    <Column selectionMode="multiple" headerStyle={{ width: '3em' }} />
+                    <Column headerStyle={{ width: '3em' }} />
+                    <Column
+                        body={actionsBodyTemplate}
+                        header={t('common.actions')}
+                        style={{ minWidth: '120px', textAlign: 'center' }}
+                    />
                     <Column
                         field="id"
                         header={t('common.id')}
                         body={idBodyTemplate}
                         sortable
-                        style={{ minWidth: '100px' }}
+                        style={{ minWidth: '100px', textAlign: 'right' }}
                     />
                     <Column
                         field="fullName"
                         header={t('member.personalInfo.fullName')}
                         sortable
-                        style={{ minWidth: '200px' }}
+                        style={{ minWidth: '200px', textAlign: 'right' }}
                     />
                     <Column
                         field="businessName"
                         header={t('member.businessInfo.businessName')}
                         sortable
-                        style={{ minWidth: '200px' }}
-                    />
-                    <Column
-                        field="businessType"
-                        header={t('member.businessInfo.businessType')}
-                        body={businessTypeBodyTemplate}
-                        sortable
-                        filter
-                        filterElement={businessTypeFilterTemplate}
-                        showFilterMenu={false}
-                        style={{ minWidth: '150px' }}
-                    />
-                    <Column
-                        field="email"
-                        header={t('member.contactInfo.email')}
-                        sortable
-                        style={{ minWidth: '200px' }}
-                    />
-                    <Column
-                        field="phone"
-                        header={t('member.contactInfo.phone1')}
-                        sortable
-                        style={{ minWidth: '150px' }}
+                        style={{ minWidth: '200px', textAlign: 'right' }}
                     />
                     <Column
                         field="subscriptionEndDate"
                         header={t('member.subscription.endDate')}
                         sortable
-                        style={{ minWidth: '150px' }}
+                        style={{ minWidth: '150px', textAlign: 'right' }}
                     />
                     <Column
                         field="status"
                         header={t('common.status')}
                         body={statusBodyTemplate}
                         sortable
-                        filter
-                        filterElement={statusFilterTemplate}
-                        showFilterMenu={false}
-                        style={{ minWidth: '120px' }}
+                        style={{ minWidth: '120px', textAlign: 'right' }}
                     />
                     <Column
-                        body={actionsBodyTemplate}
-                        header={t('common.actions')}
-                        style={{ minWidth: '120px', textAlign: 'center' }}
+                        field="businessType"
+                        header={t('member.businessInfo.businessType')}
+                        body={businessTypeBodyTemplate}
+                        sortable
+                        style={{ minWidth: '150px', textAlign: 'right' }}
                     />
+                    <Column
+                        field="email"
+                        header={t('member.contactInfo.email')}
+                        sortable
+                        style={{ minWidth: '200px', textAlign: 'right' }}
+                    />
+                    <Column
+                        field="phone"
+                        header={t('member.contactInfo.phone1')}
+                        sortable
+                        style={{ minWidth: '150px', textAlign: 'right' }}
+                    />
+
+
                 </DataTable>
             </Card>
         </div>
