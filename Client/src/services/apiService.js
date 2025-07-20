@@ -208,7 +208,9 @@ class ApiService {
 
     async getMember(id) {
         try {
-            const response = await this.api.get(`/members/${id}`);
+            console.log(`👤 Fetching member with ID: ${id}`);
+            const response = await this.api.get(`/members/get/${id}`);
+            console.log('✅ Member fetched successfully');
             return response.data;
         } catch (error) {
             console.error('❌ Get member API error:', error);

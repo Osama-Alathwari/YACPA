@@ -434,7 +434,8 @@
         "export": "تصدير",
         "refresh": "تحديث",
         "deactivate": "الغاء الاشتراك",
-        "noMembersFound": "لا يوجد اعضاء"
+        "noMembersFound": "لا يوجد اعضاء",
+        "createdAt": "تاريخ الادخال"
     },
     "footer": {
         "quickLinks": "روابط سريعة",
@@ -551,7 +552,8 @@
             "defaultCalculation": "حساب افتراضي - سيتم تحديث الرسوم عند اختيار تاريخ إصدار الرخصة",
             "pre2024Calculation": "الرخصة صادرة قبل أو في عام 2024 - يجب دفع الاشتراك للسنوات: {{years}} ({{count}} سنوات)",
             "post2024Calculation": "الرخصة صادرة في عام {{licenseYear}} - يجب دفع الاشتراك للسنوات: {{years}} ({{count}} سنوات)",
-            "subscriptionYears": "سنوات الاشتراك"
+            "subscriptionYears": "سنوات الاشتراك",
+            "enterReference": "ادخل رقم المرجع"
         },
         "summary": {
             "title": "ملخص البيانات"

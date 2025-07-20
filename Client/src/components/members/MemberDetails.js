@@ -1,5 +1,5 @@
 // src/components/members/MemberDetails.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from 'primereact/card';
@@ -11,7 +11,14 @@ import { Divider } from 'primereact/divider';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dialog } from 'primereact/dialog';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Message } from 'primereact/message';
 import { useLanguage } from '../../contexts/LanguageContext';
+import apiService from '../../services/apiService';
+import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Calendar } from 'primereact/calendar';
 
 const MemberDetails = () => {
     const { t } = useTranslation();
@@ -20,123 +27,102 @@ const MemberDetails = () => {
     const navigate = useNavigate();
 
     // State
+    const [member, setMember] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
     const [showRenewDialog, setShowRenewDialog] = useState(false);
     const [showCardDialog, setShowCardDialog] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState('');
+    const [referenceNumber, setReferenceNumber] = useState('');
+    const [paymentDate, setPaymentDate] = useState(new Date());
+    const [notes, setNotes] = useState('');
 
-    // Mock member data - in a real app, this would be fetched from the API
-    const member = {
-        id: 'M1001',
-        fullName: 'عبدالله سالم الهاشمي',
-        businessName: 'شركة الأمل للمحاسبة',
-        businessType: 'company',
-        email: 'abdullah@alamamal.com',
-        phone1: '+967 777 123 456',
-        phone2: '+967 777 123 457',
-        mobile: '+967 733 123 456',
-        whatsapp: '+967 733 123 456',
-        idType: 'national_id',
-        idNumber: '123456789',
-        qualification: 'bachelor',
-        headOfficeAddress: 'عدن، المنصورة، شارع الستين، مبنى رقم 15',
-        localBranchAddress: 'عدن، كريتر، شارع الملكة أروى، مبنى رقم 7',
-        licenseNumber: 'LIC-12345',
-        licenseIssueDate: '2023-01-15',
-        profileImagePath: null,
-        idImagePath: null,
-        attachments: [
-            { type: 'license', path: null, uploadDate: '2023-01-20' },
-            { type: 'degree', path: null, uploadDate: '2023-01-20' },
-            { type: 'signature', path: null, uploadDate: '2023-01-20' }
-        ],
-        status: 'active',
-        createdAt: '2023-01-20',
-        createdBy: 'admin',
-        subscriptions: [
-            {
-                id: 'SUB1002',
-                startDate: '2024-01-20',
-                endDate: '2025-01-19',
-                paymentId: 'P1002',
-                isActive: true
-            },
-            {
-                id: 'SUB1001',
-                startDate: '2023-01-20',
-                endDate: '2024-01-19',
-                paymentId: 'P1001',
-                isActive: false
+    // Fetch member data
+    useEffect(() => {
+        fetchMemberData();
+    }, [id]);
+
+    const fetchMemberData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await apiService.getMember(id);
+            if (response.success) {
+                setMember(response.data);
+            } else {
+                setError(response.message || 'خطأ في تحميل بيانات العضو');
             }
-        ],
-        payments: [
-            {
-                id: 'P1001',
-                date: '2023-01-20',
-                amount: 350,
-                type: 'registration',
-                referenceNumber: 'REF123456',
-                paymentMethod: 'bank_transfer',
-                notes: 'Initial registration payment'
-            },
-            {
-                id: 'P1002',
-                date: '2024-01-15',
-                amount: 150,
-                type: 'renewal',
-                referenceNumber: 'REF789012',
-                paymentMethod: 'cash',
-                notes: 'Renewal for 2024-2025'
-            }
-        ]
+        } catch (err) {
+            console.error('Error fetching member:', err);
+            setError('خطأ في تحميل بيانات العضو');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // Template for status tag
+    // Status template
     const statusTemplate = (status) => {
-        const statusMap = {
-            'active': { severity: 'success', label: t('common.active') },
-            'inactive': { severity: 'danger', label: t('common.inactive') },
-            'pending': { severity: 'warning', label: t('common.pending') }
-        };
-
-        return <Tag severity={statusMap[status].severity} value={statusMap[status].label} />;
+        const severity = status === 'active' ? 'success' :
+            status === 'inactive' ? 'danger' : 'warning';
+        const label = status === 'active' ? t('common.active') :
+            status === 'inactive' ? t('common.inactive') : t('common.pending');
+        return <Tag value={label} severity={severity} />;
     };
 
-    // Template for payment type
-    const paymentTypeTemplate = (rowData) => {
-        const typeMap = {
-            'registration': { severity: 'info', label: t('dashboard.payments.registration') },
-            'renewal': { severity: 'success', label: t('dashboard.payments.renewal') },
-            'other': { severity: 'warning', label: t('dashboard.payments.other') }
-        };
-
-        return <Tag severity={typeMap[rowData.type].severity} value={typeMap[rowData.type].label} />;
+    // Handle subscription renewal
+    const handleRenewSubscription = () => {
+        setShowRenewDialog(false);
+        navigate(`/dashboard/subscriptions/renew/${id}`);
     };
 
-    // Template for amount column
-    const amountTemplate = (rowData) => {
-        return <span className="font-semibold">${rowData.amount}</span>;
-    };
-
-    // Template for payment method
-    const paymentMethodTemplate = (rowData) => {
-        const methodMap = {
-            'cash': t('common.cash'),
-            'bank_transfer': t('common.bankTransfer'),
-            'check': t('common.check')
-        };
-
-        return <span>{methodMap[rowData.paymentMethod]}</span>;
-    };
-
-    // Template for subscription status
-    const subscriptionStatusTemplate = (rowData) => {
-        return statusTemplate(rowData.isActive ? 'active' : 'inactive');
+    // Handle status change
+    const handleStatusChange = () => {
+        // Implementation for status change
+        console.log('Status change for:', member.id);
+        // You can implement the actual status change logic here
+        setMember(prev => ({
+            ...prev,
+            status: prev.status === 'active' ? 'inactive' : 'active'
+        }));
     };
 
     // Navigate back to members list
     const goBack = () => {
         navigate('/dashboard/members/view');
     };
+
+    // Render loading state
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <ProgressSpinner />
+            </div>
+        );
+    }
+
+    // Render error state
+    if (error) {
+        return (
+            <div className="p-4">
+                <Message severity="error" text={error} />
+                <Button
+                    label={t('common.retry')}
+                    onClick={fetchMemberData}
+                    className="mt-2"
+                />
+            </div>
+        );
+    }
+
+    // Render if no member data
+    if (!member) {
+        return (
+            <div className="p-4">
+                <Message severity="warn" text="لم يتم العثور على بيانات العضو" />
+            </div>
+        );
+    }
 
     // Render membership card dialog
     const renderCardDialog = () => {
@@ -201,22 +187,13 @@ const MemberDetails = () => {
                         </div>
                         <div className="bg-blue-700 bg-opacity-40 p-2 rounded">
                             <div className="text-xs text-blue-200">{t('common.status')}</div>
-                            <div className="font-bold">{t(`common.${member.status}`)}</div>
+                            <div className="font-bold">{member.status === 'active' ? 'نشط' : 'غير نشط'}</div>
                         </div>
                     </div>
 
-                    <div className="flex justify-center mb-2">
-                        {/* Barcode placeholder */}
-                        <div className="bg-white p-2 rounded">
-                            <div className="text-blue-800 text-xs text-center">{member.id}</div>
-                            <div className="h-10 flex items-center justify-center">
-                                <i className="pi pi-barcode text-3xl text-blue-800"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="text-center text-xs text-blue-200">
-                        {t('app.name')}
+                    <div className="text-center">
+                        <div className="text-xs text-blue-200">جمعية المحاسبين القانونيين اليمنية</div>
+                        <div className="text-xs text-blue-200">Yemen Association of Certified Public Accountants</div>
                     </div>
                 </div>
             </Dialog>
@@ -249,33 +226,67 @@ const MemberDetails = () => {
             >
                 <div className="p-fluid">
                     <p className="text-center mb-4">
-                        {t('dashboard.subscriptions.renewMemberMessage', { name: member.fullName })}
+                        {t('dashboard.subscriptions.renewMemberMessage', { name: member?.fullName || '' })}
                     </p>
-
                     <div className="mb-4">
                         <label className="block mb-1">{t('member.subscription.currentEndDate')}</label>
                         <div className="p-inputtext p-disabled">
-                            {member.subscriptions[0]?.endDate}
+                            {member?.subscriptions?.[0]?.endDate}
                         </div>
                     </div>
-
                     <div className="mb-4">
                         <label className="block mb-1">{t('member.subscription.newEndDate')}</label>
                         <div className="p-inputtext p-disabled">
-                            {new Date(new Date(member.subscriptions[0]?.endDate).setFullYear(
-                                new Date(member.subscriptions[0]?.endDate).getFullYear() + 1
+                            {member?.subscriptions?.[0]?.endDate && new Date(new Date(member.subscriptions[0].endDate).setFullYear(
+                                new Date(member.subscriptions[0].endDate).getFullYear() + 1
                             )).toISOString().split('T')[0]}
                         </div>
                     </div>
-
                     <div className="mb-4">
                         <label className="block mb-1">{t('member.payment.amount')}</label>
                         <div className="p-inputtext p-disabled">
                             $150
                         </div>
                     </div>
-
-                    {/* In a real implementation, this would include payment method selection and other fields */}
+                    <div className="mb-4">
+                        <label className="block mb-1">{t('member.payment.paymentMethod')}</label>
+                        <Dropdown
+                            value={paymentMethod}
+                            options={[
+                                { label: t('common.cash'), value: 'cash' },
+                                { label: t('common.bankTransfer'), value: 'bank_transfer' },
+                            ]}
+                            onChange={(e) => setPaymentMethod(e.value)}
+                            placeholder={t('member.payment.method')}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1">{t('member.payment.referenceNumber')}</label>
+                        <InputText
+                            value={referenceNumber}
+                            onChange={(e) => setReferenceNumber(e.target.value)}
+                            placeholder={t('member.payment.enterReference')}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1">{t('member.payment.date')}</label>
+                        <Calendar
+                            value={paymentDate}
+                            onChange={(e) => setPaymentDate(e.value)}
+                            showIcon
+                            dateFormat="yy-mm-dd"
+                            maxDate={new Date()}
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block mb-1">{t('member.payment.notes')}</label>
+                        <InputTextarea
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            rows={3}
+                            placeholder={t('member.payment.enterNotes')}
+                        />
+                    </div>
                 </div>
             </Dialog>
         );
@@ -355,7 +366,12 @@ const MemberDetails = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
                             <div>
                                 <span className="text-gray-500 text-sm">{t('member.businessInfo.businessType')}:</span>
-                                <span className="ml-1">{t(`member.businessInfo.${member.businessType}`)}</span>
+                                <span className="ml-1">{member.businessType}</span>
+                            </div>
+
+                            <div>
+                                <span className="text-gray-500 text-sm">{t('member.personalInfo.qualification')}:</span>
+                                <span className="ml-1">{member.qualification}</span>
                             </div>
 
                             <div>
@@ -369,109 +385,68 @@ const MemberDetails = () => {
                             </div>
 
                             <div>
-                                <span className="text-gray-500 text-sm">{t('member.personalInfo.qualification')}:</span>
-                                <span className="ml-1">{t(`member.personalInfo.${member.qualification}`)}</span>
+                                <span className="text-gray-500 text-sm">{t('member.contactInfo.mobile')}:</span>
+                                <span className="ml-1">{member.mobile}</span>
                             </div>
 
-                            <div className="md:col-span-2">
-                                <span className="text-gray-500 text-sm">{t('member.subscription.endDate')}:</span>
-                                <span className="ml-1">{member.subscriptions[0]?.endDate}</span>
+                            <div>
+                                <span className="text-gray-500 text-sm">{t('common.createdAt')}: </span>
+                                <span className="ml-1">{member.createdAt}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </Card>
 
-            {/* Tabs with member information */}
-            <TabView activeIndex={activeTab} onTabChange={(e) => setActiveTab(e.index)}>
-                {/* Personal Information */}
-                <TabPanel header={t('member.personalInfo.title')}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Card className="p-fluid">
-                            <h3 className="text-lg font-semibold mb-4">{t('member.personalInfo.title')}</h3>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.fullName')}</label>
-                                    <div className="p-inputtext p-disabled mb-3">{member.fullName}</div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.idType')}</label>
-                                    <div className="p-inputtext p-disabled mb-3">{t(`member.personalInfo.${member.idType}`)}</div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.idNumber')}</label>
-                                    <div className="p-inputtext p-disabled mb-3">{member.idNumber}</div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.qualification')}</label>
-                                    <div className="p-inputtext p-disabled mb-3">{t(`member.personalInfo.${member.qualification}`)}</div>
-                                </div>
+            {/* Detailed information tabs */}
+            <Card>
+                <TabView activeIndex={activeTab} onTabChange={(e) => setActiveTab(e.index)}>
+                    {/* Personal Information */}
+                    <TabPanel header={t('member.personalInfo.title')}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.fullName')}</label>
+                                <div className="p-inputtext p-disabled mb-3">{member.fullName}</div>
                             </div>
 
-                            <h4 className="text-md font-semibold mt-3 mb-3">{t('member.attachments.title')}</h4>
-
-                            <div className="grid grid-cols-1 gap-3">
-                                {member.attachments.map((attachment, index) => (
-                                    <div key={index} className="flex items-center border border-gray-200 rounded-lg p-3">
-                                        <i className="pi pi-file-pdf text-red-500 text-xl mr-3"></i>
-                                        <div className="flex-grow">
-                                            <div className="font-medium">{t(`member.attachments.${attachment.type}`)}</div>
-                                            <div className="text-sm text-gray-500">{attachment.uploadDate}</div>
-                                        </div>
-                                        <Button
-                                            icon="pi pi-download"
-                                            rounded
-                                            outlined
-                                            onClick={() => {/* Download action */ }}
-                                        />
-                                    </div>
-                                ))}
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.idType')}</label>
+                                <div className="p-inputtext p-disabled mb-3">{member.idType}</div>
                             </div>
-                        </Card>
 
-                        <div>
-                            {/* ID Image */}
-                            <Card className="mb-4">
-                                <h3 className="text-lg font-semibold mb-3">{t('member.personalInfo.idImage')}</h3>
-                                <div className="border border-gray-200 rounded-lg p-3 flex items-center justify-center h-40 bg-gray-50">
-                                    {member.idImagePath ? (
-                                        <img src={member.idImagePath} alt="ID" className="max-h-full" />
-                                    ) : (
-                                        <div className="text-center text-gray-500">
-                                            <i className="pi pi-id-card text-3xl mb-2"></i>
-                                            <div>{t('common.noImageAvailable')}</div>
-                                        </div>
-                                    )}
-                                </div>
-                            </Card>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.idNumber')}</label>
+                                <div className="p-inputtext p-disabled mb-3">{member.idNumber}</div>
+                            </div>
 
-                            {/* Profile Image */}
-                            <Card>
-                                <h3 className="text-lg font-semibold mb-3">{t('member.personalInfo.profileImage')}</h3>
-                                <div className="border border-gray-200 rounded-lg p-3 flex items-center justify-center h-40 bg-gray-50">
-                                    {member.profileImagePath ? (
-                                        <img src={member.profileImagePath} alt="Profile" className="max-h-full" />
-                                    ) : (
-                                        <div className="text-center text-gray-500">
-                                            <i className="pi pi-user text-3xl mb-2"></i>
-                                            <div>{t('common.noImageAvailable')}</div>
-                                        </div>
-                                    )}
-                                </div>
-                            </Card>
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-1">{t('member.personalInfo.qualification')}</label>
+                                <div className="p-inputtext p-disabled mb-3">{member.qualification}</div>
+                            </div>
                         </div>
-                    </div>
-                </TabPanel>
 
-                {/* Business Information */}
-                <TabPanel header={t('member.businessInfo.title')}>
-                    <Card className="p-fluid">
-                        <h3 className="text-lg font-semibold mb-4">{t('member.businessInfo.title')}</h3>
+                        {member.idImagePath && (
+                            <>
+                                <h4 className="text-md font-semibold mt-4 mb-3">{t('member.attachments.idImage')}</h4>
+                                <div className="border border-gray-200 rounded-lg p-3 flex items-center">
+                                    <i className="pi pi-file-pdf text-red-500 text-xl mr-3"></i>
+                                    <div className="flex-grow">
+                                        <div className="font-medium">{t('member.attachments.idImage')}</div>
+                                        <div className="text-sm text-gray-500">{member.createdAt}</div>
+                                    </div>
+                                    <Button
+                                        icon="pi pi-download"
+                                        rounded
+                                        outlined
+                                        onClick={() => window.open(member.idImagePath, '_blank')}
+                                    />
+                                </div>
+                            </>
+                        )}
+                    </TabPanel>
 
+                    {/* Business Information */}
+                    <TabPanel header={t('member.businessInfo.title')}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.businessInfo.businessName')}</label>
@@ -480,15 +455,15 @@ const MemberDetails = () => {
 
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.businessInfo.businessType')}</label>
-                                <div className="p-inputtext p-disabled mb-3">{t(`member.businessInfo.${member.businessType}`)}</div>
+                                <div className="p-inputtext p-disabled mb-3">{member.businessType}</div>
                             </div>
 
-                            <div className="md:col-span-2">
+                            <div>
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.businessInfo.headOfficeAddress')}</label>
                                 <div className="p-inputtext p-disabled mb-3">{member.headOfficeAddress}</div>
                             </div>
 
-                            <div className="md:col-span-2">
+                            <div>
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.businessInfo.localBranchAddress')}</label>
                                 <div className="p-inputtext p-disabled mb-3">{member.localBranchAddress}</div>
                             </div>
@@ -504,29 +479,39 @@ const MemberDetails = () => {
                             </div>
                         </div>
 
-                        <h4 className="text-md font-semibold mt-4 mb-3">{t('member.attachments.licenseImage')}</h4>
-                        <div className="border border-gray-200 rounded-lg p-3 flex items-center">
-                            <i className="pi pi-file-pdf text-red-500 text-xl mr-3"></i>
-                            <div className="flex-grow">
-                                <div className="font-medium">{t('member.attachments.licenseImage')}</div>
-                                <div className="text-sm text-gray-500">{member.attachments[0]?.uploadDate}</div>
-                            </div>
-                            <Button
-                                icon="pi pi-download"
-                                rounded
-                                outlined
-                                onClick={() => {/* Download action */ }}
-                            />
-                        </div>
-                    </Card>
-                </TabPanel>
+                        {/* Attachments */}
+                        {member.attachments && member.attachments.length > 0 && (
+                            <>
+                                <h4 className="text-md font-semibold mt-4 mb-3">{t('member.attachments.title')}</h4>
+                                {member.attachments.map((attachment, index) => (
+                                    <div key={index} className="border border-gray-200 rounded-lg p-3 flex items-center mb-2">
+                                        <i className="pi pi-file-pdf text-red-500 text-xl mr-3"></i>
+                                        <div className="flex-grow">
+                                            <div className="font-medium">{attachment.type}</div>
+                                            <div className="text-sm text-gray-500">{attachment.uploadDate}</div>
+                                        </div>
+                                        {attachment.path && (
+                                            <Button
+                                                icon="pi pi-download"
+                                                rounded
+                                                outlined
+                                                onClick={() => window.open(attachment.path, '_blank')}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    </TabPanel>
 
-                {/* Contact Information */}
-                <TabPanel header={t('member.contactInfo.title')}>
-                    <Card className="p-fluid">
-                        <h3 className="text-lg font-semibold mb-4">{t('member.contactInfo.title')}</h3>
-
+                    {/* Contact Information */}
+                    <TabPanel header={t('member.contactInfo.title')}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-1">{t('member.contactInfo.email')}</label>
+                                <div className="p-inputtext p-disabled mb-3">{member.email}</div>
+                            </div>
+
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.contactInfo.phone1')}</label>
                                 <div className="p-inputtext p-disabled mb-3">{member.phone1}</div>
@@ -534,7 +519,7 @@ const MemberDetails = () => {
 
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.contactInfo.phone2')}</label>
-                                <div className="p-inputtext p-disabled mb-3">{member.phone2 || '-'}</div>
+                                <div className="p-inputtext p-disabled mb-3">{member.phone2}</div>
                             </div>
 
                             <div>
@@ -546,58 +531,49 @@ const MemberDetails = () => {
                                 <label className="block text-gray-700 font-medium mb-1">{t('member.contactInfo.whatsapp')}</label>
                                 <div className="p-inputtext p-disabled mb-3">{member.whatsapp}</div>
                             </div>
-
-                            <div className="md:col-span-2">
-                                <label className="block text-gray-700 font-medium mb-1">{t('member.contactInfo.email')}</label>
-                                <div className="p-inputtext p-disabled mb-3">{member.email}</div>
-                            </div>
                         </div>
-                    </Card>
-                </TabPanel>
+                    </TabPanel>
 
-                {/* Subscription History */}
-                <TabPanel header={t('member.subscription.history')}>
-                    <Card>
+                    {/* Subscription History */}
+                    <TabPanel header={t('member.subscription.history')}>
                         <DataTable
                             value={member.subscriptions}
                             responsiveLayout="scroll"
-                            className="p-datatable-sm"
-                            emptyMessage={t('common.noSubscriptionsFound')}
+                            emptyMessage={t('member.subscription.noSubscriptions')}
                         >
-                            <Column field="id" header={t('common.id')} sortable></Column>
-                            <Column field="startDate" header={t('member.subscription.startDate')} sortable></Column>
-                            <Column field="endDate" header={t('member.subscription.endDate')} sortable></Column>
-                            <Column field="paymentId" header={t('member.payment.id')} sortable></Column>
+                            <Column field="id" header={t('common.id')} />
+                            <Column field="startDate" header={t('member.subscription.startDate')} />
+                            <Column field="endDate" header={t('member.subscription.endDate')} />
                             <Column
                                 field="isActive"
                                 header={t('common.status')}
-                                body={subscriptionStatusTemplate}
-                                sortable
-                            ></Column>
+                                body={(rowData) =>
+                                    <Tag
+                                        value={rowData.isActive ? t('common.active') : t('common.inactive')}
+                                        severity={rowData.isActive ? 'success' : 'danger'}
+                                    />
+                                }
+                            />
                         </DataTable>
-                    </Card>
-                </TabPanel>
+                    </TabPanel>
 
-                {/* Payment History */}
-                <TabPanel header={t('member.payment.history')}>
-                    <Card>
+                    {/* Payment History */}
+                    <TabPanel header={t('member.payment.history')}>
                         <DataTable
                             value={member.payments}
                             responsiveLayout="scroll"
-                            className="p-datatable-sm"
-                            emptyMessage={t('common.noPaymentsFound')}
+                            emptyMessage={t('member.payment.noPayments')}
                         >
-                            <Column field="id" header={t('common.id')} sortable></Column>
-                            <Column field="date" header={t('common.date')} sortable></Column>
-                            <Column field="amount" header={t('common.amount')} body={amountTemplate} sortable></Column>
-                            <Column field="type" header={t('common.type')} body={paymentTypeTemplate} sortable></Column>
-                            <Column field="referenceNumber" header={t('member.payment.referenceNumber')} sortable></Column>
-                            <Column field="paymentMethod" header={t('member.payment.method')} body={paymentMethodTemplate} sortable></Column>
-                            <Column field="notes" header={t('common.notes')}></Column>
+                            <Column field="id" header={t('common.id')} />
+                            <Column field="date" header={t('member.payment.date')} />
+                            <Column field="amount" header={t('member.payment.amount')} />
+                            <Column field="type" header={t('member.payment.type')} />
+                            <Column field="referenceNumber" header={t('member.payment.referenceNumber')} />
+                            <Column field="paymentMethod" header={t('member.payment.method')} />
                         </DataTable>
-                    </Card>
-                </TabPanel>
-            </TabView>
+                    </TabPanel>
+                </TabView>
+            </Card>
         </div>
     );
 };
