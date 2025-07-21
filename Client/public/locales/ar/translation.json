@@ -319,7 +319,8 @@
             "gracePeriodEnded": "انتهت فترة السماح",
             "notificationsSent": "الإشعارات المرسلة",
             "renewalEligible": "مؤهل للتجديد",
-            "renewalBlocked": "مرفوض التجديد"
+            "renewalBlocked": "مرفوض التجديد",
+            "noExpiringSubscriptions": "لا يوجد أي أعضاء اشتراكاتهم موشكة على الانتهاء"
         },
         "reports": {
             "title": "التقارير",

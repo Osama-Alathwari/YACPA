@@ -304,6 +304,17 @@ class ApiService {
         }
     }
 
+
+    async getExpiringSubscriptions(days) {
+        try {
+            const response = await this.api.get(`/api/subscriptions/expiring?days=${days}`);
+            return response.data;
+        } catch (error) {
+            console.error('❌ Get expiring subscriptions API error:', error);
+            throw error;
+        }
+    }
+
     // Health check
     async healthCheck() {
         try {

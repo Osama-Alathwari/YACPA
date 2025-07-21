@@ -11,6 +11,8 @@ import { InputText } from 'primereact/inputtext';
 import { FilterMatchMode } from 'primereact/api';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import apiService from '../../services/apiService';
+
 
 const ExpiringSubscriptions = () => {
     const { t } = useTranslation();
@@ -23,9 +25,9 @@ const ExpiringSubscriptions = () => {
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        expirationWindow: { value: null, matchMode: FilterMatchMode.EQUALS }
     });
     const [selectedSubscriptions, setSelectedSubscriptions] = useState([]);
+    const [expirationWindow, setExpirationWindow] = useState(null); // Use separate state for the dropdown
 
     // Expiration window options for filtering
     const expirationWindows = [
@@ -34,73 +36,28 @@ const ExpiringSubscriptions = () => {
         { label: t('dashboard.subscriptions.expiring90Days'), value: '90' }
     ];
 
-    // Mock data - in a real app, this would be fetched from an API
-    const mockSubscriptionsData = [
-        {
-            id: 'SUB1001',
-            memberId: 'M1001',
-            memberName: 'عبدالله سالم الهاشمي',
-            businessName: 'شركة الأمل للمحاسبة',
-            endDate: '2025-06-15',
-            daysRemaining: 30,
-            status: 'active',
-            lastPaymentDate: '2024-06-15',
-            lastPaymentAmount: 150
-        },
-        {
-            id: 'SUB1002',
-            memberId: 'M1002',
-            memberName: 'سارة محمد الغامدي',
-            businessName: 'مكتب السارة للاستشارات',
-            endDate: '2025-06-20',
-            daysRemaining: 35,
-            status: 'active',
-            lastPaymentDate: '2024-06-20',
-            lastPaymentAmount: 150
-        },
-        {
-            id: 'SUB1003',
-            memberId: 'M1003',
-            memberName: 'محمد علي المقطري',
-            businessName: 'المحاسبون المتحدون',
-            endDate: '2025-07-05',
-            daysRemaining: 50,
-            status: 'active',
-            lastPaymentDate: '2024-07-05',
-            lastPaymentAmount: 150
-        },
-        {
-            id: 'SUB1004',
-            memberId: 'M1004',
-            memberName: 'أحمد عبدالله البكري',
-            businessName: 'شركة النور المالية',
-            endDate: '2025-07-15',
-            daysRemaining: 60,
-            status: 'active',
-            lastPaymentDate: '2024-07-15',
-            lastPaymentAmount: 150
-        },
-        {
-            id: 'SUB1005',
-            memberId: 'M1005',
-            memberName: 'فاطمة عبدالرحمن السقاف',
-            businessName: 'فاطمة للمحاسبة',
-            endDate: '2025-08-10',
-            daysRemaining: 85,
-            status: 'active',
-            lastPaymentDate: '2024-08-10',
-            lastPaymentAmount: 150
-        }
-    ];
-
     // Fetch data
     useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setSubscriptions(mockSubscriptionsData);
+        fetchExpiringSubscriptions();
+    }, [expirationWindow]); // Depend on the new state
+
+    const fetchExpiringSubscriptions = async () => {
+        try {
+            setLoading(true);
+            const days = expirationWindow || 365;
+            const response = await apiService.getExpiringSubscriptions(days);
+
+            if (response.success) {
+                setSubscriptions(response.data);
+                console.log(response);
+            }
+        } catch (error) {
+            console.error('Error fetching expiring subscriptions:', error);
+            // setSubscriptions(mockSubscriptionsData);
+        } finally {
             setLoading(false);
-        }, 1000);
-    }, []);
+        }
+    };
 
     // Global filter change handler
     const onGlobalFilterChange = (e) => {
@@ -115,19 +72,8 @@ const ExpiringSubscriptions = () => {
 
     // Handle expiration window change
     const handleExpirationWindowChange = (e) => {
-        const value = e.value;
-        let _filters = { ...filters };
-        _filters['expirationWindow'].value = value;
-        setFilters(_filters);
-    };
-
-    // Custom filter function for expiration window
-    const expirationWindowFilter = (value, filter) => {
-        if (filter === null || filter === undefined) {
-            return true;
-        }
-        const filterValue = parseInt(filter, 10);
-        return value <= filterValue;
+        setExpirationWindow(e.value);
+        // Data will be refetched automatically due to useEffect dependency
     };
 
     // Template for status column
@@ -156,7 +102,7 @@ const ExpiringSubscriptions = () => {
 
     // Template for amount column
     const amountTemplate = (rowData) => {
-        return <span className="font-semibold">${rowData.lastPaymentAmount}</span>;
+        return <span className="font-semibold">YER {rowData.lastPaymentAmount}</span>;
     };
 
     // Template for actions column
@@ -208,27 +154,19 @@ const ExpiringSubscriptions = () => {
         );
     };
 
-    // Template for expiration window filter
-    const expirationWindowFilterTemplate = (e) => {
-        const value = e.value;
-        const _filters = { ...filters };
-        _filters.expirationWindow.value = value;
-        setFilters(_filters);
-    };
-
     // Clear filters
     const clearFilter = () => {
         setFilters({
-            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            expirationWindow: { value: null, matchMode: FilterMatchMode.EQUALS }
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS }
         });
         setGlobalFilterValue('');
+        setExpirationWindow(null);
     };
 
     // Table header with search and filter
     const renderHeader = () => {
         return (
-            <div className="flex flex-wrap justify-between items-center gap-2">
+            <div className="flex flex-row justify-between items-center gap-2">
                 <div className="flex items-center">
                     <span className="p-input-icon-left">
                         <i className="pi pi-search" />
@@ -241,35 +179,47 @@ const ExpiringSubscriptions = () => {
                     </span>
                 </div>
 
-                <div className="flex gap-2">
-                    <Dropdown
-                        value={filters.expirationWindow.value}
-                        options={expirationWindows}
-                        onChange={handleExpirationWindowChange}
-                        placeholder={t('dashboard.subscriptions.selectWindow')}
-                        className="p-column-filter"
-                        showClear
-                    // style={{ width: '100%', height: '100%' }}
-                    />
+                <Dropdown
+                    value={expirationWindow}
+                    options={expirationWindows}
+                    onChange={handleExpirationWindowChange}
+                    placeholder={t('dashboard.subscriptions.selectWindow')}
+                    className="p-column-filter"
+                    showClear
+                    style={{ width: '100%', height: '100%' }}
+                />
 
-                    <Button
-                        type="button"
-                        label={t('common.clearFilters')}
-                        icon="pi pi-filter-slash"
-                        outlined
-                        onClick={clearFilter}
-                        className="p-button-sm"
-                        disabled={!globalFilterValue && !filters.expirationWindow.value}
-                    />
-                    <Button
-                        label={t('dashboard.subscriptions.sendReminders')}
-                        icon="pi pi-envelope"
-                        severity="info"
-                        className="p-button-sm"
-                        disabled={selectedSubscriptions.length === 0}
-                        onClick={() => {/* Send reminders action */ }}
-                    />
-                </div>
+                <Button
+                    type="button"
+                    label={t('common.clearFilters')}
+                    icon="pi pi-filter-slash"
+                    outlined
+                    onClick={clearFilter}
+                    className="p-button-sm"
+                    disabled={!globalFilterValue && !expirationWindow}
+                    style={{ width: '100%', height: '100%' }}
+                />
+
+
+
+                <Button
+                    label={t('dashboard.subscriptions.sendReminders')}
+                    icon="pi pi-envelope"
+                    severity="info"
+                    className="p-button-sm"
+                    disabled={selectedSubscriptions.length === 0}
+                    onClick={() => {/* Send reminders action */ }}
+                    style={{ width: '100%', height: '100%' }}
+                />
+                <Button
+                    type="button"
+                    icon="pi pi-refresh"
+                    outlined
+                    onClick={fetchExpiringSubscriptions}
+                    className="p-button-sm"
+                    tooltip={t('common.refresh')}
+                    style={{ width: '50%', height: '100%' }}
+                />
             </div>
         );
     };
@@ -322,11 +272,6 @@ const ExpiringSubscriptions = () => {
                         body={daysRemainingTemplate}
                         sortable
                         style={{ minWidth: '150px', textAlign: 'right' }}
-                        filter
-                        filterField="daysRemaining"
-                        showFilterMenu={false}
-                        filterElement={() => null} // Hide default filter input
-                        filterFunction={expirationWindowFilter}
                     />
                     <Column field="status" header={t('common.status')} body={statusTemplate} sortable style={{ minWidth: '100px', textAlign: 'right' }} />
                     <Column field="lastPaymentDate" header={t('dashboard.subscriptions.lastPayment')} sortable style={{ minWidth: '120px', textAlign: 'right' }} />
