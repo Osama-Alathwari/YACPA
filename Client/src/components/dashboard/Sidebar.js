@@ -42,12 +42,6 @@ const Sidebar = () => {
                     icon: 'pi pi-list',
                     command: () => window.location.href = '/dashboard/members/view',
                     className: isActive('/dashboard/members/view') ? 'active-menu-item' : '',
-                },
-                {
-                    label: t('dashboard.members.search'),
-                    icon: 'pi pi-search',
-                    command: () => window.location.href = '/dashboard/members/search',
-                    className: isActive('/dashboard/members/search') ? 'active-menu-item' : '',
                 }
             ]
         },
@@ -169,9 +163,9 @@ const Sidebar = () => {
 
             {/* Navigation */}
             <div className="p-3">
-                <PanelMenu 
-                    model={menuItems} 
-                    className="sidebar-menu border-none bg-transparent" 
+                <PanelMenu
+                    model={menuItems}
+                    className="sidebar-menu border-none bg-transparent"
                 />
             </div>
 
@@ -179,26 +173,25 @@ const Sidebar = () => {
 
             {/* User quick links */}
             <div className="p-3 border-t bg-gray-50 mx-1 border-gray-100">
-                <div className="text-sm font-medium text-gray-500 mx-3 px-2 mb-1"b>الإعدادات الشخصية</div>
-                
-                        <NavLink
-                            to="/dashboard/profile"
-                            className={({ isActive }) =>
-                                `flex items-center my-2 no-underline px-3 py-2.5 bg-blue-50 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 ${
-                                    isActive ? 'bg-blue-50 text-blue-700 font-medium' : ''
-                                }`
-                            }
-                        >
-                            <i className={`pi pi-user ${isRtl ? 'ml-3' : 'mr-3'} text-sm font-medium`}></i>
-                            <span className="text-sm font-medium">{t('navigation.profile')}</span>
-                        </NavLink>
-                        <NavLink
-                            to="/logout"
-                            className="flex items-center no-underline bg-red-100 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-700 transition-all duration-300"
-                        >
-                            <i className={`pi pi-sign-out ${isRtl ? 'ml-3' : 'mr-3'} text-sm font-medium`}></i>
-                            <span className="text-sm font-medium">{t('navigation.logout')}</span>
-                        </NavLink>
+                <div className="text-sm font-medium text-gray-500 mx-3 px-2 mb-1" b>الإعدادات الشخصية</div>
+
+                <NavLink
+                    to="/dashboard/profile"
+                    className={({ isActive }) =>
+                        `flex items-center my-2 no-underline px-3 py-2.5 bg-blue-50 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 ${isActive ? 'bg-blue-50 text-blue-700 font-medium' : ''
+                        }`
+                    }
+                >
+                    <i className={`pi pi-user ${isRtl ? 'ml-3' : 'mr-3'} text-sm font-medium`}></i>
+                    <span className="text-sm font-medium">{t('navigation.profile')}</span>
+                </NavLink>
+                <NavLink
+                    to="/logout"
+                    className="flex items-center no-underline bg-red-100 px-3 py-2.5 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-700 transition-all duration-300"
+                >
+                    <i className={`pi pi-sign-out ${isRtl ? 'ml-3' : 'mr-3'} text-sm font-medium`}></i>
+                    <span className="text-sm font-medium">{t('navigation.logout')}</span>
+                </NavLink>
             </div>
 
             {/* Version info */}

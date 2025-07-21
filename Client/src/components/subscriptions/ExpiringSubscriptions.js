@@ -115,29 +115,18 @@ const ExpiringSubscriptions = () => {
 
     // Handle expiration window change
     const handleExpirationWindowChange = (e) => {
+        const value = e.value;
         let _filters = { ...filters };
-
-        // If value is null, clear filter
-        if (e.value === null) {
-            _filters['expirationWindow'].value = null;
-        } else {
-            // Filter based on days remaining
-            _filters['expirationWindow'].value = e.value;
-        }
-
+        _filters['expirationWindow'].value = value;
         setFilters(_filters);
     };
 
     // Custom filter function for expiration window
-    const filterExpirationWindow = (value, filter) => {
+    const expirationWindowFilter = (value, filter) => {
         if (filter === null || filter === undefined) {
             return true;
         }
-
-        // Convert filter to number
         const filterValue = parseInt(filter, 10);
-
-        // Compare days remaining with filter value
         return value <= filterValue;
     };
 
@@ -256,7 +245,7 @@ const ExpiringSubscriptions = () => {
                     <Dropdown
                         value={filters.expirationWindow.value}
                         options={expirationWindows}
-                        onChange={(e) => handleExpirationWindowChange(e.value)}
+                        onChange={handleExpirationWindowChange}
                         placeholder={t('dashboard.subscriptions.selectWindow')}
                         className="p-column-filter"
                         showClear
@@ -315,13 +304,13 @@ const ExpiringSubscriptions = () => {
                     selection={selectedSubscriptions}
                     onSelectionChange={e => setSelectedSubscriptions(e.value)}
                     scrollable
-                    scrollHeight="calc(100vh - 350px)"
+                    // scrollHeight="calc(100vh - 350px)"
                     selectAll
                     resizableColumns
                     currentPageReportTemplate={t('common.showing') + ' {first} ' + t('common.to') + ' {last} ' + t('common.of') + ' {totalRecords} ' + t('common.entries')}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 >
-                    <Column selectionMode="multiple" headerStyle={{ width: '3em' }} />
+                    <Column selectionMode="multiple" headerStyle={{ width: '2em' }} />
                     <Column body={actionsTemplate} header={t('common.actions')} style={{ minWidth: '150px', textAlign: 'center' }} />
                     <Column field="memberId" header={t('common.memberId')} body={memberIdTemplate} sortable style={{ minWidth: '100px', textAlign: 'right' }} />
                     <Column field="memberName" header={t('common.name')} sortable style={{ minWidth: '200px', textAlign: 'right' }} />
@@ -333,6 +322,11 @@ const ExpiringSubscriptions = () => {
                         body={daysRemainingTemplate}
                         sortable
                         style={{ minWidth: '150px', textAlign: 'right' }}
+                        filter
+                        filterField="daysRemaining"
+                        showFilterMenu={false}
+                        filterElement={() => null} // Hide default filter input
+                        filterFunction={expirationWindowFilter}
                     />
                     <Column field="status" header={t('common.status')} body={statusTemplate} sortable style={{ minWidth: '100px', textAlign: 'right' }} />
                     <Column field="lastPaymentDate" header={t('dashboard.subscriptions.lastPayment')} sortable style={{ minWidth: '120px', textAlign: 'right' }} />

@@ -7,6 +7,7 @@ import memberRoutes from './routes/memberRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import { PORT } from './config.js';
 import { startTokenCleanup } from './utils/tokenCleanup.js';
+import subscriptionRoutes from './routes/subscriptionRoutes.js';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 // Start the server
 app.listen(PORT, () => {

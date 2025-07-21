@@ -46,7 +46,6 @@ const DashboardRoutes = () => {
                     <Route path="view" element={<MembersList />} />
                     <Route path="view/:id" element={<MemberDetails />} />
                     <Route path="edit/:id" element={<AddMember />} />
-                    <Route path="search" element={<MembersList />} />
                 </Route>
 
                 {/* Subscription routes */}
@@ -68,7 +67,7 @@ const DashboardRoutes = () => {
                 {/* Report routes */}
                 <Route path="reports">
                     <Route index element={<Navigate to="members" />} />
-                    <Route path="members" element={<MembersReportComponent/>} />
+                    <Route path="members" element={<MembersReportComponent />} />
                     <Route path="payments" element={<div>Payments Report Component</div>} />
                     <Route path="subscriptions" element={<div>Subscriptions Report Component</div>} />
                 </Route>
