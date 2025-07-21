@@ -435,7 +435,8 @@
         "refresh": "تحديث",
         "deactivate": "الغاء الاشتراك",
         "noMembersFound": "لا يوجد اعضاء",
-        "createdAt": "تاريخ الادخال"
+        "createdAt": "تاريخ الادخال",
+        "retry": "إعادة المحاولة"
     },
     "footer": {
         "quickLinks": "روابط سريعة",
@@ -499,7 +500,7 @@
         },
         "contactInfo": {
             "title": "بيانات الاتصال",
-            "phone1": "رقم الهاتف 1",
+            "phone1": "رقم الهاتف",
             "phone2": "رقم الهاتف 2",
             "mobile": "جوال المكتب",
             "whatsapp": "رقم الواتس",
@@ -513,7 +514,8 @@
             "uploadedFiles": "الملفات المرفوعة",
             "license": "ترخيص",
             "degree": "شهادة",
-            "signature": "توقيع"
+            "signature": "توقيع",
+            "idImage": "صورة الهوية"
         },
         "subscription": {
             "title": "بيانات الاشتراك",
@@ -553,7 +555,11 @@
             "pre2024Calculation": "الرخصة صادرة قبل أو في عام 2024 - يجب دفع الاشتراك للسنوات: {{years}} ({{count}} سنوات)",
             "post2024Calculation": "الرخصة صادرة في عام {{licenseYear}} - يجب دفع الاشتراك للسنوات: {{years}} ({{count}} سنوات)",
             "subscriptionYears": "سنوات الاشتراك",
-            "enterReference": "ادخل رقم المرجع"
+            "enterReference": "ادخل رقم المرجع",
+            "date": "تاريخ الدفع",
+            "notes": "ملاحظات الدفع",
+            "enterNotes": "ادخل ملاحظات الدفع",
+            "type": "الغرض"
         },
         "summary": {
             "title": "ملخص البيانات"

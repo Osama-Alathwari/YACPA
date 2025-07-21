@@ -122,7 +122,7 @@ class ApiService {
     async login(credentials) {
         try {
             console.log('🔐 Attempting login...');
-            const response = await this.api.post('/auth/login', credentials);
+            const response = await this.api.post('/api/auth/login', credentials);
             console.log('✅ Login successful');
             return response.data;
         } catch (error) {
@@ -134,7 +134,7 @@ class ApiService {
     async logout() {
         try {
             console.log('🚪 Attempting logout...');
-            const response = await this.api.post('/auth/logout');
+            const response = await this.api.post('/api/auth/logout');
             console.log('✅ Logout successful');
             return response.data;
         } catch (error) {
@@ -147,7 +147,7 @@ class ApiService {
     async getProfile() {
         try {
             console.log('👤 Fetching user profile...');
-            const response = await this.api.get('/auth/profile');
+            const response = await this.api.get('/api/auth/profile');
             console.log('✅ Profile fetched successfully');
             return response.data;
         } catch (error) {
@@ -159,7 +159,7 @@ class ApiService {
     async refreshToken() {
         try {
             console.log('🔄 Refreshing token...');
-            const response = await this.api.post('/auth/refresh');
+            const response = await this.api.post('/api/auth/refresh');
             console.log('✅ Token refreshed successfully');
             return response.data;
         } catch (error) {
@@ -171,7 +171,7 @@ class ApiService {
     async forgotPassword(email) {
         try {
             console.log('📧 Sending forgot password request...');
-            const response = await this.api.post('/auth/forgot-password', { email });
+            const response = await this.api.post('/api/auth/forgot-password', { email });
             console.log('✅ Forgot password request sent');
             return response.data;
         } catch (error) {
@@ -183,7 +183,7 @@ class ApiService {
     async resetPassword(token, newPassword) {
         try {
             console.log('🔑 Resetting password...');
-            const response = await this.api.post('/auth/reset-password', {
+            const response = await this.api.post('/api/auth/reset-password', {
                 token,
                 password: newPassword
             });
@@ -198,7 +198,7 @@ class ApiService {
     // Member endpoints
     async getMembers() {
         try {
-            const response = await this.api.get('/members/get');
+            const response = await this.api.get('/api/members/get');
             return response.data;
         } catch (error) {
             console.error('❌ Get members API error:', error);
@@ -209,7 +209,7 @@ class ApiService {
     async getMember(id) {
         try {
             console.log(`👤 Fetching member with ID: ${id}`);
-            const response = await this.api.get(`/members/get/${id}`);
+            const response = await this.api.get(`/api/members/get/${id}`);
             console.log('✅ Member fetched successfully');
             return response.data;
         } catch (error) {
@@ -269,7 +269,7 @@ class ApiService {
             });
 
             // Use multipart/form-data for file uploads
-            const response = await this.api.post('/members/add', formData, {
+            const response = await this.api.post('/api/members/add', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

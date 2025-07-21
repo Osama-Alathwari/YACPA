@@ -109,7 +109,7 @@ const MemberDetails = () => {
                 <Button
                     label={t('common.retry')}
                     onClick={fetchMemberData}
-                    className="mt-2"
+                    className="mr-2"
                 />
             </div>
         );
@@ -156,7 +156,7 @@ const MemberDetails = () => {
                         <div className="flex-shrink-0 mr-4">
                             {member.profileImagePath ? (
                                 <img
-                                    src={member.profileImagePath}
+                                    src={`${process.env.REACT_APP_API_URL}/${member.profileImagePath}`}
                                     alt={member.fullName}
                                     className="w-20 h-20 rounded-full border-2 border-white"
                                 />
@@ -237,9 +237,14 @@ const MemberDetails = () => {
                     <div className="mb-4">
                         <label className="block mb-1">{t('member.subscription.newEndDate')}</label>
                         <div className="p-inputtext p-disabled">
-                            {member?.subscriptions?.[0]?.endDate && new Date(new Date(member.subscriptions[0].endDate).setFullYear(
-                                new Date(member.subscriptions[0].endDate).getFullYear() + 1
-                            )).toISOString().split('T')[0]}
+                            {member?.subscriptions?.[0]?.endDate &&
+                                (!member?.subscriptions?.[0]?.isActive ?
+                                    new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0] :
+                                    new Date(new Date(member.subscriptions[0].endDate).setFullYear(
+                                        new Date(member.subscriptions[0].endDate).getFullYear() + 1
+                                    )).toISOString().split('T')[0]
+                                )
+                            }
                         </div>
                     </div>
                     <div className="mb-4">
@@ -321,7 +326,7 @@ const MemberDetails = () => {
                         icon="pi pi-sync"
                         className="p-button-success"
                         onClick={() => setShowRenewDialog(true)}
-                        disabled={member.status === 'inactive'}
+                    // disabled={member.status === 'inactive'}
                     />
                     <Button
                         label={t('common.edit')}
@@ -339,9 +344,9 @@ const MemberDetails = () => {
                     <div className="flex-shrink-0 flex flex-col items-center md:items-start">
                         {member.profileImagePath ? (
                             <img
-                                src={member.profileImagePath}
+                                src={`${process.env.REACT_APP_API_URL}/${member.profileImagePath}`}
                                 alt={member.fullName}
-                                className="w-24 h-24 rounded-full border border-gray-200"
+                                className="w-20 h-20 rounded-full border-2 border-white"
                             />
                         ) : (
                             <Avatar
@@ -365,33 +370,33 @@ const MemberDetails = () => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-2">
                             <div>
-                                <span className="text-gray-500 text-sm">{t('member.businessInfo.businessType')}:</span>
+                                <span className="text-gray-500 text-sm">{t('member.businessInfo.businessType')}: </span>
                                 <span className="ml-1">{member.businessType}</span>
                             </div>
 
                             <div>
-                                <span className="text-gray-500 text-sm">{t('member.personalInfo.qualification')}:</span>
+                                <span className="text-gray-500 text-sm">{t('member.personalInfo.qualification')}: </span>
                                 <span className="ml-1">{member.qualification}</span>
                             </div>
 
                             <div>
-                                <span className="text-gray-500 text-sm">{t('member.contactInfo.email')}:</span>
+                                <span className="text-gray-500 text-sm">{t('member.contactInfo.email')}:  </span>
                                 <span className="ml-1">{member.email}</span>
                             </div>
 
                             <div>
-                                <span className="text-gray-500 text-sm">{t('member.contactInfo.phone1')}:</span>
+                                <span className="text-gray-500 text-sm">{t('member.contactInfo.phone1')}: </span>
                                 <span className="ml-1">{member.phone1}</span>
                             </div>
 
                             <div>
-                                <span className="text-gray-500 text-sm">{t('member.contactInfo.mobile')}:</span>
+                                <span className="text-gray-500 text-sm">{t('member.contactInfo.mobile')}: </span>
                                 <span className="ml-1">{member.mobile}</span>
                             </div>
 
                             <div>
-                                <span className="text-gray-500 text-sm">{t('common.createdAt')}: </span>
-                                <span className="ml-1">{member.createdAt}</span>
+                                <span className="text-gray-500 text-sm">{t('member.subscription.endDate')}: </span>
+                                <span className="ml-1">{member.subscriptions[0]?.endDate}</span>
                             </div>
                         </div>
                     </div>
@@ -438,7 +443,7 @@ const MemberDetails = () => {
                                         icon="pi pi-download"
                                         rounded
                                         outlined
-                                        onClick={() => window.open(member.idImagePath, '_blank')}
+                                        onClick={() => window.open(`${process.env.REACT_APP_API_URL}/${member.idImagePath}`, '_blank')}
                                     />
                                 </div>
                             </>
@@ -495,7 +500,7 @@ const MemberDetails = () => {
                                                 icon="pi pi-download"
                                                 rounded
                                                 outlined
-                                                onClick={() => window.open(attachment.path, '_blank')}
+                                                onClick={() => window.open(`${process.env.REACT_APP_API_URL}/${attachment.path}`, '_blank')}
                                             />
                                         )}
                                     </div>
@@ -541,9 +546,9 @@ const MemberDetails = () => {
                             responsiveLayout="scroll"
                             emptyMessage={t('member.subscription.noSubscriptions')}
                         >
-                            <Column field="id" header={t('common.id')} />
-                            <Column field="startDate" header={t('member.subscription.startDate')} />
-                            <Column field="endDate" header={t('member.subscription.endDate')} />
+                            <Column field="id" header={t('common.id')} style={{ textAlign: 'right' }} />
+                            <Column field="startDate" header={t('member.subscription.startDate')} style={{ textAlign: 'right' }} />
+                            <Column field="endDate" header={t('member.subscription.endDate')} style={{ textAlign: 'right' }} />
                             <Column
                                 field="isActive"
                                 header={t('common.status')}
@@ -553,6 +558,7 @@ const MemberDetails = () => {
                                         severity={rowData.isActive ? 'success' : 'danger'}
                                     />
                                 }
+                                style={{ textAlign: 'right' }}
                             />
                         </DataTable>
                     </TabPanel>
@@ -564,12 +570,12 @@ const MemberDetails = () => {
                             responsiveLayout="scroll"
                             emptyMessage={t('member.payment.noPayments')}
                         >
-                            <Column field="id" header={t('common.id')} />
-                            <Column field="date" header={t('member.payment.date')} />
-                            <Column field="amount" header={t('member.payment.amount')} />
-                            <Column field="type" header={t('member.payment.type')} />
-                            <Column field="referenceNumber" header={t('member.payment.referenceNumber')} />
-                            <Column field="paymentMethod" header={t('member.payment.method')} />
+                            <Column field="id" header={t('common.id')} style={{ textAlign: 'right' }} />
+                            <Column field="date" header={t('member.payment.date')} style={{ textAlign: 'right' }} />
+                            <Column field="amount" header={t('member.payment.amount')} style={{ textAlign: 'right' }} />
+                            <Column field="type" header={t('member.payment.type')} style={{ textAlign: 'right' }} />
+                            <Column field="referenceNumber" header={t('member.payment.referenceNumber')} style={{ textAlign: 'right' }} />
+                            <Column field="paymentMethod" header={t('member.payment.method')} style={{ textAlign: 'right' }} />
                         </DataTable>
                     </TabPanel>
                 </TabView>

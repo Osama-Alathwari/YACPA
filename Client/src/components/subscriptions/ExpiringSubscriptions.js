@@ -220,17 +220,11 @@ const ExpiringSubscriptions = () => {
     };
 
     // Template for expiration window filter
-    const expirationWindowFilterTemplate = (options) => {
-        return (
-            <Dropdown
-                value={options.value}
-                options={expirationWindows}
-                onChange={(e) => options.filterCallback(e.value)}
-                placeholder={t('dashboard.subscriptions.selectWindow')}
-                className="p-column-filter"
-                showClear
-            />
-        );
+    const expirationWindowFilterTemplate = (e) => {
+        const value = e.value;
+        const _filters = { ...filters };
+        _filters.expirationWindow.value = value;
+        setFilters(_filters);
     };
 
     // Clear filters
@@ -259,6 +253,16 @@ const ExpiringSubscriptions = () => {
                 </div>
 
                 <div className="flex gap-2">
+                    <Dropdown
+                        value={filters.expirationWindow.value}
+                        options={expirationWindows}
+                        onChange={(e) => handleExpirationWindowChange(e.value)}
+                        placeholder={t('dashboard.subscriptions.selectWindow')}
+                        className="p-column-filter"
+                        showClear
+                    // style={{ width: '100%', height: '100%' }}
+                    />
+
                     <Button
                         type="button"
                         label={t('common.clearFilters')}
@@ -318,26 +322,21 @@ const ExpiringSubscriptions = () => {
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 >
                     <Column selectionMode="multiple" headerStyle={{ width: '3em' }} />
-                    <Column field="memberId" header={t('common.memberId')} body={memberIdTemplate} sortable style={{ minWidth: '100px' }} />
-                    <Column field="memberName" header={t('common.name')} sortable style={{ minWidth: '200px' }} />
-                    <Column field="businessName" header={t('common.business')} sortable style={{ minWidth: '200px' }} />
-                    <Column field="endDate" header={t('member.subscription.endDate')} sortable style={{ minWidth: '120px' }} />
+                    <Column body={actionsTemplate} header={t('common.actions')} style={{ minWidth: '150px', textAlign: 'center' }} />
+                    <Column field="memberId" header={t('common.memberId')} body={memberIdTemplate} sortable style={{ minWidth: '100px', textAlign: 'right' }} />
+                    <Column field="memberName" header={t('common.name')} sortable style={{ minWidth: '200px', textAlign: 'right' }} />
+                    <Column field="businessName" header={t('common.business')} sortable style={{ minWidth: '200px', textAlign: 'right' }} />
+                    <Column field="endDate" header={t('member.subscription.endDate')} sortable style={{ minWidth: '120px', textAlign: 'right' }} />
                     <Column
                         field="daysRemaining"
                         header={t('dashboard.subscriptions.daysRemaining')}
                         body={daysRemainingTemplate}
                         sortable
-                        filter
-                        filterField="daysRemaining"
-                        filterElement={expirationWindowFilterTemplate}
-                        filterFunction={filterExpirationWindow}
-                        showFilterMenu={false}
-                        style={{ minWidth: '150px' }}
+                        style={{ minWidth: '150px', textAlign: 'right' }}
                     />
-                    <Column field="lastPaymentDate" header={t('dashboard.subscriptions.lastPayment')} sortable style={{ minWidth: '120px' }} />
-                    <Column field="lastPaymentAmount" header={t('common.amount')} body={amountTemplate} sortable style={{ minWidth: '100px' }} />
-                    <Column field="status" header={t('common.status')} body={statusTemplate} sortable style={{ minWidth: '100px' }} />
-                    <Column body={actionsTemplate} header={t('common.actions')} style={{ minWidth: '150px', textAlign: 'center' }} />
+                    <Column field="status" header={t('common.status')} body={statusTemplate} sortable style={{ minWidth: '100px', textAlign: 'right' }} />
+                    <Column field="lastPaymentDate" header={t('dashboard.subscriptions.lastPayment')} sortable style={{ minWidth: '120px', textAlign: 'right' }} />
+                    <Column field="lastPaymentAmount" header={t('common.amount')} body={amountTemplate} sortable style={{ minWidth: '100px', textAlign: 'right' }} />
                 </DataTable>
             </Card>
         </div>

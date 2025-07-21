@@ -258,13 +258,16 @@ const getMembers = async (req, res) => {
                 s.enddate as subscriptionenddate,
                 CASE 
                     WHEN s.enddate >= CURRENT_DATE AND s.isactive = true THEN 'active'
-                    WHEN s.enddate < CURRENT_DATE THEN 'inactive'
-                    ELSE 'pending'
+                    ELSE 'inactive'
                 END as status
             FROM members m
             LEFT JOIN businesstypes bt ON m.businesstypeid = bt.id
             LEFT JOIN contactinformation ci ON m.id = ci.memberid AND ci.isprimary = true
-            LEFT JOIN subscriptions s ON m.id = s.memberid AND s.isactive = true
+            LEFT JOIN (
+    SELECT DISTINCT ON (memberid) *
+    FROM subscriptions
+    ORDER BY memberid, enddate DESC
+) s ON m.id = s.memberid
             ORDER BY m.id DESC
         `;
 
@@ -297,7 +300,6 @@ const getMembers = async (req, res) => {
     }
 };
 
-// Add this to Server/controllers/memberController.js
 
 const getMember = async (req, res) => {
     try {
