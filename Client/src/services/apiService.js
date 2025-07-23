@@ -325,6 +325,30 @@ class ApiService {
         }
     }
 
+    async getMembersForRenewal() {
+        try {
+            console.log('👥 Fetching members for renewal...');
+            const response = await this.api.get('/api/subscriptions/members-for-renewal');
+            console.log('✅ Members for renewal fetched successfully');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Get members for renewal API error:', error);
+            throw error;
+        }
+    }
+
+    async renewSubscription(renewalData) {
+        try {
+            console.log('💳 Processing subscription renewal...');
+            const response = await this.api.post('/api/subscriptions/renew', renewalData);
+            console.log('✅ Subscription renewal successful');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Subscription renewal API error:', error);
+            throw error;
+        }
+    }
+
     // Health check
     async healthCheck() {
         try {

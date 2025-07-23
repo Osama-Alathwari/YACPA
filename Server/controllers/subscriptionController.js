@@ -144,5 +144,181 @@ const getExpiredSubscriptions = async (req, res) => {
     }
 };
 
+const getMembersForRenewal = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                m.id,
+                m.fullname || COALESCE(' ' || m.surname, '') as name,
+                m.businessname as business,
+                s.enddate as subscription_end,
+                CAST(ss.settingvalue AS NUMERIC) as annual_subscription_fee,
+                CASE 
+                    WHEN s.enddate >= CURRENT_DATE AND s.isactive = true THEN 'active'
+                    WHEN s.enddate < CURRENT_DATE THEN 'expired'
+                    ELSE 'inactive'
+                END as status,
+                m.profileimagepath as profile_image
+            FROM members m
+            LEFT JOIN (
+                SELECT DISTINCT ON (memberid) *
+                FROM subscriptions
+                ORDER BY memberid, enddate DESC
+            ) s ON m.id = s.memberid
+            CROSS JOIN systemsettings ss
+            WHERE ss.settingkey = 'AnnualSubscriptionFee'
+            ORDER BY m.fullname ASC
+        `;
 
-export default { getExpiringSubscriptions, getExpiredSubscriptions };
+        const result = await pool.query(query);
+
+        // Format the data to match frontend expectations
+        const members = result.rows.map(member => ({
+            id: member.id,
+            name: member.name,
+            business: member.business,
+            subscriptionEnd: member.subscription_end ?
+                new Date(member.subscription_end).toISOString().split('T')[0] : null,
+            status: member.status,
+            annualFee: parseFloat(member.annual_subscription_fee) || 0,
+            profileImage: member.profile_image
+        }));
+
+        res.json({
+            success: true,
+            data: members
+        });
+
+    } catch (error) {
+        console.error('Error fetching members for renewal:', error);
+        res.status(500).json({
+            success: false,
+            message: 'خطأ في استرجاع بيانات الأعضاء'
+        });
+    }
+};
+
+const renewSubscription = async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        const {
+            memberId,
+            subscriptionPeriod,
+            paymentMethod,
+            amount,
+            referenceNumber,
+            referenceDate,
+            notes
+        } = req.body;
+
+        // Validate required fields
+        if (!memberId || !subscriptionPeriod || !paymentMethod || !amount) {
+            return res.status(400).json({
+                success: false,
+                message: 'البيانات المطلوبة غير مكتملة'
+            });
+        }
+
+        // Get current member subscription end date
+        const memberQuery = 'SELECT enddate FROM subscriptions WHERE memberid = $1 ORDER BY enddate DESC LIMIT 1';
+        const memberResult = await client.query(memberQuery, [memberId]);
+
+        if (memberResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'العضو غير موجود'
+            });
+        }
+
+        const currentEndDate = new Date(memberResult.rows[0].enddate);
+        const today = new Date();
+
+        // Calculate new subscription end date
+        // If current subscription is still active, extend from current end date
+        // If expired, extend from today
+        const baseDate = currentEndDate > today ? currentEndDate : today;
+        const newEndDate = new Date(baseDate);
+        newEndDate.setFullYear(newEndDate.getFullYear() + subscriptionPeriod);
+
+        // First insert payment record
+        const paymentQuery = `
+            INSERT INTO payments (
+                memberid, 
+                amount,
+                referencenumber,
+                referencedate,
+                paymenttypeid,
+                paymentpurposeid,
+                notes
+            ) VALUES ($1, $2, $3, $4, 
+                (SELECT id FROM paymenttypes WHERE name = $5),
+                (SELECT id FROM paymentpurposes WHERE name = 'تجديد'),
+                $6)
+            RETURNING id
+        `;
+
+        const paymentValues = [
+            memberId,
+            amount,
+            referenceNumber,
+            referenceDate || new Date(),
+            paymentMethod,
+            notes
+        ];
+
+        const paymentResult = await client.query(paymentQuery, paymentValues);
+
+        // Insert subscription renewal record
+        const renewalQuery = `
+            INSERT INTO subscriptions (
+                memberid, 
+                startdate,
+                enddate,
+                paymentid,
+                isactive
+            ) VALUES ($1, $2, $3, $4, true)
+            RETURNING id
+        `;
+
+        const renewalValues = [
+            memberId,
+            baseDate,
+            newEndDate,
+            paymentResult.rows[0].id
+        ];
+
+        const renewalResult = await client.query(renewalQuery, renewalValues);
+
+        await client.query('COMMIT');
+
+        res.json({
+            success: true,
+            message: 'تم تجديد الاشتراك بنجاح',
+            data: {
+                renewalId: renewalResult.rows[0].id,
+                newEndDate: newEndDate
+            }
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Error processing subscription renewal:', error);
+        res.status(500).json({
+            success: false,
+            message: 'خطأ في تجديد الاشتراك'
+        });
+    } finally {
+        client.release();
+    }
+};
+
+
+export default {
+    getExpiringSubscriptions,
+    getExpiredSubscriptions,
+    getMembersForRenewal,
+    renewSubscription
+};

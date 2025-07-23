@@ -18,13 +18,15 @@ import { Panel } from 'primereact/panel';
 import { Tag } from 'primereact/tag';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { useLanguage } from '../../contexts/LanguageContext';
+import apiService from '../../services/apiService';
 
 const SubscriptionRenewal = () => {
     const { t } = useTranslation();
     const { isRtl } = useLanguage();
     const { id } = useParams(); // Get member ID from URL if provided
     const toast = useRef(null);
-    
+    const [membersData, setMembersData] = useState([]);
+
     // Form state
     const [formData, setFormData] = useState({
         memberId: '',
@@ -38,60 +40,17 @@ const SubscriptionRenewal = () => {
         notes: '',
         attachment: null
     });
-    
+
     // Selected member state
     const [selectedMember, setSelectedMember] = useState(null);
     const [filteredMembers, setFilteredMembers] = useState([]);
-    
+
     // UI state
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
-    
-    // Mock members data for search (in real app, this would be from API)
-    const membersData = [
-        { 
-            id: 'M1001', 
-            name: 'عبدالله سالم الهاشمي', 
-            business: 'شركة الأمل للمحاسبة', 
-            subscriptionEnd: '2025-06-15',
-            status: 'active',
-            email: 'abdullah@alamamal.com',
-            phone: '+967 777 123 456',
-            profileImage: null
-        },
-        { 
-            id: 'M1002', 
-            name: 'سارة محمد الغامدي', 
-            business: 'مكتب السارة للاستشارات', 
-            subscriptionEnd: '2025-07-20',
-            status: 'active',
-            email: 'sarah@consultancy.com',
-            phone: '+967 777 789 123',
-            profileImage: null
-        },
-        { 
-            id: 'M1003', 
-            name: 'محمد علي المقطري', 
-            business: 'المحاسبون المتحدون', 
-            subscriptionEnd: '2025-08-10',
-            status: 'active',
-            email: 'mohammed@unitedaccountants.com',
-            phone: '+967 777 456 789',
-            profileImage: null
-        },
-        { 
-            id: 'M1004', 
-            name: 'أحمد عبدالله البكري', 
-            business: 'شركة النور المالية', 
-            subscriptionEnd: '2025-09-05',
-            status: 'active',
-            email: 'ahmed@alnoor.com',
-            phone: '+967 777 654 321',
-            profileImage: null
-        }
-    ];
-    
+
+
     // Handle URL parameter for direct member renewal
     useEffect(() => {
         if (id) {
@@ -107,13 +66,13 @@ const SubscriptionRenewal = () => {
                 });
             }
         }
+        loadMembersForRenewal();
     }, [id]);
     const paymentMethods = [
         { label: t('common.cash'), value: 'cash' },
         { label: t('common.bankTransfer'), value: 'bank_transfer' },
-        { label: t('common.check'), value: 'check' }
     ];
-    
+
     // Subscription period options
     const subscriptionPeriods = [
         { label: '1 ' + t('common.year'), value: 1 },
@@ -121,92 +80,112 @@ const SubscriptionRenewal = () => {
         { label: '3 ' + t('common.years'), value: 3 },
         { label: '5 ' + t('common.years'), value: 5 }
     ];
-    
+
+    const loadMembersForRenewal = async () => {
+        try {
+            setLoading(true);
+            const response = await apiService.getMembersForRenewal();
+            if (response.success) {
+                setMembersData(response.data);
+            }
+        } catch (error) {
+            toast.current?.show({
+                severity: 'error',
+                summary: 'خطأ',
+                detail: 'فشل في تحميل بيانات الأعضاء',
+                life: 3000
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Handle member search
     const searchMember = (event) => {
         let _filteredMembers;
-        
+
         if (!event.query.trim().length) {
             _filteredMembers = [...membersData];
         } else {
             _filteredMembers = membersData.filter((member) => {
                 return member.name.toLowerCase().includes(event.query.toLowerCase()) ||
-                    member.id.toLowerCase().includes(event.query.toLowerCase()) ||
-                    member.business.toLowerCase().includes(event.query.toLowerCase());
+                    member.id.toString().includes(event.query) ||
+                    (member.business && member.business.toLowerCase().includes(event.query.toLowerCase()));
             });
         }
-        
+
         setFilteredMembers(_filteredMembers);
     };
-    
+
     // Member autocomplete template
     const memberItemTemplate = (member) => {
-        const daysUntilExpiry = Math.ceil((new Date(member.subscriptionEnd) - new Date()) / (1000 * 60 * 60 * 24));
-        const statusSeverity = daysUntilExpiry <= 30 ? 'danger' : daysUntilExpiry <= 60 ? 'warning' : 'success';
-        
+        const daysUntilExpiry = member.subscriptionEnd ?
+            Math.ceil((new Date(member.subscriptionEnd) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+        const statusSeverity = daysUntilExpiry <= 30 ? 'danger' :
+            daysUntilExpiry <= 60 ? 'warning' : 'success';
+
         return (
-            <div className="flex items-center p-3 border-b border-gray-100 hover:bg-gray-50">
+            <div className="member-search-item flex items-center gap-3">
                 <Avatar
-                    icon="pi pi-user"
-                    size="large"
-                    className="bg-blue-100 text-blue-600 ml-3"
-                    image={member.profileImage}
+                    image={member.profileImage ? `${process.env.REACT_APP_API_BASE_URL}/${member.profileImage}` : null}
+                    icon={!member.profileImage ? "pi pi-user" : null}
+                    className="member-avatar"
+                    size="normal"
                 />
-                <div className="flex-grow">
-                    <div className="font-bold text-gray-800">{member.name}</div>
-                    <div className="text-sm text-gray-500">{member.id} - {member.business}</div>
-                    <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-gray-400">انتهاء الاشتراك:</span>
-                        <span className="text-xs">{member.subscriptionEnd}</span>
-                        <Tag 
-                            value={`${daysUntilExpiry} يوم متبقي`} 
-                            severity={statusSeverity} 
-                            className="text-xs px-2 py-1"
+                <div className="member-info flex-1">
+                    <div className="member-name">{member.name}</div>
+                    <div className="member-details text-gray-600">
+                        {member.business && <span>المنشأة: {member.business}</span>}
+                    </div>
+                    <div className="member-subscription flex items-center gap-2">
+                        <Tag
+                            value={member.status === 'active' ? 'نشط' :
+                                member.status === 'expired' ? 'منتهي' : 'غير نشط'}
+                            severity={statusSeverity}
+                            rounded
                         />
+                        {member.subscriptionEnd && (
+                            <span className="text-xs text-gray-500">
+                                ينتهي: {new Date(member.subscriptionEnd).toLocaleDateString('ar-SA')}
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
         );
     };
-    
+
     // Handle input changes
     const handleInputChange = (field, value) => {
         setFormData(prevData => {
             const newData = { ...prevData, [field]: value };
-            
+
             // Calculate total amount when subscription period changes
             if (field === 'subscriptionPeriod') {
                 newData.totalAmount = newData.amount * value;
             }
-            
+
             return newData;
         });
     };
-    
+
     // Handle member selection
     const handleMemberSelect = (member) => {
         setSelectedMember(member);
-        setFormData(prevData => ({
-            ...prevData,
+        setFormData(prev => ({
+            ...prev,
             memberId: member.id,
-            memberName: member.name,
-            totalAmount: prevData.amount * prevData.subscriptionPeriod
+            memberName: member.name
         }));
-        
-        // Calculate new subscription end date
-        const currentEnd = new Date(member.subscriptionEnd);
-        const newEnd = new Date(currentEnd);
-        newEnd.setFullYear(currentEnd.getFullYear() + formData.subscriptionPeriod);
-        
-        // Display member details in a toast
+
         toast.current?.show({
             severity: 'info',
-            summary: t('dashboard.subscriptions.memberSelected'),
-            detail: `${t('member.subscription.currentEndDate')}: ${member.subscriptionEnd}`,
-            life: 5000
+            summary: 'تم تحديد العضو',
+            detail: `تم تحديد العضو ${member.name} للتجديد`,
+            life: 3000
         });
     };
-    
+
     // Handle file upload
     const handleFileUpload = (event) => {
         const file = event.files[0];
@@ -214,7 +193,7 @@ const SubscriptionRenewal = () => {
             ...prevData,
             attachment: file
         }));
-        
+
         toast.current?.show({
             severity: 'success',
             summary: t('common.fileUploaded'),
@@ -222,7 +201,7 @@ const SubscriptionRenewal = () => {
             life: 3000
         });
     };
-    
+
     // Form validation
     const validateForm = () => {
         return selectedMember &&
@@ -231,35 +210,85 @@ const SubscriptionRenewal = () => {
             formData.referenceNumber.trim() !== '' &&
             formData.totalAmount > 0;
     };
-    
+
     // Calculate new subscription end date
     const calculateNewEndDate = () => {
         if (!selectedMember) return '';
-        
+
         const currentEnd = new Date(selectedMember.subscriptionEnd);
         const newEnd = new Date(currentEnd);
         newEnd.setFullYear(currentEnd.getFullYear() + formData.subscriptionPeriod);
-        
+
         return newEnd.toISOString().split('T')[0];
     };
-    
+
     // Handle form submission
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setSubmitted(true);
-        
-        if (!validateForm()) {
+
+        // Validation
+        if (!selectedMember || !formData.subscriptionPeriod || !formData.paymentMethod || !formData.amount) {
             toast.current?.show({
-                severity: 'error',
-                summary: t('common.error'),
-                detail: t('common.fillRequiredFields'),
+                severity: 'warn',
+                summary: 'بيانات ناقصة',
+                detail: 'يرجى ملء جميع الحقول المطلوبة',
                 life: 3000
             });
             return;
         }
-        
-        setShowConfirmation(true);
+
+        try {
+            setLoading(true);
+
+            const renewalData = {
+                memberId: selectedMember.id,
+                subscriptionPeriod: formData.subscriptionPeriod,
+                paymentMethod: formData.paymentMethod,
+                amount: formData.totalAmount,
+                referenceNumber: formData.referenceNumber,
+                referenceDate: formData.paymentDate,
+                notes: formData.notes
+            };
+
+            const response = await apiService.renewSubscription(renewalData);
+
+            if (response.success) {
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'نجح التجديد',
+                    detail: response.message,
+                    life: 5000
+                });
+
+                // Reset form
+                setSelectedMember(null);
+                setFormData({
+                    memberId: '',
+                    memberName: '',
+                    subscriptionPeriod: 1,
+                    paymentDate: new Date(),
+                    paymentMethod: null,
+                    referenceNumber: '',
+                    amount: 150,
+                    totalAmount: 150,
+                    notes: '',
+                    attachment: null
+                });
+                setSubmitted(false);
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'فشل في تجديد الاشتراك';
+            toast.current?.show({
+                severity: 'error',
+                summary: 'خطأ في التجديد',
+                detail: errorMessage,
+                life: 5000
+            });
+        } finally {
+            setLoading(false);
+        }
     };
-    
+
     // Confirm renewal
     const confirmRenewal = () => {
         confirmDialog({
@@ -275,15 +304,15 @@ const SubscriptionRenewal = () => {
             }
         });
     };
-    
+
     // Process renewal
     const processRenewal = async () => {
         setLoading(true);
-        
+
         try {
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // Show success message
             toast.current?.show({
                 severity: 'success',
@@ -291,7 +320,7 @@ const SubscriptionRenewal = () => {
                 detail: `تم تجديد اشتراك ${selectedMember.name} بنجاح. الاشتراك الجديد ينتهي في ${calculateNewEndDate()}`,
                 life: 5000
             });
-            
+
             // Reset form
             setFormData({
                 memberId: '',
@@ -308,7 +337,7 @@ const SubscriptionRenewal = () => {
             setSelectedMember(null);
             setSubmitted(false);
             setShowConfirmation(false);
-            
+
         } catch (error) {
             toast.current?.show({
                 severity: 'error',
@@ -320,7 +349,7 @@ const SubscriptionRenewal = () => {
             setLoading(false);
         }
     };
-    
+
     // Reset form
     const resetForm = () => {
         setFormData({
@@ -343,7 +372,7 @@ const SubscriptionRenewal = () => {
         <div className="subscription-renewal-screen" dir={isRtl ? 'rtl' : 'ltr'}>
             <Toast ref={toast} position="top-center" />
             <ConfirmDialog />
-            
+
             {/* Header */}
             <div className="mb-6">
                 <div className="flex items-center justify-between">
@@ -368,7 +397,7 @@ const SubscriptionRenewal = () => {
                     {/* Member Selection */}
                     <Card className="mb-6">
                         <h3 className="text-lg font-semibold mb-4">البحث عن العضو</h3>
-                        
+
                         <div className="p-field mb-4">
                             <label className="block font-medium mb-2">
                                 البحث عن العضو *
@@ -403,7 +432,7 @@ const SubscriptionRenewal = () => {
                                     <div className="flex-grow">
                                         <h4 className="text-lg font-semibold">{selectedMember.name}</h4>
                                         <p className="text-gray-600 mb-2">{selectedMember.business}</p>
-                                        
+
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                             <div>
                                                 <span className="font-medium">رقم العضو:</span> {selectedMember.id}
@@ -415,7 +444,7 @@ const SubscriptionRenewal = () => {
                                                 <span className="font-medium">الهاتف:</span> {selectedMember.phone}
                                             </div>
                                             <div>
-                                                <span className="font-medium">انتهاء الاشتراك الحالي:</span> 
+                                                <span className="font-medium">انتهاء الاشتراك الحالي:</span>
                                                 <span className="text-red-600 font-medium mr-2">{selectedMember.subscriptionEnd}</span>
                                             </div>
                                         </div>
@@ -428,7 +457,7 @@ const SubscriptionRenewal = () => {
                     {/* Subscription & Payment Details */}
                     <Card className="mb-6">
                         <h3 className="text-lg font-semibold mb-4">تفاصيل التجديد والدفع</h3>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Subscription Period */}
                             <div className="p-field">
@@ -572,7 +601,7 @@ const SubscriptionRenewal = () => {
                                 className="p-button-outlined"
                                 disabled={loading}
                             />
-                            
+
                             <div className="flex gap-2">
                                 <Button
                                     label="معاينة"
@@ -598,7 +627,7 @@ const SubscriptionRenewal = () => {
                 <div className="lg:col-span-1">
                     <Card className="sticky top-4">
                         <h3 className="text-lg font-semibold mb-4">ملخص التجديد</h3>
-                        
+
                         {selectedMember ? (
                             <>
                                 <div className="space-y-3 text-sm">
@@ -666,7 +695,7 @@ const SubscriptionRenewal = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <Card className="w-full max-w-md mx-4">
                         <h3 className="text-lg font-semibold mb-4">تأكيد تجديد الاشتراك</h3>
-                        
+
                         <div className="space-y-3 text-sm mb-6">
                             <div className="flex justify-between">
                                 <span>العضو:</span>

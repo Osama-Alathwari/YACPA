@@ -118,7 +118,7 @@ const ExpiredSubscriptions = () => {
                     return subscription.expiredDays > 365;
                 }
                 const filterValue = parseInt(selectedExpiredDaysFilter, 10);
-                return subscription.expiredDays <= filterValue;
+                return subscription.expiredDays >= filterValue;
             });
         }
 
