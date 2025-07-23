@@ -320,7 +320,8 @@
             "notificationsSent": "الإشعارات المرسلة",
             "renewalEligible": "مؤهل للتجديد",
             "renewalBlocked": "مرفوض التجديد",
-            "noExpiringSubscriptions": "لا يوجد أي أعضاء اشتراكاتهم موشكة على الانتهاء"
+            "noExpiringSubscriptions": "لا يوجد أي أعضاء اشتراكاتهم موشكة على الانتهاء",
+            "filterByExpiredDays": "أيام الانتهاء"
         },
         "reports": {
             "title": "التقارير",

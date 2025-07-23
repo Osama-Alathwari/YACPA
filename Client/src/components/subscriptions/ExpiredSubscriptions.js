@@ -27,9 +27,15 @@ const ExpiredSubscriptions = () => {
 
     // State
     const [expiredSubscriptions, setExpiredSubscriptions] = useState([]);
+    const [filteredSubscriptions, setFilteredSubscriptions] = useState([]);
     const [selectedSubscriptions, setSelectedSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+    // Toolbar filter states
+    const [selectedExpiredDaysFilter, setSelectedExpiredDaysFilter] = useState(null);
+    const [selectedStatusFilter, setSelectedStatusFilter] = useState(null);
+
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
         'member.status': { value: null, matchMode: FilterMatchMode.EQUALS },
@@ -70,7 +76,7 @@ const ExpiredSubscriptions = () => {
             expiredDays: 125,
             lastPaymentDate: '2023-08-15',
             lastPaymentAmount: 150,
-            totalOwed: 300, // 2 years expired
+            totalOwed: 300,
             gracePeriodEnded: '2024-09-15',
             notificationsSent: 3,
             canRenew: true
@@ -111,7 +117,7 @@ const ExpiredSubscriptions = () => {
             totalOwed: 450,
             gracePeriodEnded: '2024-01-10',
             notificationsSent: 8,
-            canRenew: false // Suspended for too long
+            canRenew: false
         },
         {
             id: 'SUB2004',
@@ -157,9 +163,40 @@ const ExpiredSubscriptions = () => {
     useEffect(() => {
         setTimeout(() => {
             setExpiredSubscriptions(mockExpiredData);
+            setFilteredSubscriptions(mockExpiredData);
             setLoading(false);
         }, 1000);
     }, []);
+
+    // Apply filters whenever filter values change
+    useEffect(() => {
+        applyFilters();
+    }, [selectedExpiredDaysFilter, selectedStatusFilter, expiredSubscriptions]);
+
+    // Apply toolbar filters
+    const applyFilters = () => {
+        let filtered = [...expiredSubscriptions];
+
+        // Apply expired days filter
+        if (selectedExpiredDaysFilter) {
+            filtered = filtered.filter(subscription => {
+                if (selectedExpiredDaysFilter === '365+') {
+                    return subscription.expiredDays > 365;
+                }
+                const filterValue = parseInt(selectedExpiredDaysFilter, 10);
+                return subscription.expiredDays <= filterValue;
+            });
+        }
+
+        // Apply status filter
+        if (selectedStatusFilter) {
+            filtered = filtered.filter(subscription =>
+                subscription.member.status === selectedStatusFilter
+            );
+        }
+
+        setFilteredSubscriptions(filtered);
+    };
 
     // Global filter change handler
     const onGlobalFilterChange = (e) => {
@@ -170,7 +207,35 @@ const ExpiredSubscriptions = () => {
         setGlobalFilterValue(value);
     };
 
-    // Custom filter function for expired days
+    // Handle expired days filter change
+    const handleExpiredDaysFilterChange = (e) => {
+        setSelectedExpiredDaysFilter(e.value);
+    };
+
+    // Handle status filter change
+    const handleStatusFilterChange = (e) => {
+        setSelectedStatusFilter(e.value);
+    };
+
+    // Clear all filters
+    const clearAllFilters = () => {
+        setSelectedExpiredDaysFilter(null);
+        setSelectedStatusFilter(null);
+        setGlobalFilterValue('');
+        setFilters({
+            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+            'member.status': { value: null, matchMode: FilterMatchMode.EQUALS },
+            'expiredDays': { value: null, matchMode: FilterMatchMode.EQUALS },
+            'lastPaymentDate': { value: null, matchMode: FilterMatchMode.DATE_IS }
+        });
+    };
+
+    // Check if any filters are active
+    const hasActiveFilters = () => {
+        return selectedExpiredDaysFilter || selectedStatusFilter || globalFilterValue;
+    };
+
+    // Custom filter function for expired days (for DataTable column filter if needed)
     const filterExpiredDays = (value, filter) => {
         if (filter === null || filter === undefined) {
             return true;
@@ -186,8 +251,6 @@ const ExpiredSubscriptions = () => {
 
     // Templates for table columns
     const memberTemplate = (rowData) => {
-        // <div className="text-sm text-gray-500">{rowData.member.id}</div>
-        // <div className="text-sm text-gray-500">{rowData.member.businessName}</div>
         return (
             <div className="flex items-center">
                 <div className="ml-3">
@@ -217,9 +280,9 @@ const ExpiredSubscriptions = () => {
             severity = 'warning';
         }
 
+
         return (
             <div className="flex items-center">
-                {/* <i className={`pi ${icon} mr-2 text-${severity === 'danger' ? 'red' : severity === 'warning' ? 'yellow' : 'blue'}-600`}></i> */}
                 <Tag
                     severity={severity}
                     value={`${rowData.expiredDays} ${t('common.days')}`}
@@ -272,11 +335,9 @@ const ExpiredSubscriptions = () => {
                         tooltipOptions={{ position: 'top' }}
                     />
                 )}
-
             </div>
         );
     };
-
 
     const contactMember = (subscription) => {
         toast.current?.show({
@@ -304,7 +365,6 @@ const ExpiredSubscriptions = () => {
     };
 
     const exportExpiredList = () => {
-        // In real implementation, this would generate and download a file
         toast.current?.show({
             severity: 'info',
             summary: 'جاري التصدير',
@@ -313,46 +373,41 @@ const ExpiredSubscriptions = () => {
         });
     };
 
-    // Clear filters
-    const clearFilters = () => {
-        setFilters({
-            global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-            'member.status': { value: null, matchMode: FilterMatchMode.EQUALS },
-            'expiredDays': { value: null, matchMode: FilterMatchMode.EQUALS },
-            'lastPaymentDate': { value: null, matchMode: FilterMatchMode.DATE_IS }
-        });
-        setGlobalFilterValue('');
-    };
-
-    // Filter templates
-    const statusFilterTemplate = (options) => {
-        return (
-            <Dropdown
-                value={options.value}
-                options={statusOptions}
-                onChange={(e) => options.filterCallback(e.value)}
-                placeholder={t('common.selectStatus')}
-                className="p-column-filter"
-                showClear
-            />
-        );
-    };
-
-    const expiredDaysFilterTemplate = (options) => {
-        return (
-            <Dropdown
-                value={options.value}
-                options={expiredDaysOptions}
-                onChange={(e) => options.filterCallback(e.value)}
-                placeholder={t('dashboard.subscriptions.selectPeriod')}
-                className="p-column-filter"
-                showClear
-            />
-        );
-    };
-
-    // Toolbar content
+    // Enhanced toolbar content with filters
     const leftToolbarTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2 items-center">
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">
+                        {t('dashboard.subscriptions.filterByExpiredDays')}:
+                    </label>
+                    <Dropdown
+                        value={selectedExpiredDaysFilter}
+                        options={expiredDaysOptions}
+                        onChange={handleExpiredDaysFilterChange}
+                        placeholder={t('dashboard.subscriptions.selectPeriod')}
+                        className="w-48"
+                        showClear
+                    />
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">
+                        {t('common.status')}:
+                    </label>
+                    <Dropdown
+                        value={selectedStatusFilter}
+                        options={statusOptions}
+                        onChange={handleStatusFilterChange}
+                        placeholder={t('common.selectStatus')}
+                        className="w-40"
+                        showClear
+                    />
+                </div>
+
+
+            </div>
+        );
     };
 
     const rightToolbarTemplate = () => {
@@ -367,19 +422,31 @@ const ExpiredSubscriptions = () => {
                         className="p-inputtext-sm"
                     />
                 </span>
+
                 <Button
                     label={t('common.clearFilters')}
                     icon="pi pi-filter-slash"
                     outlined
-                    onClick={clearFilters}
-                    disabled={!globalFilterValue && !filters['member.status'].value && !filters['expiredDays'].value}
+                    onClick={clearAllFilters}
+                    disabled={!hasActiveFilters()}
+                    size="small"
                 />
+
             </div>
         );
     };
 
-    // Member details dialog
+    // Calculate filtered statistics
+    const getFilteredStats = () => {
+        const over1Year = filteredSubscriptions.filter(s => s.expiredDays > 365).length;
+        const sixToTwelveMonths = filteredSubscriptions.filter(s => s.expiredDays > 180 && s.expiredDays <= 365).length;
+        const threeToSixMonths = filteredSubscriptions.filter(s => s.expiredDays > 90 && s.expiredDays <= 180).length;
+        const oneToThreeMonths = filteredSubscriptions.filter(s => s.expiredDays > 30 && s.expiredDays <= 90).length;
 
+        return { over1Year, sixToTwelveMonths, threeToSixMonths, oneToThreeMonths };
+    };
+
+    const stats = getFilteredStats();
 
     return (
         <div>
@@ -393,17 +460,22 @@ const ExpiredSubscriptions = () => {
                     <p className="text-gray-600">{t('dashboard.subscriptions.expiredDescription')}</p>
                 </div>
                 <div className="text-sm text-gray-500">
-                    {t('common.totalRecords')}: {expiredSubscriptions.length}
+                    {t('common.totalRecords')}: {filteredSubscriptions.length}
+                    {hasActiveFilters() && (
+                        <span className="ml-2 text-blue-600">
+                            ({t('common.filtered')})
+                        </span>
+                    )}
                 </div>
             </div>
 
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <Card className="bg-red-50 border-red-200">
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="text-2xl font-bold text-red-600">
-                                {expiredSubscriptions.filter(s => s.expiredDays > 365).length}
+                                {stats.over1Year}
                             </div>
                             <div className="text-sm text-red-700">منتهية أكثر من سنة</div>
                         </div>
@@ -415,7 +487,7 @@ const ExpiredSubscriptions = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="text-2xl font-bold text-orange-600">
-                                {expiredSubscriptions.filter(s => s.expiredDays > 180 && s.expiredDays <= 365).length}
+                                {stats.sixToTwelveMonths}
                             </div>
                             <div className="text-sm text-orange-700">منتهية 6-12 شهر</div>
                         </div>
@@ -427,7 +499,7 @@ const ExpiredSubscriptions = () => {
                     <div className="flex items-center justify-between">
                         <div>
                             <div className="text-2xl font-bold text-yellow-600">
-                                {expiredSubscriptions.filter(s => s.expiredDays > 90 && s.expiredDays <= 180).length}
+                                {stats.threeToSixMonths}
                             </div>
                             <div className="text-sm text-yellow-700">منتهية 3-6 أشهر</div>
                         </div>
@@ -435,15 +507,31 @@ const ExpiredSubscriptions = () => {
                     </div>
                 </Card>
 
-
+                <Card className="bg-blue-50 border-blue-200">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <div className="text-2xl font-bold text-blue-600">
+                                {stats.oneToThreeMonths}
+                            </div>
+                            <div className="text-sm text-blue-700">منتهية 1-3 أشهر</div>
+                        </div>
+                        <i className="pi pi-calendar-times text-3xl text-blue-400"></i>
+                    </div>
+                </Card>
             </div>
+
 
             {/* Main Table */}
             <Card>
-                <Toolbar className="mb-4" left={rightToolbarTemplate} />
+                <Toolbar
+                    className="mb-4"
+                    right={leftToolbarTemplate}
+                    center={<Divider layout="vertical" />}
+                    left={rightToolbarTemplate}
+                />
 
                 <DataTable
-                    value={expiredSubscriptions}
+                    value={filteredSubscriptions}
                     paginator
                     rows={10}
                     rowsPerPageOptions={[5, 10, 25, 50]}
@@ -452,17 +540,14 @@ const ExpiredSubscriptions = () => {
                     filterDisplay="row"
                     globalFilterFields={['member.name', 'member.id', 'member.businessName', 'member.email']}
                     emptyMessage={t('dashboard.subscriptions.noExpiredSubscriptions')}
-                    // selectionMode='multiple'
                     // selection={selectedSubscriptions}
-                    // onSelectionChange={e => setSelectedSubscriptions(e.value)}
+                    onSelectionChange={e => setSelectedSubscriptions(e.value)}
                     scrollable
-                    // scrollHeight="calc(100vh - 400px)"
-                    selectAll
+                    // selectAll
                     resizableColumns
                     currentPageReportTemplate={t('common.showing') + ' {first} ' + t('common.to') + ' {last} ' + t('common.of') + ' {totalRecords} ' + t('common.entries')}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 >
-
                     <Column
                         body={actionsTemplate}
                         header={t('common.actions')}
@@ -486,10 +571,6 @@ const ExpiredSubscriptions = () => {
                         header={t('dashboard.subscriptions.expiredDays')}
                         body={expiredDaysTemplate}
                         sortable
-                        // filter
-                        // filterElement={expiredDaysFilterTemplate}
-                        // filterFunction={filterExpiredDays}
-                        // showFilterMenu={false}
                         style={{ minWidth: '150px', textAlign: 'right' }}
                     />
                     <Column
@@ -510,17 +591,10 @@ const ExpiredSubscriptions = () => {
                         header={t('common.status')}
                         body={statusTemplate}
                         sortable
-                        // filter
-                        // filterElement={statusFilterTemplate}
-                        // showFilterMenu={false}
                         style={{ minWidth: '100px', textAlign: 'right' }}
                     />
-
                 </DataTable>
             </Card>
-
-            {/* Details Dialog */}
-
         </div>
     );
 };
