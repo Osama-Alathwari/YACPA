@@ -315,6 +315,16 @@ class ApiService {
         }
     }
 
+    async getExpiredSubscriptions() {
+        try {
+            const response = await this.api.get('/api/subscriptions/expired');
+            return response.data;
+        } catch (error) {
+            console.error('❌ Get expired subscriptions API error:', error);
+            throw error;
+        }
+    }
+
     // Health check
     async healthCheck() {
         try {

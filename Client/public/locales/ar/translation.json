@@ -438,7 +438,8 @@
         "deactivate": "الغاء الاشتراك",
         "noMembersFound": "لا يوجد اعضاء",
         "createdAt": "تاريخ الادخال",
-        "retry": "إعادة المحاولة"
+        "retry": "إعادة المحاولة",
+        "filtered": "تم التصفية"
     },
     "footer": {
         "quickLinks": "روابط سريعة",

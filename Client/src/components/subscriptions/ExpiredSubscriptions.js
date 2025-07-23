@@ -18,6 +18,7 @@ import { Divider } from 'primereact/divider';
 import { Panel } from 'primereact/panel';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import apiService from '../../services/apiService';
 
 const ExpiredSubscriptions = () => {
     const { t } = useTranslation();
@@ -30,6 +31,7 @@ const ExpiredSubscriptions = () => {
     const [filteredSubscriptions, setFilteredSubscriptions] = useState([]);
     const [selectedSubscriptions, setSelectedSubscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
 
     // Toolbar filter states
@@ -60,112 +62,44 @@ const ExpiredSubscriptions = () => {
         { label: t('dashboard.subscriptions.expiredOver1Year'), value: '365+' }
     ];
 
-    // Mock data - in real app, this would be fetched from API
-    const mockExpiredData = [
-        {
-            id: 'SUB2001',
-            member: {
-                id: 'M2001',
-                name: 'خالد محمد الشهري',
-                businessName: 'مكتب الشهري للمحاسبة',
-                email: 'khalid@shahri.com',
-                phone: '+967 777 111 222',
-                status: 'inactive'
-            },
-            subscriptionEndDate: '2024-08-15',
-            expiredDays: 125,
-            lastPaymentDate: '2023-08-15',
-            lastPaymentAmount: 150,
-            totalOwed: 300,
-            gracePeriodEnded: '2024-09-15',
-            notificationsSent: 3,
-            canRenew: true
-        },
-        {
-            id: 'SUB2002',
-            member: {
-                id: 'M2002',
-                name: 'نورا أحمد باطرفي',
-                businessName: 'شركة باطرفي للاستشارات المالية',
-                email: 'nora@batrafi.com',
-                phone: '+967 777 333 444',
-                status: 'inactive'
-            },
-            subscriptionEndDate: '2024-03-20',
-            expiredDays: 269,
-            lastPaymentDate: '2023-03-20',
-            lastPaymentAmount: 150,
-            totalOwed: 300,
-            gracePeriodEnded: '2024-04-20',
-            notificationsSent: 5,
-            canRenew: true
-        },
-        {
-            id: 'SUB2003',
-            member: {
-                id: 'M2003',
-                name: 'عبدالرحمن سالم النقيب',
-                businessName: 'مؤسسة النقيب للمراجعة',
-                email: 'abdulrahman@naqeeb.com',
-                phone: '+967 777 555 666',
-                status: 'inactive'
-            },
-            subscriptionEndDate: '2023-12-10',
-            expiredDays: 371,
-            lastPaymentDate: '2022-12-10',
-            lastPaymentAmount: 150,
-            totalOwed: 450,
-            gracePeriodEnded: '2024-01-10',
-            notificationsSent: 8,
-            canRenew: false
-        },
-        {
-            id: 'SUB2004',
-            member: {
-                id: 'M2004',
-                name: 'فاطمة علي الحضرمي',
-                businessName: 'مكتب الحضرمي للخدمات المحاسبية',
-                email: 'fatima@hadrami.com',
-                phone: '+967 777 777 888',
-                status: 'inactive'
-            },
-            subscriptionEndDate: '2024-10-30',
-            expiredDays: 48,
-            lastPaymentDate: '2023-10-30',
-            lastPaymentAmount: 150,
-            totalOwed: 150,
-            gracePeriodEnded: '2024-11-30',
-            notificationsSent: 2,
-            canRenew: true
-        },
-        {
-            id: 'SUB2005',
-            member: {
-                id: 'M2005',
-                name: 'محمد عبدالله الزبيدي',
-                businessName: 'الزبيدي والشركاه للمحاسبة',
-                email: 'mohammed@zubaidi.com',
-                phone: '+967 777 999 000',
-                status: 'inactive'
-            },
-            subscriptionEndDate: '2024-07-05',
-            expiredDays: 165,
-            lastPaymentDate: '2023-07-05',
-            lastPaymentAmount: 150,
-            totalOwed: 300,
-            gracePeriodEnded: '2024-08-05',
-            notificationsSent: 4,
-            canRenew: true
-        }
-    ];
+    // Fetch data from API
+    const fetchExpiredSubscriptions = async () => {
+        try {
+            setLoading(true);
+            setError(null);
 
-    // Fetch data
-    useEffect(() => {
-        setTimeout(() => {
-            setExpiredSubscriptions(mockExpiredData);
-            setFilteredSubscriptions(mockExpiredData);
+            const response = await apiService.getExpiredSubscriptions();
+
+            if (response && response.data) {
+                setExpiredSubscriptions(response.data);
+                setFilteredSubscriptions(response.data);
+            } else {
+                setExpiredSubscriptions([]);
+                setFilteredSubscriptions([]);
+            }
+        } catch (err) {
+            console.error('Error fetching expired subscriptions:', err);
+            setError(err.message || 'Failed to fetch expired subscriptions');
+
+            // Show error toast
+            toast.current?.show({
+                severity: 'error',
+                summary: t('common.error'),
+                detail: err.message || t('dashboard.subscriptions.fetchError'),
+                life: 5000
+            });
+
+            // Set empty arrays on error
+            setExpiredSubscriptions([]);
+            setFilteredSubscriptions([]);
+        } finally {
             setLoading(false);
-        }, 1000);
+        }
+    };
+
+    // Fetch data on component mount
+    useEffect(() => {
+        fetchExpiredSubscriptions();
     }, []);
 
     // Apply filters whenever filter values change
@@ -249,12 +183,17 @@ const ExpiredSubscriptions = () => {
         return value <= filterValue;
     };
 
+    // Refresh data handler
+    const handleRefresh = () => {
+        fetchExpiredSubscriptions();
+    };
+
     // Templates for table columns
     const memberTemplate = (rowData) => {
         return (
             <div className="flex items-center">
                 <div className="ml-3">
-                    <div className="font-medium text-gray-900">{rowData.member.name}</div>
+                    <div className="font-medium text-gray-900">{rowData.member?.name || 'N/A'}</div>
                 </div>
             </div>
         );
@@ -267,7 +206,7 @@ const ExpiredSubscriptions = () => {
             'suspended': { severity: 'danger', label: t('member.status.suspended') }
         };
 
-        const status = statusMap[rowData.member.status];
+        const status = statusMap[rowData.member?.status] || statusMap['inactive'];
         return <Tag severity={status.severity} value={status.label} />;
     };
 
@@ -280,12 +219,11 @@ const ExpiredSubscriptions = () => {
             severity = 'warning';
         }
 
-
         return (
             <div className="flex items-center">
                 <Tag
                     severity={severity}
-                    value={`${rowData.expiredDays} ${t('common.days')}`}
+                    value={`${rowData.expiredDays || 0} ${t('common.days')}`}
                 />
             </div>
         );
@@ -294,7 +232,7 @@ const ExpiredSubscriptions = () => {
     const amountTemplate = (rowData) => {
         return (
             <div className="text-right">
-                <div className="font-semibold text-red-600">${rowData.totalOwed}</div>
+                <div className="font-semibold text-red-600">YER {rowData.totalOwed || 0}</div>
                 <div className="text-xs text-gray-500">{t('dashboard.subscriptions.totalOwed')}</div>
             </div>
         );
@@ -308,7 +246,7 @@ const ExpiredSubscriptions = () => {
                     rounded
                     outlined
                     className="p-button-sm"
-                    onClick={() => navigate(`/dashboard/members/view/${rowData.member.id}`)}
+                    onClick={() => navigate(`/dashboard/members/view/${rowData.member?.id}`)}
                     tooltip={t('common.viewDetails')}
                     tooltipOptions={{ position: 'top' }}
                 />
@@ -319,7 +257,7 @@ const ExpiredSubscriptions = () => {
                         outlined
                         severity="success"
                         className="p-button-sm"
-                        onClick={() => navigate(`/dashboard/subscriptions/renew/${rowData.member.id}`)}
+                        onClick={() => navigate(`/dashboard/subscriptions/renew/${rowData.member?.id}`)}
                         tooltip={t('dashboard.subscriptions.renew')}
                         tooltipOptions={{ position: 'top' }}
                     />
@@ -343,7 +281,7 @@ const ExpiredSubscriptions = () => {
         toast.current?.show({
             severity: 'info',
             summary: 'يتطلب التواصل المباشر',
-            detail: `يرجى التواصل مع ${subscription.member.name} على ${subscription.member.phone}`,
+            detail: `يرجى التواصل مع ${subscription.member?.name || 'العضو'} على ${subscription.member?.phone || 'رقم غير متوفر'}`,
             life: 5000
         });
     };
@@ -404,8 +342,6 @@ const ExpiredSubscriptions = () => {
                         showClear
                     />
                 </div>
-
-
             </div>
         );
     };
@@ -432,6 +368,15 @@ const ExpiredSubscriptions = () => {
                     size="small"
                 />
 
+                <Button
+                    icon="pi pi-refresh"
+                    outlined
+                    onClick={handleRefresh}
+                    disabled={loading}
+                    tooltip={t('common.refresh')}
+                    tooltipOptions={{ position: 'top' }}
+                    size="small"
+                />
             </div>
         );
     };
@@ -441,12 +386,36 @@ const ExpiredSubscriptions = () => {
         const over1Year = filteredSubscriptions.filter(s => s.expiredDays > 365).length;
         const sixToTwelveMonths = filteredSubscriptions.filter(s => s.expiredDays > 180 && s.expiredDays <= 365).length;
         const threeToSixMonths = filteredSubscriptions.filter(s => s.expiredDays > 90 && s.expiredDays <= 180).length;
-        const oneToThreeMonths = filteredSubscriptions.filter(s => s.expiredDays > 30 && s.expiredDays <= 90).length;
+        const oneToThreeMonths = filteredSubscriptions.filter(s => s.expiredDays > 0 && s.expiredDays <= 90).length;
 
         return { over1Year, sixToTwelveMonths, threeToSixMonths, oneToThreeMonths };
     };
 
     const stats = getFilteredStats();
+
+    // Show error state if there's an error
+    if (error && !loading) {
+        return (
+            <div>
+                <Toast ref={toast} position="top-center" />
+                <Card>
+                    <div className="text-center py-8">
+                        <i className="pi pi-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            {t('common.error')}
+                        </h3>
+                        <p className="text-gray-600 mb-4">{error}</p>
+                        <Button
+                            label={t('common.retry')}
+                            icon="pi pi-refresh"
+                            onClick={handleRefresh}
+                            className="p-button-outlined"
+                        />
+                    </div>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div>
@@ -520,7 +489,6 @@ const ExpiredSubscriptions = () => {
                 </Card>
             </div>
 
-
             {/* Main Table */}
             <Card>
                 <Toolbar
@@ -540,10 +508,8 @@ const ExpiredSubscriptions = () => {
                     filterDisplay="row"
                     globalFilterFields={['member.name', 'member.id', 'member.businessName', 'member.email']}
                     emptyMessage={t('dashboard.subscriptions.noExpiredSubscriptions')}
-                    // selection={selectedSubscriptions}
                     onSelectionChange={e => setSelectedSubscriptions(e.value)}
                     scrollable
-                    // selectAll
                     resizableColumns
                     currentPageReportTemplate={t('common.showing') + ' {first} ' + t('common.to') + ' {last} ' + t('common.of') + ' {totalRecords} ' + t('common.entries')}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
