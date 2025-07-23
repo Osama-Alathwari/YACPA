@@ -44,7 +44,6 @@ const ExpiredSubscriptions = () => {
     const statusOptions = [
         { label: t('member.status.active'), value: 'active' },
         { label: t('member.status.inactive'), value: 'inactive' },
-        { label: t('member.status.suspended'), value: 'suspended' }
     ];
 
     const expiredDaysOptions = [
@@ -246,7 +245,7 @@ const ExpiredSubscriptions = () => {
                     rounded
                     outlined
                     className="p-button-sm"
-                    onClick={() => viewMemberDetails(rowData)}
+                    onClick={() => navigate(`/dashboard/members/view/${rowData.member.id}`)}
                     tooltip={t('common.viewDetails')}
                     tooltipOptions={{ position: 'top' }}
                 />
@@ -273,43 +272,11 @@ const ExpiredSubscriptions = () => {
                         tooltipOptions={{ position: 'top' }}
                     />
                 )}
-                <Button
-                    icon="pi pi-envelope"
-                    rounded
-                    outlined
-                    severity="info"
-                    className="p-button-sm"
-                    onClick={() => sendNotification(rowData)}
-                    tooltip={t('dashboard.subscriptions.sendNotification')}
-                    tooltipOptions={{ position: 'top' }}
-                />
+
             </div>
         );
     };
 
-    // Action handlers
-    const viewMemberDetails = (subscription) => {
-        setSelectedMemberDetails(subscription);
-        setShowDetailsDialog(true);
-    };
-
-    const sendNotification = (subscription) => {
-        confirmDialog({
-            message: `هل تريد إرسال إشعار تذكير إلى ${subscription.member.name}؟`,
-            header: 'إرسال إشعار',
-            icon: 'pi pi-envelope',
-            acceptLabel: 'إرسال',
-            rejectLabel: 'إلغاء',
-            accept: () => {
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'تم الإرسال',
-                    detail: `تم إرسال إشعار إلى ${subscription.member.name}`,
-                    life: 3000
-                });
-            }
-        });
-    };
 
     const contactMember = (subscription) => {
         toast.current?.show({
@@ -386,24 +353,6 @@ const ExpiredSubscriptions = () => {
 
     // Toolbar content
     const leftToolbarTemplate = () => {
-        return (
-            <div className="flex flex-wrap gap-2">
-                <Button
-                    label={t('dashboard.subscriptions.sendBulkNotifications')}
-                    icon="pi pi-send"
-                    severity="info"
-                    onClick={sendBulkNotifications}
-                    disabled={selectedSubscriptions.length === 0}
-                    loading={bulkActionLoading}
-                />
-                <Button
-                    label={t('common.export')}
-                    icon="pi pi-download"
-                    className="p-button-help"
-                    onClick={exportExpiredList}
-                />
-            </div>
-        );
     };
 
     const rightToolbarTemplate = () => {
@@ -430,102 +379,7 @@ const ExpiredSubscriptions = () => {
     };
 
     // Member details dialog
-    const renderDetailsDialog = () => {
-        if (!selectedMemberDetails) return null;
 
-        const member = selectedMemberDetails.member;
-        const subscription = selectedMemberDetails;
-
-        return (
-            <Dialog
-                header={`تفاصيل العضو: ${member.name}`}
-                visible={showDetailsDialog}
-                style={{ width: '600px' }}
-                onHide={() => setShowDetailsDialog(false)}
-                footer={
-                    <div className="flex justify-end gap-2">
-                        {subscription.canRenew && (
-                            <Button
-                                label={t('dashboard.subscriptions.renew')}
-                                icon="pi pi-sync"
-                                severity="success"
-                                onClick={() => {
-                                    setShowDetailsDialog(false);
-                                    navigate(`/dashboard/subscriptions/renew/${member.id}`);
-                                }}
-                            />
-                        )}
-                        <Button
-                            label={t('common.close')}
-                            icon="pi pi-times"
-                            outlined
-                            onClick={() => setShowDetailsDialog(false)}
-                        />
-                    </div>
-                }
-            >
-                <div className="space-y-4">
-                    {/* Member Info */}
-                    <Panel header="معلومات العضو">
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div><strong>رقم العضو:</strong> {member.id}</div>
-                            <div><strong>الاسم:</strong> {member.name}</div>
-                            <div><strong>المنشأة:</strong> {member.businessName}</div>
-                            <div><strong>الحالة:</strong> {statusTemplate(subscription)}</div>
-                            <div><strong>البريد الإلكتروني:</strong> {member.email}</div>
-                            <div><strong>الهاتف:</strong> {member.phone}</div>
-                        </div>
-                    </Panel>
-
-                    {/* Subscription Info */}
-                    <Panel header="معلومات الاشتراك">
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div><strong>تاريخ انتهاء الاشتراك:</strong> {subscription.subscriptionEndDate}</div>
-                            <div><strong>أيام الانتهاء:</strong> {expiredDaysTemplate(subscription)}</div>
-                            <div><strong>آخر دفعة:</strong> {subscription.lastPaymentDate}</div>
-                            <div><strong>مبلغ آخر دفعة:</strong> ${subscription.lastPaymentAmount}</div>
-                            <div><strong>المبلغ المستحق:</strong> <span className="text-red-600 font-bold">${subscription.totalOwed}</span></div>
-                            <div><strong>انتهت فترة السماح:</strong> {subscription.gracePeriodEnded}</div>
-                        </div>
-                    </Panel>
-
-                    {/* Notifications */}
-                    <Panel header="الإشعارات">
-                        <div className="text-sm">
-                            <div className="mb-2"><strong>عدد الإشعارات المرسلة:</strong> {subscription.notificationsSent}</div>
-                            <div className="flex items-center gap-2">
-                                <strong>إمكانية التجديد:</strong>
-                                {subscription.canRenew ? (
-                                    <Tag severity="success" value="متاح" />
-                                ) : (
-                                    <Tag severity="danger" value="يتطلب تواصل مباشر" />
-                                )}
-                            </div>
-                        </div>
-                    </Panel>
-
-                    {/* Quick Actions */}
-                    <Panel header="إجراءات سريعة">
-                        <div className="flex gap-2">
-                            <Button
-                                label="إرسال إشعار"
-                                icon="pi pi-envelope"
-                                size="small"
-                                onClick={() => sendNotification(subscription)}
-                            />
-                            <Button
-                                label="عرض الملف الكامل"
-                                icon="pi pi-user"
-                                outlined
-                                size="small"
-                                onClick={() => navigate(`/dashboard/members/view/${member.id}`)}
-                            />
-                        </div>
-                    </Panel>
-                </div>
-            </Dialog>
-        );
-    };
 
     return (
         <div>
@@ -544,7 +398,7 @@ const ExpiredSubscriptions = () => {
             </div>
 
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <Card className="bg-red-50 border-red-200">
                     <div className="flex items-center justify-between">
                         <div>
@@ -581,22 +435,12 @@ const ExpiredSubscriptions = () => {
                     </div>
                 </Card>
 
-                <Card className="bg-blue-50 border-blue-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <div className="text-2xl font-bold text-blue-600">
-                                ${expiredSubscriptions.reduce((sum, s) => sum + s.totalOwed, 0)}
-                            </div>
-                            <div className="text-sm text-blue-700">إجمالي المستحقات</div>
-                        </div>
-                        <i className="pi pi-money-bill text-3xl text-blue-400"></i>
-                    </div>
-                </Card>
+
             </div>
 
             {/* Main Table */}
             <Card>
-                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate} />
+                <Toolbar className="mb-4" left={rightToolbarTemplate} />
 
                 <DataTable
                     value={expiredSubscriptions}
@@ -608,9 +452,9 @@ const ExpiredSubscriptions = () => {
                     filterDisplay="row"
                     globalFilterFields={['member.name', 'member.id', 'member.businessName', 'member.email']}
                     emptyMessage={t('dashboard.subscriptions.noExpiredSubscriptions')}
-                    selectionMode="checkbox"
-                    selection={selectedSubscriptions}
-                    onSelectionChange={e => setSelectedSubscriptions(e.value)}
+                    // selectionMode='multiple'
+                    // selection={selectedSubscriptions}
+                    // onSelectionChange={e => setSelectedSubscriptions(e.value)}
                     scrollable
                     // scrollHeight="calc(100vh - 400px)"
                     selectAll
@@ -618,7 +462,7 @@ const ExpiredSubscriptions = () => {
                     currentPageReportTemplate={t('common.showing') + ' {first} ' + t('common.to') + ' {last} ' + t('common.of') + ' {totalRecords} ' + t('common.entries')}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 >
-                    <Column selectionMode="multiple" headerStyle={{ width: '2em' }} />
+
                     <Column
                         body={actionsTemplate}
                         header={t('common.actions')}
@@ -676,7 +520,7 @@ const ExpiredSubscriptions = () => {
             </Card>
 
             {/* Details Dialog */}
-            {renderDetailsDialog()}
+
         </div>
     );
 };
