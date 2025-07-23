@@ -65,7 +65,7 @@ const ExpiredSubscriptions = () => {
                 businessName: 'مكتب الشهري للمحاسبة',
                 email: 'khalid@shahri.com',
                 phone: '+967 777 111 222',
-                status: 'active'
+                status: 'inactive'
             },
             subscriptionEndDate: '2024-08-15',
             expiredDays: 125,
@@ -103,7 +103,7 @@ const ExpiredSubscriptions = () => {
                 businessName: 'مؤسسة النقيب للمراجعة',
                 email: 'abdulrahman@naqeeb.com',
                 phone: '+967 777 555 666',
-                status: 'suspended'
+                status: 'inactive'
             },
             subscriptionEndDate: '2023-12-10',
             expiredDays: 371,
@@ -122,7 +122,7 @@ const ExpiredSubscriptions = () => {
                 businessName: 'مكتب الحضرمي للخدمات المحاسبية',
                 email: 'fatima@hadrami.com',
                 phone: '+967 777 777 888',
-                status: 'active'
+                status: 'inactive'
             },
             subscriptionEndDate: '2024-10-30',
             expiredDays: 48,
@@ -141,7 +141,7 @@ const ExpiredSubscriptions = () => {
                 businessName: 'الزبيدي والشركاه للمحاسبة',
                 email: 'mohammed@zubaidi.com',
                 phone: '+967 777 999 000',
-                status: 'active'
+                status: 'inactive'
             },
             subscriptionEndDate: '2024-07-05',
             expiredDays: 165,
@@ -187,12 +187,12 @@ const ExpiredSubscriptions = () => {
 
     // Templates for table columns
     const memberTemplate = (rowData) => {
+        // <div className="text-sm text-gray-500">{rowData.member.id}</div>
+        // <div className="text-sm text-gray-500">{rowData.member.businessName}</div>
         return (
             <div className="flex items-center">
                 <div className="ml-3">
                     <div className="font-medium text-gray-900">{rowData.member.name}</div>
-                    <div className="text-sm text-gray-500">{rowData.member.id}</div>
-                    <div className="text-sm text-gray-500">{rowData.member.businessName}</div>
                 </div>
             </div>
         );
@@ -204,29 +204,26 @@ const ExpiredSubscriptions = () => {
             'inactive': { severity: 'warning', label: t('common.inactive') },
             'suspended': { severity: 'danger', label: t('member.status.suspended') }
         };
-        
+
         const status = statusMap[rowData.member.status];
         return <Tag severity={status.severity} value={status.label} />;
     };
 
     const expiredDaysTemplate = (rowData) => {
         let severity = 'info';
-        let icon = 'pi-clock';
-        
+
         if (rowData.expiredDays > 365) {
             severity = 'danger';
-            icon = 'pi-exclamation-triangle';
         } else if (rowData.expiredDays > 180) {
             severity = 'warning';
-            icon = 'pi-exclamation-circle';
         }
 
         return (
             <div className="flex items-center">
-                <i className={`pi ${icon} mr-2 text-${severity === 'danger' ? 'red' : severity === 'warning' ? 'yellow' : 'blue'}-600`}></i>
-                <Tag 
-                    severity={severity} 
-                    value={`${rowData.expiredDays} ${t('common.days')}`} 
+                {/* <i className={`pi ${icon} mr-2 text-${severity === 'danger' ? 'red' : severity === 'warning' ? 'yellow' : 'blue'}-600`}></i> */}
+                <Tag
+                    severity={severity}
+                    value={`${rowData.expiredDays} ${t('common.days')}`}
                 />
             </div>
         );
@@ -615,65 +612,66 @@ const ExpiredSubscriptions = () => {
                     selection={selectedSubscriptions}
                     onSelectionChange={e => setSelectedSubscriptions(e.value)}
                     scrollable
-                    scrollHeight="calc(100vh - 400px)"
+                    // scrollHeight="calc(100vh - 400px)"
                     selectAll
                     resizableColumns
                     currentPageReportTemplate={t('common.showing') + ' {first} ' + t('common.to') + ' {last} ' + t('common.of') + ' {totalRecords} ' + t('common.entries')}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                 >
-                    <Column selectionMode="multiple" headerStyle={{ width: '3em' }} />
-                    <Column 
-                        field="member" 
-                        header={t('member.info')} 
-                        body={memberTemplate} 
-                        sortable 
-                        style={{ minWidth: '250px' }} 
+                    <Column selectionMode="multiple" headerStyle={{ width: '2em' }} />
+                    <Column
+                        body={actionsTemplate}
+                        header={t('common.actions')}
+                        style={{ minWidth: '150px', textAlign: 'center' }}
                     />
-                    <Column 
-                        field="subscriptionEndDate" 
-                        header={t('member.subscription.endDate')} 
-                        sortable 
-                        style={{ minWidth: '120px' }} 
+                    <Column
+                        field="member"
+                        header={t('member.info')}
+                        body={memberTemplate}
+                        sortable
+                        style={{ minWidth: '250px', textAlign: 'right' }}
+                    />
+                    <Column
+                        field="subscriptionEndDate"
+                        header={t('member.subscription.endDate')}
+                        sortable
+                        style={{ minWidth: '120px', textAlign: 'right' }}
                     />
                     <Column
                         field="expiredDays"
                         header={t('dashboard.subscriptions.expiredDays')}
                         body={expiredDaysTemplate}
                         sortable
-                        filter
-                        filterElement={expiredDaysFilterTemplate}
-                        filterFunction={filterExpiredDays}
-                        showFilterMenu={false}
-                        style={{ minWidth: '150px' }}
+                        // filter
+                        // filterElement={expiredDaysFilterTemplate}
+                        // filterFunction={filterExpiredDays}
+                        // showFilterMenu={false}
+                        style={{ minWidth: '150px', textAlign: 'right' }}
                     />
-                    <Column 
-                        field="lastPaymentDate" 
-                        header={t('dashboard.subscriptions.lastPayment')} 
-                        sortable 
-                        style={{ minWidth: '120px' }} 
+                    <Column
+                        field="lastPaymentDate"
+                        header={t('dashboard.subscriptions.lastPayment')}
+                        sortable
+                        style={{ minWidth: '120px', textAlign: 'right' }}
                     />
-                    <Column 
-                        field="totalOwed" 
-                        header={t('dashboard.subscriptions.amountOwed')} 
-                        body={amountTemplate} 
-                        sortable 
-                        style={{ minWidth: '120px' }} 
+                    <Column
+                        field="totalOwed"
+                        header={t('dashboard.subscriptions.amountOwed')}
+                        body={amountTemplate}
+                        sortable
+                        style={{ minWidth: '120px', textAlign: 'right' }}
                     />
                     <Column
                         field="member.status"
                         header={t('common.status')}
                         body={statusTemplate}
                         sortable
-                        filter
-                        filterElement={statusFilterTemplate}
-                        showFilterMenu={false}
-                        style={{ minWidth: '100px' }}
+                        // filter
+                        // filterElement={statusFilterTemplate}
+                        // showFilterMenu={false}
+                        style={{ minWidth: '100px', textAlign: 'right' }}
                     />
-                    <Column 
-                        body={actionsTemplate} 
-                        header={t('common.actions')} 
-                        style={{ minWidth: '150px', textAlign: 'center' }} 
-                    />
+
                 </DataTable>
             </Card>
 

@@ -49,11 +49,9 @@ const ExpiringSubscriptions = () => {
 
             if (response.success) {
                 setSubscriptions(response.data);
-                console.log(response);
             }
         } catch (error) {
             console.error('Error fetching expiring subscriptions:', error);
-            // setSubscriptions(mockSubscriptionsData);
         } finally {
             setLoading(false);
         }
@@ -73,10 +71,8 @@ const ExpiringSubscriptions = () => {
     // Handle expiration window change
     const handleExpirationWindowChange = (e) => {
         setExpirationWindow(e.value);
-        // Data will be refetched automatically due to useEffect dependency
     };
 
-    // Template for status column
     const statusTemplate = (rowData) => {
         const statusMap = {
             'active': { severity: 'success', label: t('common.active') },
@@ -87,7 +83,6 @@ const ExpiringSubscriptions = () => {
         return <Tag severity={statusMap[rowData.status].severity} value={statusMap[rowData.status].label} />;
     };
 
-    // Template for days remaining column
     const daysRemainingTemplate = (rowData) => {
         let severity = 'success';
 
@@ -100,7 +95,6 @@ const ExpiringSubscriptions = () => {
         return <Tag severity={severity} value={`${rowData.daysRemaining} ${t('common.days')}`} />;
     };
 
-    // Template for amount column
     const amountTemplate = (rowData) => {
         return <span className="font-semibold">YER {rowData.lastPaymentAmount}</span>;
     };
