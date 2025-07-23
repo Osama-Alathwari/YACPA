@@ -26,6 +26,7 @@ const SubscriptionRenewal = () => {
     const { id } = useParams(); // Get member ID from URL if provided
     const toast = useRef(null);
     const [membersData, setMembersData] = useState([]);
+    const [annualFee, setAnnualFee] = useState(0);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -35,8 +36,8 @@ const SubscriptionRenewal = () => {
         paymentDate: new Date(),
         paymentMethod: null,
         referenceNumber: '',
-        amount: 150, // Default renewal amount per year
-        totalAmount: 150,
+        amount: 0, // Default renewal amount per year
+        totalAmount: 0,
         notes: '',
         attachment: null
     });
@@ -53,9 +54,13 @@ const SubscriptionRenewal = () => {
 
     // Handle URL parameter for direct member renewal
     useEffect(() => {
-        if (id) {
+        loadMembersForRenewal();
+    }, []);
+
+    useEffect(() => {
+        if (id && membersData.length > 0) {
             // Find member by ID and auto-select
-            const member = membersData.find(m => m.id === id);
+            const member = membersData.find(m => m.id.toString() === id.toString());
             if (member) {
                 handleMemberSelect(member);
                 toast.current?.show({
@@ -66,8 +71,7 @@ const SubscriptionRenewal = () => {
                 });
             }
         }
-        loadMembersForRenewal();
-    }, [id]);
+    }, [id, membersData]);
     const paymentMethods = [
         { label: t('common.cash'), value: 'cash' },
         { label: t('common.bankTransfer'), value: 'bank_transfer' },
@@ -87,6 +91,15 @@ const SubscriptionRenewal = () => {
             const response = await apiService.getMembersForRenewal();
             if (response.success) {
                 setMembersData(response.data);
+                // Set annual fee from first member's data (since all members have same fee from system settings)
+                if (response.data.length > 0) {
+                    setAnnualFee(response.data[0].annualFee || 150);
+                    setFormData(prev => ({
+                        ...prev,
+                        amount: response.data[0].annualFee || 150,
+                        totalAmount: response.data[0].annualFee || 150
+                    }));
+                }
             }
         } catch (error) {
             toast.current?.show({
@@ -146,7 +159,7 @@ const SubscriptionRenewal = () => {
                         />
                         {member.subscriptionEnd && (
                             <span className="text-xs text-gray-500">
-                                ينتهي: {new Date(member.subscriptionEnd).toLocaleDateString('ar-SA')}
+                                ينتهي: {new Date(member.subscriptionEnd).toLocaleDateString('sv-SE')}
                             </span>
                         )}
                     </div>
@@ -162,12 +175,13 @@ const SubscriptionRenewal = () => {
 
             // Calculate total amount when subscription period changes
             if (field === 'subscriptionPeriod') {
-                newData.totalAmount = newData.amount * value;
+                newData.totalAmount = annualFee * value;
             }
 
             return newData;
         });
     };
+
 
     // Handle member selection
     const handleMemberSelect = (member) => {
@@ -207,8 +221,7 @@ const SubscriptionRenewal = () => {
         return selectedMember &&
             formData.paymentDate &&
             formData.paymentMethod &&
-            formData.referenceNumber.trim() !== '' &&
-            formData.totalAmount > 0;
+            formData.referenceNumber.trim() !== '';
     };
 
     // Calculate new subscription end date
@@ -227,7 +240,7 @@ const SubscriptionRenewal = () => {
         setSubmitted(true);
 
         // Validation
-        if (!selectedMember || !formData.subscriptionPeriod || !formData.paymentMethod || !formData.amount) {
+        if (!selectedMember || !formData.subscriptionPeriod || !formData.paymentMethod || !formData.referenceNumber.trim()) {
             toast.current?.show({
                 severity: 'warn',
                 summary: 'بيانات ناقصة',
@@ -244,7 +257,7 @@ const SubscriptionRenewal = () => {
                 memberId: selectedMember.id,
                 subscriptionPeriod: formData.subscriptionPeriod,
                 paymentMethod: formData.paymentMethod,
-                amount: formData.totalAmount,
+                amount: annualFee * formData.subscriptionPeriod,
                 referenceNumber: formData.referenceNumber,
                 referenceDate: formData.paymentDate,
                 notes: formData.notes
@@ -261,20 +274,7 @@ const SubscriptionRenewal = () => {
                 });
 
                 // Reset form
-                setSelectedMember(null);
-                setFormData({
-                    memberId: '',
-                    memberName: '',
-                    subscriptionPeriod: 1,
-                    paymentDate: new Date(),
-                    paymentMethod: null,
-                    referenceNumber: '',
-                    amount: 150,
-                    totalAmount: 150,
-                    notes: '',
-                    attachment: null
-                });
-                setSubmitted(false);
+                resetForm();
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'فشل في تجديد الاشتراك';
@@ -292,13 +292,13 @@ const SubscriptionRenewal = () => {
     // Confirm renewal
     const confirmRenewal = () => {
         confirmDialog({
-            message: `هل أنت متأكد من تجديد اشتراك ${selectedMember.name} لمدة ${formData.subscriptionPeriod} ${formData.subscriptionPeriod === 1 ? 'سنة' : 'سنوات'} بمبلغ $${formData.totalAmount}؟`,
+            message: `هل أنت متأكد من تجديد اشتراك ${selectedMember.name} لمدة ${formData.subscriptionPeriod} ${formData.subscriptionPeriod === 1 ? 'سنة' : 'سنوات'} بمبلغ ${annualFee * formData.subscriptionPeriod} ريال؟`,
             header: 'تأكيد التجديد',
             icon: 'pi pi-exclamation-triangle',
             acceptLabel: 'تأكيد',
             rejectLabel: 'إلغاء',
             acceptClassName: 'p-button-success',
-            accept: processRenewal,
+            accept: handleSubmit, // Use handleSubmit instead of processRenewal
             reject: () => {
                 setShowConfirmation(false);
             }
@@ -359,13 +359,14 @@ const SubscriptionRenewal = () => {
             paymentDate: new Date(),
             paymentMethod: null,
             referenceNumber: '',
-            amount: 150,
-            totalAmount: 150,
+            amount: annualFee,
+            totalAmount: annualFee,
             notes: '',
             attachment: null
         });
         setSelectedMember(null);
         setSubmitted(false);
+        setShowConfirmation(false);
     };
 
     return (
@@ -530,12 +531,13 @@ const SubscriptionRenewal = () => {
                                     رسوم الاشتراك السنوي
                                 </label>
                                 <InputNumber
-                                    value={formData.amount}
+                                    value={annualFee}
                                     onValueChange={(e) => handleInputChange('amount', e.value)}
                                     mode="currency"
-                                    currency="USD"
+                                    currency="YER"
                                     locale="en-US"
                                     className="w-full"
+                                    disabled
                                 />
                             </div>
 
@@ -545,9 +547,9 @@ const SubscriptionRenewal = () => {
                                     المبلغ الإجمالي
                                 </label>
                                 <InputNumber
-                                    value={formData.totalAmount}
+                                    value={annualFee * formData.subscriptionPeriod}
                                     mode="currency"
-                                    currency="USD"
+                                    currency="YER"
                                     locale="en-US"
                                     className="w-full"
                                     disabled
@@ -655,12 +657,12 @@ const SubscriptionRenewal = () => {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">رسوم سنوية:</span>
-                                        <span className="font-medium">${formData.amount}</span>
+                                        <span className="font-medium">YER {annualFee}</span>
                                     </div>
                                     <Divider />
                                     <div className="flex justify-between text-lg">
                                         <span className="font-semibold">المبلغ الإجمالي:</span>
-                                        <span className="font-bold text-blue-600">${formData.totalAmount}</span>
+                                        <span className="font-bold text-blue-600">YER {annualFee * formData.subscriptionPeriod}</span>
                                     </div>
                                 </div>
 
@@ -711,7 +713,7 @@ const SubscriptionRenewal = () => {
                             </div>
                             <div className="flex justify-between">
                                 <span>المبلغ الإجمالي:</span>
-                                <span className="font-bold text-green-600">${formData.totalAmount}</span>
+                                <span className="font-bold text-green-600">YER {formData.totalAmount}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span>الاشتراك الجديد ينتهي:</span>

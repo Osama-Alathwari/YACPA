@@ -186,7 +186,9 @@ const getMembersForRenewal = async (req, res) => {
 
         res.json({
             success: true,
-            data: members
+            data: members,
+            // just annual fee for one member no total
+            annualFee: members.length > 0 ? members[0].annualFee : 0
         });
 
     } catch (error) {
