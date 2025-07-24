@@ -1,0 +1,124 @@
+/* MemberCard.css */
+
+/* Normal membership card styles */
+.membership-card {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Print styles */
+@media print {
+
+    /* Hide everything when printing */
+    body.printing-card * {
+        visibility: hidden;
+    }
+
+    /* Show only the membership card and its contents */
+    body.printing-card .membership-card,
+    body.printing-card .membership-card * {
+        visibility: visible;
+    }
+
+    /* Remove dialog and other wrappers from print */
+    body.printing-card .p-dialog,
+    body.printing-card .p-dialog-mask,
+    body.printing-card .p-dialog-header,
+    body.printing-card .p-dialog-footer,
+    body.printing-card .p-dialog-content {
+        box-shadow: none !important;
+        border: none !important;
+        background: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Position card for optimal printing - single page */
+    body.printing-card .membership-card {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 13cm !important;
+        /* Safe width for A4 */
+        height: 9.3cm !important;
+        /* Safe height for A4 */
+        margin: 0 !important;
+        padding: 0.8cm !important;
+        border-radius: 0.5cm !important;
+        page-break-inside: avoid !important;
+
+        /* Ensure colors print properly */
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color: white !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* Force all card elements to print with colors */
+    body.printing-card .membership-card * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Adjust text sizes for larger card */
+    body.printing-card .membership-card h3 {
+        font-size: 18pt !important;
+        margin-bottom: 0.5cm !important;
+    }
+
+    body.printing-card .membership-card p {
+        font-size: 12pt !important;
+        margin-bottom: 0.3cm !important;
+    }
+
+    body.printing-card .membership-card .text-sm {
+        font-size: 10pt !important;
+    }
+
+    body.printing-card .membership-card .text-xs {
+        font-size: 9pt !important;
+    }
+
+    /* Optimize image for larger card */
+    body.printing-card .membership-card img {
+        width: 2.5cm !important;
+        height: 2.5cm !important;
+        max-width: 2.5cm !important;
+        max-height: 2.5cm !important;
+    }
+
+    /* Adjust spacing for better layout */
+    body.printing-card .membership-card .mb-2 {
+        margin-bottom: 0.5cm !important;
+    }
+
+    body.printing-card .membership-card .gap-2 {
+        gap: 0.3cm !important;
+    }
+
+    body.printing-card .membership-card .p-2 {
+        padding: 0.4cm !important;
+    }
+
+    /* Set page to exactly fit the card */
+    @page {
+        size: A4 portrait;
+        margin: 1cm;
+    }
+
+    /* Hide page content except card */
+    body.printing-card {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+}

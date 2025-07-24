@@ -19,6 +19,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Calendar } from 'primereact/calendar';
+import '../../styles/MemberCard.css'; // Custom styles for member card
 
 const MemberDetails = () => {
     const { t } = useTranslation();
@@ -126,6 +127,19 @@ const MemberDetails = () => {
 
     // Render membership card dialog
     const renderCardDialog = () => {
+        const handlePrint = () => {
+            // Add print class to body before printing
+            document.body.classList.add('printing-card');
+
+            // Trigger print
+            window.print();
+
+            // Remove print class after printing
+            setTimeout(() => {
+                document.body.classList.remove('printing-card');
+            }, 100);
+        };
+
         return (
             <Dialog
                 header={t('member.card.title')}
@@ -137,7 +151,7 @@ const MemberDetails = () => {
                         <Button
                             label={t('common.print')}
                             icon="pi pi-print"
-                            onClick={() => window.print()}
+                            onClick={handlePrint}
                         />
                         <Button
                             label={t('common.close')}
@@ -152,7 +166,7 @@ const MemberDetails = () => {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10"></div>
                     <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-10 -mb-10"></div>
 
-                    <div className="flex items-center mb-4">
+                    <div className="flex items-center mb-2">
                         <div className="flex-shrink-0 mr-4">
                             {member.profileImagePath ? (
                                 <img
@@ -172,7 +186,7 @@ const MemberDetails = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 mb-4">
+                    <div className="grid grid-cols-2 gap-2 mb-2">
                         <div className="bg-blue-700 bg-opacity-40 p-2 rounded">
                             <div className="text-xs text-blue-200">{t('member.card.id')}</div>
                             <div className="font-bold">{member.id}</div>
@@ -192,7 +206,7 @@ const MemberDetails = () => {
                     </div>
 
                     <div className="text-center">
-                        <div className="text-xs text-blue-200">جمعية المحاسبين القانونيين اليمنية</div>
+                        <div className="text-xs text-blue-200">جمعية المحاسبين القانونيين اليمنيين</div>
                         <div className="text-xs text-blue-200">Yemen Association of Certified Public Accountants</div>
                     </div>
                 </div>
