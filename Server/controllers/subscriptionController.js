@@ -158,13 +158,24 @@ const getMembersForRenewal = async (req, res) => {
                     WHEN s.enddate < CURRENT_DATE THEN 'expired'
                     ELSE 'inactive'
                 END as status,
-                m.profileimagepath as profile_image
+                m.profileimagepath as profile_image,
+                m.email,
+                -- Contact Information
+                phone1.contactvalue as phone1,
+                phone2.contactvalue as phone2,
+                mobile.contactvalue as mobile,
+                whatsapp.contactvalue as whatsapp
             FROM members m
             LEFT JOIN (
                 SELECT DISTINCT ON (memberid) *
                 FROM subscriptions
                 ORDER BY memberid, enddate DESC
             ) s ON m.id = s.memberid
+            -- Contact Information JOINs
+            LEFT JOIN contactinformation phone1 ON m.id = phone1.memberid AND phone1.contacttype = 'Phone1'
+            LEFT JOIN contactinformation phone2 ON m.id = phone2.memberid AND phone2.contacttype = 'Phone2'
+            LEFT JOIN contactinformation mobile ON m.id = mobile.memberid AND mobile.contacttype = 'Mobile'
+            LEFT JOIN contactinformation whatsapp ON m.id = whatsapp.memberid AND whatsapp.contacttype = 'WhatsApp'
             CROSS JOIN systemsettings ss
             WHERE ss.settingkey = 'AnnualSubscriptionFee'
             ORDER BY m.fullname ASC
@@ -177,6 +188,11 @@ const getMembersForRenewal = async (req, res) => {
             id: member.id,
             name: member.name,
             business: member.business,
+            email: member.email,
+            phone1: member.phone1,
+            phone2: member.phone2,
+            mobile: member.mobile,
+            whatsapp: member.whatsapp,
             subscriptionEnd: member.subscription_end ?
                 new Date(member.subscription_end).toISOString().split('T')[0] : null,
             status: member.status,
@@ -187,15 +203,15 @@ const getMembersForRenewal = async (req, res) => {
         res.json({
             success: true,
             data: members,
-            // just annual fee for one member no total
-            annualFee: members.length > 0 ? members[0].annualFee : 0
+            annualFee: members.length > 0 ? parseFloat(members[0].annual_subscription_fee) || 0 : 0
         });
 
     } catch (error) {
         console.error('Error fetching members for renewal:', error);
         res.status(500).json({
             success: false,
-            message: 'خطأ في استرجاع بيانات الأعضاء'
+            message: 'خطأ في استرجاع بيانات الأعضاء للتجديد',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'خطأ داخلي في الخادم'
         });
     }
 };
