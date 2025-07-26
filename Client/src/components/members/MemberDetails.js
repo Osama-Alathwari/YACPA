@@ -339,7 +339,7 @@ const MemberDetails = () => {
                         label={t('dashboard.subscriptions.renew')}
                         icon="pi pi-sync"
                         className="p-button-success"
-                        onClick={() => setShowRenewDialog(true)}
+                        onClick={() => navigate(`/dashboard/subscriptions/renew/${member.id}`)}
                     // disabled={member.status === 'inactive'}
                     />
                     <Button

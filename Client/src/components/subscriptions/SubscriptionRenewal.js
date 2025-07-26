@@ -140,7 +140,7 @@ const SubscriptionRenewal = () => {
         return (
             <div className="member-search-item flex items-center gap-3">
                 <Avatar
-                    image={member.profileImage ? `${process.env.REACT_APP_API_BASE_URL}/${member.profileImage}` : null}
+                    image={member.profileImage ? `${process.env.REACT_APP_API_URL}/${member.profileImage}` : null}
                     icon={!member.profileImage ? "pi pi-user" : null}
                     className="member-avatar"
                     size="normal"
